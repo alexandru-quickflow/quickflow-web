@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* Tokenurile de design se stabilesc la M2, dupa alegerea directiei vizuale.
+   Deocamdata doar ce e nevoie ca pagina sa nu arate rupt. */
+@theme {
+	--font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:root {
+	color-scheme: light dark;
+}
