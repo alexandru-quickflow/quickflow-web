@@ -1,153 +1,190 @@
 ---
 import Sheet from '../layouts/Sheet.astro';
 import FlowSheet from '../components/FlowSheet.astro';
-import { proofs, weightSnippet, VERIFIED_ON, SELF_JS } from '../content/proof';
+import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../content/proof';
+import { paths } from '../i18n/routes';
 
-const weight = proofs.find((p) => p.id === 'bubble-weight')!;
-const escrow = proofs.find((p) => p.id === 'stripe-escrow')!;
+const weight = proof('en', 'bubble-weight');
+const escrow = proof('en', 'stripe-escrow');
 
 const services = [
 	{
 		n: '01',
-		title: 'Migrare de pe Bubble pe cod',
+		title: 'Bubble to code migration',
 		problem:
-			'Aplicația funcționează și are clienți. Dar factura crește odată cu traficul, paginile publice se încarcă greu, iar la prima discuție serioasă cu un investitor cineva întreabă ce se întâmplă dacă platforma își schimbă prețurile.',
-		cta: 'Vezi cum arată traseul',
-		href: '/servicii/migrare-bubble',
+			'The app works and has customers. But the bill grows with traffic, public pages load slowly, and the first time an investor looks closely someone asks what happens if the platform changes its pricing.',
+		cta: 'See how a Bubble migration runs',
+		href: paths.migration.en,
 	},
 	{
 		n: '02',
-		title: 'Marketplace cu plăți',
+		title: 'Marketplace with payments',
 		problem:
-			'Doi oameni fac o tranzacție, tu iei comision. Partea grea nu e tranzacția, e ce se întâmplă când plata eșuează, când se cere un refund după ce banii au fost împărțiți, sau când un vânzător nu trece verificarea de identitate.',
-		cta: 'Vezi cum lucrez',
-		href: '/servicii/marketplace-plati',
+			'Two people make a transaction, you take a cut. The hard part is not the transaction, it is what happens when a payment fails, when a refund is asked for after the money has been split, or when a seller fails identity verification.',
+		cta: 'See how split payments are built',
+		href: paths.marketplace.en,
 	},
 	{
 		n: '03',
-		title: 'Platforme de cursuri și membership',
+		title: 'Course and membership platforms',
 		problem:
-			'Vinzi acces, nu produse. Trebuie să știi în orice moment cine a plătit, până când, și ce vede după ce expiră.',
-		cta: 'Scrie-mi',
-		href: '/contact',
+			'You sell access, not products. At any moment you need to know who paid, until when, and what they see after it expires.',
+		cta: 'Write to me',
+		href: paths.contact.en,
 	},
 	{
 		n: '04',
-		title: 'Integrări AI și automatizări',
+		title: 'AI integrations and automation',
 		problem:
-			'Procesul merge, dar cineva îl ține în viață mutând date dintr-un loc în altul câteva ore pe săptămână.',
-		cta: 'Scrie-mi',
-		href: '/contact',
+			'The process works, but someone keeps it alive by moving data from one place to another a few hours a week.',
+		cta: 'Write to me',
+		href: paths.contact.en,
 	},
 ];
 
-// The phases, with the state each one leaves the app in. Same five as the
-// migration page; the state moves out of the sentence and into its own column,
-// because it is the one thing a founder reads this table for. The nuance that
-// used to sit in the state string stays, it just sits in the description now.
+// The phases, with the state each one leaves the app in. The state is the one
+// thing a founder reads this table for, so it gets its own column instead of
+// being buried in the sentence.
 const phases = [
 	{
 		n: '00',
 		title: 'Audit',
-		what:
-			'Îți citesc aplicația: modelul de date, workflow-urile, plugin-urile, integrările. Iese un document cu ce se traduce direct, ce trebuie regândit, planul pe faze și cât te costă lunar după.',
-		state: 'Neatinsă',
+		what: 'I read your app: the data model, the workflows, the plugins, the integrations. Out comes a document with what translates directly, what has to be rethought, the plan by phase, and what it costs you per month afterwards.',
+		state: 'Untouched',
 		tone: 'idle',
 	},
 	{
 		n: '01',
-		title: 'Stratul public',
-		what:
-			'Site-ul public, paginile de prezentare, landing-urile și blogul ies din platformă. Pentru utilizatori nu se schimbă nimic.',
-		state: 'Funcționează',
+		title: 'The public layer',
+		what: 'The public site, the marketing pages, the landing pages and the blog leave the platform. For users nothing changes.',
+		state: 'Running',
 		tone: 'ok',
 	},
 	{
 		n: '02',
-		title: 'Citirile',
-		what: 'Paginile care doar afișează date trec pe cod. Platforma rămâne sursa adevărului.',
-		state: 'Funcționează',
+		title: 'The reads',
+		what: 'Pages that only display data move to code. The platform stays the source of truth.',
+		state: 'Running',
 		tone: 'ok',
 	},
 	{
 		n: '03',
-		title: 'Scrierile și plățile',
-		what: 'Fluxurile prin care intră date și bani trec pe cod, unul câte unul.',
-		state: 'Funcționează',
+		title: 'The writes and the payments',
+		what: 'The flows that bring in data and money move to code, one at a time.',
+		state: 'Running',
 		tone: 'ok',
 	},
 	{
 		n: '04',
-		title: 'Conturile și tăierea',
-		what: 'Utilizatorii trec, platforma veche se oprește. Singurul moment cu risc real.',
-		state: 'Risc real',
+		title: 'Accounts and the cutover',
+		what: 'Users move across, the old platform is switched off. The only moment with real risk.',
+		state: 'Real risk',
 		tone: 'risk',
 	},
 ];
 
-const method = [
+const terms = [
 	{
 		n: '01',
-		text: 'Livrez pe faze, iar după fiecare fază ai ceva care funcționează, nu un progres raportat.',
+		text: 'I deliver in phases, and after each phase you have something that works, not a progress report.',
 	},
-	{ n: '02', text: 'Conturile și codul sunt pe numele tău de la prima zi.' },
+	{ n: '02', text: 'The accounts and the code are in your name from day one.' },
 	{
 		n: '03',
-		text: 'Dacă nu mergem mai departe după audit, rămâi cu documentul și cu estimarea.',
+		text: 'If we do not go further after the audit, you keep the document and the estimate.',
 	},
 ];
 
-// Descriptions match portofoliu.astro. The home page carried an older, wrong
-// line about jemshitmavlyanov.com for three revisions.
 const work = [
 	{
 		n: '01',
 		name: 'jemshitmavlyanov.com',
 		href: 'https://jemshitmavlyanov.com',
-		kind: 'Migrare completă de pe Bubble pe cod',
+		kind: 'Full migration from Bubble to code',
 		built:
-			'Conturi, autentificare, coș, plată, acces care expiră după șase luni și panou de administrare, mutate integral. Nouă limbi.',
+			'Accounts, authentication, cart, payment, access that expires after six months and an admin panel, moved in full. Nine languages.',
 	},
 	{
 		n: '02',
 		name: 'aeinvitatii.ro',
 		href: 'https://aeinvitatii.ro',
-		kind: 'Produs propriu, în producție',
+		kind: 'My own product, in production',
 		built:
-			'Invitații de nuntă cu link personalizat pentru fiecare familie, confirmare cu meniu și transport, listă de invitați care se actualizează pe loc.',
+			'Wedding invitations with a personal link for each family, an RSVP with menu and transport, and a guest list that updates live.',
 	},
 	{
 		n: '03',
 		name: 'elenaviscu.com',
 		href: 'https://elenaviscu.com',
-		kind: 'Platformă de coaching cu plăți',
+		kind: 'Coaching platform with payments',
 		built:
-			'Trei tipuri de produs, trei reguli de acces. Plăți în lei, acces deschis automat după plată.',
+			'Three product types, three access rules. Payments in the local currency, access opened automatically after payment.',
 	},
 ];
+
+const title = 'Bubble to code migration, Stripe marketplaces | Quick Flow';
+const description =
+	'I move apps that outgrew Bubble onto code, and build marketplaces that split payments through Stripe. Eight years inside Bubble, writing code since 2025.';
+
+// Enough for Google to know what this is and who runs it. No invented awards,
+// no invented review count, and no sameAs until the profile URLs are confirmed.
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'ProfessionalService',
+	name: 'Quick Flow',
+	url: 'https://quickflow.dev',
+	email: 'alexandru@quickflow.dev',
+	description,
+	areaServed: 'Worldwide',
+	availableLanguage: ['English', 'Romanian', 'Russian'],
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'Bucharest',
+		addressCountry: 'RO',
+	},
+	founder: {
+		'@type': 'Person',
+		name: 'Alexandru Trofaniuc',
+		jobTitle: 'Software developer',
+		knowsLanguage: ['ro', 'ru', 'en'],
+	},
+	knowsAbout: [
+		'Bubble to code migration',
+		'Stripe Connect',
+		'Two-sided marketplaces',
+		'Split payments',
+		'Course platforms',
+	],
+};
 ---
 
-<Sheet
-	title="Quick Flow, aplicații cu plăți și ieșire din no-code"
-	description="Construiesc marketplace-uri cu plăți împărțite, platforme de cursuri și mut aplicațiile care au depășit no-code-ul. Opt ani în Bubble, din 2025 în cod, singur de la modelul de date până la payout."
->
-	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The datum
-	     under the headline is this page measuring itself: the one claim where
-	     the site and the pitch are the same object. -->
+<Sheet lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The line
+	     under the headline carries the words people actually type, because the
+	     headline carries none and should not have to. The datum under it is
+	     this page measuring itself: the one claim where the site and the pitch
+	     are the same object. -->
 	<section class="bleed pt-12 md:pt-16">
 		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
-			<p class="spec">Quick Flow, București</p>
-			<p class="spec">Marketplace, migrare, cursuri, automatizări</p>
+			<p class="spec">Quick Flow, Bucharest</p>
+			<p class="spec">One person, from the data model to the payout</p>
 		</div>
 
 		<h1 class="display-xl mt-8 max-w-[15ch]">
-			Construiesc aplicații în care banii trec prin mai multe mâini.
+			I build apps where the money passes through more than one pair of hands.
 		</h1>
 
-		<p class="stamp mt-8">Pagina asta trimite {SELF_JS} de JavaScript</p>
+		<p class="lead mt-9 max-w-[52ch] text-lg">
+			Bubble to code migration, and two-sided marketplaces with split payments through Stripe
+			Connect.
+		</p>
+
+		<p class="stamp mt-7">This page ships {SELF_JS} of JavaScript</p>
 
 		<div class="mt-10 md:mt-14">
-			<FlowSheet />
+			<FlowSheet lang="en" />
 		</div>
 	</section>
 
@@ -156,11 +193,15 @@ const work = [
 	     ahead of any claim about what I build. One per service: the weight of
 	     the Bubble runtime, and the word that gets a Stripe application
 	     rejected. Each carries its source and the date it was last re-read. -->
-	<section class="bleed mt-24 md:mt-32" aria-labelledby="verifica">
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="proof">
 		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
-			<h2 id="verifica" class="spec">Nu mă crede, verifică</h2>
-			<span class="stamp">Sursele recitite la {VERIFIED_ON}</span>
+			<p class="spec">Don't take my word for it</p>
+			<span class="stamp">Sources re-read on {VERIFIED_ON.en}</span>
 		</div>
+
+		<h2 id="proof" class="display-lg mt-8 max-w-[22ch]">
+			Two claims about Bubble and Stripe, with the source next to them.
+		</h2>
 
 		<div class="mt-12 grid gap-x-16 gap-y-16 md:mt-16 md:grid-cols-2">
 			<article class="rise min-w-0">
@@ -171,36 +212,36 @@ const work = [
 				<p class="display-md mt-7 max-w-[26ch]">{weight.claim}</p>
 				<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{weight.howToCheck}</p>
 
-				<p class="spec mt-7">Consola browserului, pe aplicația ta</p>
+				<p class="spec mt-7">Your browser console, on your app</p>
 				<pre class="code mt-3">{weightSnippet}</pre>
 
 				<div class="hair mt-6 flex flex-wrap items-baseline justify-between gap-3 pt-3">
 					<a href={weight.source.href} rel="noopener nofollow" target="_blank" class="link spec"
 						>{weight.source.label}</a
 					>
-					<span class="spec">Verificat {weight.verifiedOn}</span>
+					<span class="spec">Checked {weight.verifiedOn}</span>
 				</div>
 			</article>
 
 			<article class="rise min-w-0">
 				<p class="display-xl"><span class="strike">escrow</span></p>
-				<p class="spec mt-6">Scrie asta în loc</p>
+				<p class="spec mt-6">Write this instead</p>
 				<p class="display-md mt-3 max-w-[24ch]">
-					Plata e reținută de platformă până la confirmarea livrării.
+					The payment is held by the platform until delivery is confirmed.
 				</p>
 
 				<p class="prose-body mt-7 max-w-[46ch] text-[0.95rem]">{escrow.claim}</p>
 				<p class="prose-body mt-4 max-w-[46ch] text-[0.95rem]">{escrow.howToCheck}</p>
 
-				<a href="/stripe-escrow-marketplace" class="link mt-6 inline-block text-sm font-medium">
-					Toate cele patru formulări
+				<a href={paths.escrow.en} class="link mt-6 inline-block text-sm font-medium">
+					All four wordings
 				</a>
 
 				<div class="hair mt-6 flex flex-wrap items-baseline justify-between gap-3 pt-3">
 					<a href={escrow.source.href} rel="noopener nofollow" target="_blank" class="link spec"
 						>{escrow.source.label}</a
 					>
-					<span class="spec">Verificat {escrow.verifiedOn}</span>
+					<span class="spec">Checked {escrow.verifiedOn}</span>
 				</div>
 			</article>
 		</div>
@@ -210,9 +251,9 @@ const work = [
 	<section class="bleed mt-24 md:mt-36">
 		<div class="hair pt-10 md:pt-14">
 			<p class="statement max-w-[30ch] md:max-w-none">
-				<strong>Marketplace-uri cu plăți împărțite</strong>, platforme de cursuri, și mutarea
-				aplicațiilor care au <strong>depășit no-code-ul</strong>. Opt ani în Bubble, din 2025 în cod,
-				singur de la modelul de date până la <strong>payout</strong>.
+				<strong>Marketplaces with split payments</strong>, course platforms, and moving the apps that
+				<strong>outgrew no-code</strong>. Eight years in Bubble, writing code since 2025, one person
+				from the data model to the <strong>payout</strong>.
 			</p>
 		</div>
 	</section>
@@ -220,13 +261,17 @@ const work = [
 	<!-- 4. Services. Two by two, each with its own hairline mark. They are
 	     drawn, not iconified: four marks in one geometry read as a system,
 	     four icons read as a kit. -->
-	<section class="bleed mt-24 md:mt-36" aria-labelledby="servicii">
+	<section class="bleed mt-24 md:mt-36" aria-labelledby="services">
 		<div class="hair flex items-baseline justify-between gap-6 pt-5">
-			<h2 id="servicii" class="spec">Ce construiesc</h2>
-			<span class="spec">04 poziții</span>
+			<p class="spec">What I build</p>
+			<span class="spec">04 positions</span>
 		</div>
 
-		<div class="mt-10 grid gap-x-16 gap-y-14 md:mt-16 md:grid-cols-2 md:gap-y-20">
+		<h2 id="services" class="display-lg mt-8 max-w-[24ch]">
+			Marketplaces with payments, Bubble migrations, course platforms.
+		</h2>
+
+		<div class="mt-12 grid gap-x-16 gap-y-14 md:mt-16 md:grid-cols-2 md:gap-y-20">
 			{
 				services.map((s, i) => (
 					<article class="rise">
@@ -292,20 +337,20 @@ const work = [
 	     it sells it with a column: four of the five phases leave the app
 	     running, and the one that does not says so in its own words. The three
 	     terms of the engagement close the block. -->
-	<section class="invert mt-24 md:mt-36" aria-labelledby="traseu">
+	<section class="invert mt-24 md:mt-36" aria-labelledby="route">
 		<div class="bleed py-20 md:py-28">
 			<div class="grid gap-12 md:grid-cols-12">
 				<div class="md:col-span-5">
-					<p class="spec">Traseul unei migrări</p>
-					<h2 id="traseu" class="display-lg mt-6 max-w-[15ch]">
-						Cinci faze, și după fiecare aplicația ta merge.
+					<p class="spec">The route of a migration</p>
+					<h2 id="route" class="display-lg mt-6 max-w-[17ch]">
+						Five phases of a Bubble migration, and after each one your app still runs.
 					</h2>
 					<p class="prose-body mt-7 max-w-[40ch] text-[0.95rem]">
-						Coloana din dreapta spune în ce stare rămâne aplicația la finalul fiecărei faze. O
-						citești o dată și vezi unde e riscul: e un singur rând.
+						The right-hand column says what state the app is left in at the end of each phase. Read
+						it once and you see where the risk is: it is one row.
 					</p>
-					<a href="/servicii/migrare-bubble" class="link mt-7 inline-block text-sm font-medium">
-						Traseul în detaliu
+					<a href={paths.migration.en} class="link mt-7 inline-block text-sm font-medium">
+						The route in detail
 					</a>
 				</div>
 
@@ -337,7 +382,7 @@ const work = [
 
 			<div class="hair mt-16 grid gap-x-12 gap-y-8 pt-8 md:mt-20 md:grid-cols-3">
 				{
-					method.map((m) => (
+					terms.map((m) => (
 						<div>
 							<p class="spec">{m.n}</p>
 							<p class="mt-3 max-w-[34ch] text-[0.95rem] leading-relaxed text-paper/80">{m.text}</p>
@@ -352,18 +397,22 @@ const work = [
 	     fourth is the point: half of what I have built was delivered through
 	     another agency, and a record says what is withheld instead of leaving
 	     the reader to assume there is nothing there. -->
-	<section class="bleed mt-24 md:mt-36" aria-labelledby="portofoliu">
+	<section class="bleed mt-24 md:mt-36" aria-labelledby="work">
 		<div class="hair flex items-baseline justify-between gap-6 pt-5">
-			<h2 id="portofoliu" class="spec">Ce am construit</h2>
-			<a href="/portofoliu" class="spec transition-colors hover:text-ink">Toate proiectele</a>
+			<p class="spec">What I have built</p>
+			<a href={paths.work.en} class="spec transition-colors hover:text-ink">All projects</a>
 		</div>
 
-		<div class="mt-10 grid gap-x-12 gap-y-16 md:mt-16 md:grid-cols-3">
+		<h2 id="work" class="display-lg mt-8 max-w-[24ch]">
+			Delivered work: a Bubble migration, a product of my own, a coaching platform.
+		</h2>
+
+		<div class="mt-12 grid gap-x-12 gap-y-16 md:mt-16 md:grid-cols-3">
 			{
 				work.map((w) => (
 					<article class="rise">
 						<div class="plate">
-							<span class="spec absolute bottom-3 left-3">Captură, 1600 × 1000</span>
+							<span class="spec absolute bottom-3 left-3">Screenshot, 1600 × 1000</span>
 						</div>
 						<div class="mt-5 flex items-baseline justify-between gap-4">
 							<h3 class="display-md">{w.name}</h3>
@@ -372,7 +421,7 @@ const work = [
 						<p class="spec mt-3">{w.kind}</p>
 						<p class="prose-body mt-4 text-[0.95rem]">{w.built}</p>
 						<a href={w.href} rel="noopener" target="_blank" class="link mt-4 inline-block text-sm">
-							Vezi site-ul
+							Visit the site
 						</a>
 					</article>
 				))
@@ -382,40 +431,46 @@ const work = [
 		<article class="hair rise mt-16 grid gap-8 pt-8 md:mt-20 md:grid-cols-12 md:gap-12">
 			<div class="md:col-span-5">
 				<div class="flex items-baseline justify-between gap-4">
-					<h3 class="display-md"><span class="redact w-[9ch]"></span></h3>
+					<h3 class="display-md">
+						<span class="sr-only">A marketplace that cannot be named</span>
+						<span class="redact w-[9ch]" aria-hidden="true"></span>
+					</h3>
 					<span class="spec">04</span>
 				</div>
-				<p class="stamp mt-6">Nu poate fi arătat</p>
+				<p class="stamp mt-6">Cannot be shown</p>
 			</div>
 
-			<dl class="grid grid-cols-[7.5rem_1fr] gap-x-6 gap-y-4 md:col-span-6 md:col-start-7">
-				<dt class="spec pt-1">Tip</dt>
-				<dd class="text-[0.95rem]">Marketplace cu plăți împărțite</dd>
+			<dl class="grid grid-cols-[8.5rem_1fr] gap-x-6 gap-y-4 md:col-span-6 md:col-start-7">
+				<dt class="spec pt-1">Type</dt>
+				<dd class="text-[0.95rem]">Marketplace with split payments</dd>
 
 				<dt class="spec pt-1">Client</dt>
-				<dd><span class="redact w-[13ch]"></span></dd>
+				<dd>
+					<span class="sr-only">Withheld</span>
+					<span class="redact w-[13ch]" aria-hidden="true"></span>
+				</dd>
 
-				<dt class="spec pt-1">Livrat prin</dt>
-				<dd class="text-[0.95rem]">Altă agenție</dd>
+				<dt class="spec pt-1">Delivered through</dt>
+				<dd class="text-[0.95rem]">Another agency</dd>
 
-				<dt class="spec pt-1">Captură</dt>
-				<dd class="prose-body text-[0.95rem]">Indisponibilă</dd>
+				<dt class="spec pt-1">Screenshot</dt>
+				<dd class="prose-body text-[0.95rem]">Unavailable</dd>
 
-				<dt class="spec pt-1">Ce pot spune</dt>
+				<dt class="spec pt-1">What I can say</dt>
 				<dd class="prose-body max-w-[42ch] text-[0.95rem]">
-					Pot vorbi despre cum sunt construite plățile împărțite, verificarea vânzătorilor și
-					payout-urile. Nu pot arăta numele.
+					I can talk about how the split payments, the seller verification and the payouts are built.
+					I cannot show the name.
 				</dd>
 			</dl>
 		</article>
 	</section>
 
 	<!-- 7. About. Asymmetric: name large left, the column pushed right. -->
-	<section class="bleed mt-24 md:mt-36" aria-labelledby="despre">
+	<section class="bleed mt-24 md:mt-36" aria-labelledby="about">
 		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
 			<div class="md:col-span-5">
-				<p class="spec">Despre mine</p>
-				<h2 id="despre" class="display-lg mt-6">Sunt Alexandru Trofaniuc.</h2>
+				<p class="spec">About me</p>
+				<h2 id="about" class="display-lg mt-6">I am Alexandru Trofaniuc.</h2>
 				<img
 					src="/brand/alexandru.jpg"
 					alt="Alexandru Trofaniuc"
@@ -428,13 +483,13 @@ const work = [
 
 			<div class="md:col-span-5 md:col-start-8 md:pt-16">
 				<p class="prose-body">
-					Am intrat în IT în 2014, ca UI designer. Din 2017 construiesc în Bubble, întâi la Zeroqode
-					și Airdev, apoi pe cont propriu. Din 2025 scriu cod. Vând ieșirea din Bubble pentru că am
-					petrecut opt ani înăuntru, nu pentru că am citit despre ea.
+					I came into tech in 2014, as a UI designer. Since 2017 I have been building in Bubble,
+					first at Zeroqode and Airdev, then on my own. Since 2025 I write code. I sell the way out
+					of Bubble because I spent eight years inside it, not because I read about it.
 				</p>
 				<p class="prose-body mt-5">
-					Fundalul de design înseamnă că nu îți livrez ceva care funcționează dar arată ca un
-					formular de primărie. Lucrez în română, rusă și engleză. Primele două, nativ.
+					A design background means I will not hand you something that works but looks like a
+					government form. I work in Romanian, Russian and English. The first two, natively.
 				</p>
 
 				<dl class="mt-10 grid grid-cols-3 gap-x-6 gap-y-6">
@@ -447,7 +502,7 @@ const work = [
 						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2017</dd>
 					</div>
 					<div class="hair pt-4">
-						<dt class="spec">Cod</dt>
+						<dt class="spec">Code</dt>
 						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2025</dd>
 					</div>
 				</dl>
@@ -460,11 +515,11 @@ const work = [
 		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
 			<div class="grid gap-10 md:grid-cols-12">
 				<h2 class="display-lg md:col-span-8">
-					Dacă ai un produs care încasează bani, sau care ar trebui să încaseze, scrie-mi ce te
-					blochează.
+					If you have a product that takes money, or should be taking it, tell me what is blocking
+					you.
 				</h2>
 				<div class="md:col-span-3 md:col-start-10 md:self-end md:justify-self-end">
-					<a href="/contact" class="btn btn-primary">Spune-mi ce construiești</a>
+					<a href={paths.contact.en} class="btn btn-primary">Tell me what you are building</a>
 				</div>
 			</div>
 		</div>

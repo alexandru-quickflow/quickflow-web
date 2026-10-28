@@ -178,10 +178,16 @@ export const onRequestPost = async (context: {
 		livrare: text(form.get('livrare')),
 	};
 
+	// Where a browser goes after a successful submission. The value arrives in a
+	// hidden field and is checked against the two pages that exist, because an
+	// unchecked redirect target is an open redirect.
+	const THANKS: Record<string, string> = { en: '/thank-you', ro: '/ro/multumesc' };
+	const thanks = THANKS[text(form.get('locale'))] ?? THANKS.en;
+
 	// Honeypot. A bot filled a field no person can see. Answer as if it worked,
 	// so whoever wrote the bot does not learn why it stopped arriving.
 	if (text(form.get('website'))) {
-		return wantsJson ? Response.json({ ok: true }) : Response.redirect(new URL('/multumesc', request.url), 303);
+		return wantsJson ? Response.json({ ok: true }) : Response.redirect(new URL(thanks, request.url), 303);
 	}
 
 	const errors = validate(f);
@@ -233,5 +239,5 @@ export const onRequestPost = async (context: {
 
 	return wantsJson
 		? Response.json({ ok: true })
-		: Response.redirect(new URL('/multumesc', request.url), 303);
+		: Response.redirect(new URL(thanks, request.url), 303);
 };

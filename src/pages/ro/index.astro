@@ -1,0 +1,473 @@
+---
+import Sheet from '../../layouts/Sheet.astro';
+import FlowSheet from '../../components/FlowSheet.astro';
+import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../../content/proof';
+
+const weight = proof('ro', 'bubble-weight');
+const escrow = proof('ro', 'stripe-escrow');
+
+const services = [
+	{
+		n: '01',
+		title: 'Migrare de pe Bubble pe cod',
+		problem:
+			'Aplicația funcționează și are clienți. Dar factura crește odată cu traficul, paginile publice se încarcă greu, iar la prima discuție serioasă cu un investitor cineva întreabă ce se întâmplă dacă platforma își schimbă prețurile.',
+		cta: 'Vezi cum arată traseul',
+		href: '/ro/servicii/migrare-bubble',
+	},
+	{
+		n: '02',
+		title: 'Marketplace cu plăți',
+		problem:
+			'Doi oameni fac o tranzacție, tu iei comision. Partea grea nu e tranzacția, e ce se întâmplă când plata eșuează, când se cere un refund după ce banii au fost împărțiți, sau când un vânzător nu trece verificarea de identitate.',
+		cta: 'Vezi cum lucrez',
+		href: '/ro/servicii/marketplace-plati',
+	},
+	{
+		n: '03',
+		title: 'Platforme de cursuri și membership',
+		problem:
+			'Vinzi acces, nu produse. Trebuie să știi în orice moment cine a plătit, până când, și ce vede după ce expiră.',
+		cta: 'Scrie-mi',
+		href: '/ro/contact',
+	},
+	{
+		n: '04',
+		title: 'Integrări AI și automatizări',
+		problem:
+			'Procesul merge, dar cineva îl ține în viață mutând date dintr-un loc în altul câteva ore pe săptămână.',
+		cta: 'Scrie-mi',
+		href: '/ro/contact',
+	},
+];
+
+// The phases, with the state each one leaves the app in. Same five as the
+// migration page; the state moves out of the sentence and into its own column,
+// because it is the one thing a founder reads this table for. The nuance that
+// used to sit in the state string stays, it just sits in the description now.
+const phases = [
+	{
+		n: '00',
+		title: 'Audit',
+		what:
+			'Îți citesc aplicația: modelul de date, workflow-urile, plugin-urile, integrările. Iese un document cu ce se traduce direct, ce trebuie regândit, planul pe faze și cât te costă lunar după.',
+		state: 'Neatinsă',
+		tone: 'idle',
+	},
+	{
+		n: '01',
+		title: 'Stratul public',
+		what:
+			'Site-ul public, paginile de prezentare, landing-urile și blogul ies din platformă. Pentru utilizatori nu se schimbă nimic.',
+		state: 'Funcționează',
+		tone: 'ok',
+	},
+	{
+		n: '02',
+		title: 'Citirile',
+		what: 'Paginile care doar afișează date trec pe cod. Platforma rămâne sursa adevărului.',
+		state: 'Funcționează',
+		tone: 'ok',
+	},
+	{
+		n: '03',
+		title: 'Scrierile și plățile',
+		what: 'Fluxurile prin care intră date și bani trec pe cod, unul câte unul.',
+		state: 'Funcționează',
+		tone: 'ok',
+	},
+	{
+		n: '04',
+		title: 'Conturile și tăierea',
+		what: 'Utilizatorii trec, platforma veche se oprește. Singurul moment cu risc real.',
+		state: 'Risc real',
+		tone: 'risk',
+	},
+];
+
+const method = [
+	{
+		n: '01',
+		text: 'Livrez pe faze, iar după fiecare fază ai ceva care funcționează, nu un progres raportat.',
+	},
+	{ n: '02', text: 'Conturile și codul sunt pe numele tău de la prima zi.' },
+	{
+		n: '03',
+		text: 'Dacă nu mergem mai departe după audit, rămâi cu documentul și cu estimarea.',
+	},
+];
+
+// Descriptions match portofoliu.astro. The home page carried an older, wrong
+// line about jemshitmavlyanov.com for three revisions.
+const work = [
+	{
+		n: '01',
+		name: 'jemshitmavlyanov.com',
+		href: 'https://jemshitmavlyanov.com',
+		kind: 'Migrare completă de pe Bubble pe cod',
+		built:
+			'Conturi, autentificare, coș, plată, acces care expiră după șase luni și panou de administrare, mutate integral. Nouă limbi.',
+	},
+	{
+		n: '02',
+		name: 'aeinvitatii.ro',
+		href: 'https://aeinvitatii.ro',
+		kind: 'Produs propriu, în producție',
+		built:
+			'Invitații de nuntă cu link personalizat pentru fiecare familie, confirmare cu meniu și transport, listă de invitați care se actualizează pe loc.',
+	},
+	{
+		n: '03',
+		name: 'elenaviscu.com',
+		href: 'https://elenaviscu.com',
+		kind: 'Platformă de coaching cu plăți',
+		built:
+			'Trei tipuri de produs, trei reguli de acces. Plăți în lei, acces deschis automat după plată.',
+	},
+];
+---
+
+<Sheet
+	lang="ro"
+	title="Quick Flow, aplicații cu plăți și ieșire din no-code"
+	description="Construiesc marketplace-uri cu plăți împărțite, platforme de cursuri și mut aplicațiile care au depășit no-code-ul. Opt ani în Bubble, din 2025 în cod, singur de la modelul de date până la payout."
+>
+	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The datum
+	     under the headline is this page measuring itself: the one claim where
+	     the site and the pitch are the same object. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Quick Flow, București</p>
+			<p class="spec">Marketplace, migrare, cursuri, automatizări</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[15ch]">
+			Construiesc aplicații în care banii trec prin mai multe mâini.
+		</h1>
+
+		<p class="stamp mt-8">Pagina asta trimite {SELF_JS} de JavaScript</p>
+
+		<div class="mt-10 md:mt-14">
+			<FlowSheet lang="ro" />
+		</div>
+	</section>
+
+	<!-- 2. Proof. The content inventory says this site has one asset in
+	     quantity: facts the reader can check without trusting me. So they lead,
+	     ahead of any claim about what I build. One per service: the weight of
+	     the Bubble runtime, and the word that gets a Stripe application
+	     rejected. Each carries its source and the date it was last re-read. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="verifica">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<h2 id="verifica" class="spec">Nu mă crede, verifică</h2>
+			<span class="stamp">Sursele recitite la {VERIFIED_ON.ro}</span>
+		</div>
+
+		<div class="mt-12 grid gap-x-16 gap-y-16 md:mt-16 md:grid-cols-2">
+			<article class="rise min-w-0">
+				<p class="figure">
+					{weight.value}
+					<span>{weight.unit}</span>
+				</p>
+				<p class="display-md mt-7 max-w-[26ch]">{weight.claim}</p>
+				<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{weight.howToCheck}</p>
+
+				<p class="spec mt-7">Consola browserului, pe aplicația ta</p>
+				<pre class="code mt-3">{weightSnippet}</pre>
+
+				<div class="hair mt-6 flex flex-wrap items-baseline justify-between gap-3 pt-3">
+					<a href={weight.source.href} rel="noopener nofollow" target="_blank" class="link spec"
+						>{weight.source.label}</a
+					>
+					<span class="spec">Verificat {weight.verifiedOn}</span>
+				</div>
+			</article>
+
+			<article class="rise min-w-0">
+				<p class="display-xl"><span class="strike">escrow</span></p>
+				<p class="spec mt-6">Scrie asta în loc</p>
+				<p class="display-md mt-3 max-w-[24ch]">
+					Plata e reținută de platformă până la confirmarea livrării.
+				</p>
+
+				<p class="prose-body mt-7 max-w-[46ch] text-[0.95rem]">{escrow.claim}</p>
+				<p class="prose-body mt-4 max-w-[46ch] text-[0.95rem]">{escrow.howToCheck}</p>
+
+				<a href="/ro/stripe-escrow-marketplace" class="link mt-6 inline-block text-sm font-medium">
+					Toate cele patru formulări
+				</a>
+
+				<div class="hair mt-6 flex flex-wrap items-baseline justify-between gap-3 pt-3">
+					<a href={escrow.source.href} rel="noopener nofollow" target="_blank" class="link spec"
+						>{escrow.source.label}</a
+					>
+					<span class="spec">Verificat {escrow.verifiedOn}</span>
+				</div>
+			</article>
+		</div>
+	</section>
+
+	<!-- 3. The statement. One sentence, justified, filling the measure. -->
+	<section class="bleed mt-24 md:mt-36">
+		<div class="hair pt-10 md:pt-14">
+			<p class="statement max-w-[30ch] md:max-w-none">
+				<strong>Marketplace-uri cu plăți împărțite</strong>, platforme de cursuri, și mutarea
+				aplicațiilor care au <strong>depășit no-code-ul</strong>. Opt ani în Bubble, din 2025 în cod,
+				singur de la modelul de date până la <strong>payout</strong>.
+			</p>
+		</div>
+	</section>
+
+	<!-- 4. Services. Two by two, each with its own hairline mark. They are
+	     drawn, not iconified: four marks in one geometry read as a system,
+	     four icons read as a kit. -->
+	<section class="bleed mt-24 md:mt-36" aria-labelledby="servicii">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<h2 id="servicii" class="spec">Ce construiesc</h2>
+			<span class="spec">04 poziții</span>
+		</div>
+
+		<div class="mt-10 grid gap-x-16 gap-y-14 md:mt-16 md:grid-cols-2 md:gap-y-20">
+			{
+				services.map((s, i) => (
+					<article class="rise">
+						<div class="flex items-start justify-between gap-6">
+							<span class="spec">{s.n}</span>
+							<svg
+								viewBox="0 0 72 56"
+								class="h-14 w-auto shrink-0"
+								role="presentation"
+								aria-hidden="true"
+								fill="none"
+								stroke-width="1"
+							>
+								{i === 0 && (
+									<g class="stroke-ink/40">
+										<rect x="1" y="14" width="26" height="28" />
+										<rect x="45" y="14" width="26" height="28" class="stroke-ink" />
+										<path d="M29,28 H41 M35,24 l6,4 -6,4" class="stroke-ink/70" />
+										<rect x="52" y="24" width="8" height="8" class="fill-teal stroke-none" />
+									</g>
+								)}
+								{i === 1 && (
+									<g class="stroke-ink/40">
+										<rect x="1" y="20" width="20" height="16" class="stroke-ink" />
+										<rect x="51" y="2" width="20" height="14" />
+										<rect x="51" y="21" width="20" height="14" />
+										<rect x="51" y="40" width="20" height="14" />
+										<path d="M23,28 H37 M37,9 V47 M37,9 H49 M37,28 H49 M37,47 H49" class="stroke-ink/70" />
+										<rect x="33" y="24" width="8" height="8" class="fill-teal stroke-none" />
+									</g>
+								)}
+								{i === 2 && (
+									<g class="stroke-ink/40">
+										<rect x="1" y="34" width="46" height="14" />
+										<rect x="9" y="20" width="46" height="14" />
+										<rect x="17" y="6" width="46" height="14" class="stroke-ink" />
+										<path d="M63,13 H71" class="stroke-ink/70" />
+										<rect x="55" y="9" width="8" height="8" class="fill-teal stroke-none" />
+									</g>
+								)}
+								{i === 3 && (
+									<g class="stroke-ink/40">
+										<path d="M14,10 H58 a10,10 0 0 1 0,36 H14 a10,10 0 0 1 0,-36 Z" class="stroke-ink" />
+										<path d="M24,28 H48 M42,24 l6,4 -6,4" class="stroke-ink/70" />
+										<rect x="10" y="24" width="8" height="8" class="fill-teal stroke-none" />
+									</g>
+								)}
+							</svg>
+						</div>
+
+						<h3 class="display-md mt-5 max-w-[20ch]">{s.title}</h3>
+						<p class="prose-body mt-4 max-w-[46ch] text-[0.95rem]">{s.problem}</p>
+						<a href={s.href} class="link mt-5 inline-block text-sm font-medium">
+							{s.cta}
+						</a>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 5. The route, on ink. This is the block that sells the migration, and
+	     it sells it with a column: four of the five phases leave the app
+	     running, and the one that does not says so in its own words. The three
+	     terms of the engagement close the block. -->
+	<section class="invert mt-24 md:mt-36" aria-labelledby="traseu">
+		<div class="bleed py-20 md:py-28">
+			<div class="grid gap-12 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">Traseul unei migrări</p>
+					<h2 id="traseu" class="display-lg mt-6 max-w-[15ch]">
+						Cinci faze, și după fiecare aplicația ta merge.
+					</h2>
+					<p class="prose-body mt-7 max-w-[40ch] text-[0.95rem]">
+						Coloana din dreapta spune în ce stare rămâne aplicația la finalul fiecărei faze. O
+						citești o dată și vezi unde e riscul: e un singur rând.
+					</p>
+					<a href="/ro/servicii/migrare-bubble" class="link mt-7 inline-block text-sm font-medium">
+						Traseul în detaliu
+					</a>
+				</div>
+
+				<ol class="md:col-span-6 md:col-start-7">
+					{
+						phases.map((p) => (
+							<li class="hair grid grid-cols-[2.25rem_1fr] gap-x-5 py-7 first:border-t-0 first:pt-0">
+								<span class="spec pt-1.5">{p.n}</span>
+								<div>
+									<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+										<h3 class="text-lg font-medium leading-snug">{p.title}</h3>
+										<span
+											class:list={[
+												'state',
+												p.tone === 'ok' && 'state-ok',
+												p.tone === 'risk' && 'state-risk',
+											]}
+										>
+											{p.state}
+										</span>
+									</div>
+									<p class="prose-body mt-3 max-w-[46ch] text-[0.95rem]">{p.what}</p>
+								</div>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+
+			<div class="hair mt-16 grid gap-x-12 gap-y-8 pt-8 md:mt-20 md:grid-cols-3">
+				{
+					method.map((m) => (
+						<div>
+							<p class="spec">{m.n}</p>
+							<p class="mt-3 max-w-[34ch] text-[0.95rem] leading-relaxed text-paper/80">{m.text}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. Work. Three records that can be shown, and one that cannot. The
+	     fourth is the point: half of what I have built was delivered through
+	     another agency, and a record says what is withheld instead of leaving
+	     the reader to assume there is nothing there. -->
+	<section class="bleed mt-24 md:mt-36" aria-labelledby="portofoliu">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<h2 id="portofoliu" class="spec">Ce am construit</h2>
+			<a href="/ro/portofoliu" class="spec transition-colors hover:text-ink">Toate proiectele</a>
+		</div>
+
+		<div class="mt-10 grid gap-x-12 gap-y-16 md:mt-16 md:grid-cols-3">
+			{
+				work.map((w) => (
+					<article class="rise">
+						<div class="plate">
+							<span class="spec absolute bottom-3 left-3">Captură, 1600 × 1000</span>
+						</div>
+						<div class="mt-5 flex items-baseline justify-between gap-4">
+							<h3 class="display-md">{w.name}</h3>
+							<span class="spec">{w.n}</span>
+						</div>
+						<p class="spec mt-3">{w.kind}</p>
+						<p class="prose-body mt-4 text-[0.95rem]">{w.built}</p>
+						<a href={w.href} rel="noopener" target="_blank" class="link mt-4 inline-block text-sm">
+							Vezi site-ul
+						</a>
+					</article>
+				))
+			}
+		</div>
+
+		<article class="hair rise mt-16 grid gap-8 pt-8 md:mt-20 md:grid-cols-12 md:gap-12">
+			<div class="md:col-span-5">
+				<div class="flex items-baseline justify-between gap-4">
+					<h3 class="display-md"><span class="redact w-[9ch]"></span></h3>
+					<span class="spec">04</span>
+				</div>
+				<p class="stamp mt-6">Nu poate fi arătat</p>
+			</div>
+
+			<dl class="grid grid-cols-[7.5rem_1fr] gap-x-6 gap-y-4 md:col-span-6 md:col-start-7">
+				<dt class="spec pt-1">Tip</dt>
+				<dd class="text-[0.95rem]">Marketplace cu plăți împărțite</dd>
+
+				<dt class="spec pt-1">Client</dt>
+				<dd><span class="redact w-[13ch]"></span></dd>
+
+				<dt class="spec pt-1">Livrat prin</dt>
+				<dd class="text-[0.95rem]">Altă agenție</dd>
+
+				<dt class="spec pt-1">Captură</dt>
+				<dd class="prose-body text-[0.95rem]">Indisponibilă</dd>
+
+				<dt class="spec pt-1">Ce pot spune</dt>
+				<dd class="prose-body max-w-[42ch] text-[0.95rem]">
+					Pot vorbi despre cum sunt construite plățile împărțite, verificarea vânzătorilor și
+					payout-urile. Nu pot arăta numele.
+				</dd>
+			</dl>
+		</article>
+	</section>
+
+	<!-- 7. About. Asymmetric: name large left, the column pushed right. -->
+	<section class="bleed mt-24 md:mt-36" aria-labelledby="despre">
+		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Despre mine</p>
+				<h2 id="despre" class="display-lg mt-6">Sunt Alexandru Trofaniuc.</h2>
+				<img
+					src="/brand/alexandru.jpg"
+					alt="Alexandru Trofaniuc"
+					width="640"
+					height="800"
+					loading="lazy"
+					class="mt-10 w-full max-w-xs object-cover grayscale"
+				/>
+			</div>
+
+			<div class="md:col-span-5 md:col-start-8 md:pt-16">
+				<p class="prose-body">
+					Am intrat în IT în 2014, ca UI designer. Din 2017 construiesc în Bubble, întâi la Zeroqode
+					și Airdev, apoi pe cont propriu. Din 2025 scriu cod. Vând ieșirea din Bubble pentru că am
+					petrecut opt ani înăuntru, nu pentru că am citit despre ea.
+				</p>
+				<p class="prose-body mt-5">
+					Fundalul de design înseamnă că nu îți livrez ceva care funcționează dar arată ca un
+					formular de primărie. Lucrez în română, rusă și engleză. Primele două, nativ.
+				</p>
+
+				<dl class="mt-10 grid grid-cols-3 gap-x-6 gap-y-6">
+					<div class="hair pt-4">
+						<dt class="spec">Design</dt>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2014</dd>
+					</div>
+					<div class="hair pt-4">
+						<dt class="spec">Bubble</dt>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2017</dd>
+					</div>
+					<div class="hair pt-4">
+						<dt class="spec">Cod</dt>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2025</dd>
+					</div>
+				</dl>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. Closing. Flows straight into the footer, one mass of ink. -->
+	<section class="invert mt-24 md:mt-36">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-8">
+					Dacă ai un produs care încasează bani, sau care ar trebui să încaseze, scrie-mi ce te
+					blochează.
+				</h2>
+				<div class="md:col-span-3 md:col-start-10 md:self-end md:justify-self-end">
+					<a href="/ro/contact" class="btn btn-primary">Spune-mi ce construiești</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</Sheet>

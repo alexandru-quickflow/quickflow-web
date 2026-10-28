@@ -10,11 +10,13 @@ interface Props {
 const { title, description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
+// Romanian only. This layout dies as each page moves to Sheet.astro, so the
+// routes are written out rather than pulled from src/i18n/routes.ts.
 const nav = [
-	{ href: '/servicii/migrare-bubble', label: 'Migrare' },
-	{ href: '/servicii/marketplace-plati', label: 'Marketplace' },
-	{ href: '/portofoliu', label: 'Portofoliu' },
-	{ href: '/contact', label: 'Contact' },
+	{ href: '/ro/servicii/migrare-bubble', label: 'Migrare' },
+	{ href: '/ro/servicii/marketplace-plati', label: 'Marketplace' },
+	{ href: '/ro/portofoliu', label: 'Portofoliu' },
+	{ href: '/ro/contact', label: 'Contact' },
 ];
 
 const path = Astro.url.pathname;
@@ -57,7 +59,7 @@ const path = Astro.url.pathname;
 		<div class="relative z-10">
 			<header class="rule border-t-0">
 				<div class="shell flex items-center justify-between gap-6 py-5">
-					<a href="/" class="shrink-0" aria-label="Quick Flow, acasă">
+					<a href="/ro/" class="shrink-0" aria-label="Quick Flow, acasă">
 						<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-7 w-auto" />
 					</a>
 
@@ -116,7 +118,7 @@ const path = Astro.url.pathname;
 					</div>
 					<div class="flex flex-col gap-2 text-sm md:items-end">
 						<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>
-						<a href="/confidentialitate" class="text-paper/55 hover:text-teal">
+						<a href="/ro/confidentialitate" class="text-paper/55 hover:text-teal">
 							Politica de confidențialitate
 						</a>
 					</div>

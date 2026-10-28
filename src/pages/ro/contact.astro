@@ -1,5 +1,5 @@
 ---
-import Base from '../layouts/Base.astro';
+import Base from '../../layouts/Base.astro';
 
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -44,6 +44,7 @@ const flowFields = [
 				<!-- Works as a plain POST without JavaScript. The script below only
 				     upgrades it with inline messages and no page reload. -->
 				<form id="contact-form" action="/api/contact" method="POST" novalidate class="flex flex-col gap-7">
+					<input type="hidden" name="locale" value="ro" />
 					<p id="form-error" hidden class="border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-200"></p>
 
 					<div>

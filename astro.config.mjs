@@ -7,9 +7,12 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://quickflow.dev',
+	// English is the default locale, so it sits at the root and Romanian lives
+	// under /ro/. The translated slugs are in src/i18n/routes.ts; this only
+	// decides which language carries the prefix.
 	i18n: {
-		defaultLocale: 'ro',
-		locales: ['ro', 'en'],
+		defaultLocale: 'en',
+		locales: ['en', 'ro'],
 		routing: {
 			prefixDefaultLocale: false,
 		},
@@ -17,8 +20,8 @@ export default defineConfig({
 	integrations: [
 		sitemap({
 			i18n: {
-				defaultLocale: 'ro',
-				locales: { ro: 'ro-RO', en: 'en' },
+				defaultLocale: 'en',
+				locales: { en: 'en', ro: 'ro-RO' },
 			},
 		}),
 		icon(),
