@@ -2,8 +2,9 @@
 
 /* The site's one stylesheet.
  *
- * The direction was settled on 2026-10-28 from the questionnaire and the
- * prototype at /lab/dark: a near-black ground, an editorial serif for display,
+ * The direction was settled on 2026-10-28 from the questionnaire and a
+ * prototype page, deleted once the real pages carried it: a near-black
+ * ground, an editorial serif for display,
  * two saturated colours in contrast, generous radii, real screenshots, and
  * motion that costs six kilobytes.
  *
@@ -300,19 +301,11 @@
 
 	/* Surfaces ----------------------------------------------------------- */
 
-	.rule,
 	.hair {
 		border-top: 1px solid var(--line);
 	}
 
-	.hair-soft {
-		border-top: 1px solid rgba(224, 240, 238, 0.06);
-	}
-
-	/* On a dark page there is nothing to invert to, so the two old surface
-	   classes both mean the same thing now: a band lifted off the ground. */
-	.invert,
-	.surface-paper {
+	.invert {
 		position: relative;
 		z-index: 1;
 		/* A solid band, not a gradient. The gradient faded out at 72% of the
@@ -410,33 +403,15 @@
 		color: var(--faint);
 	}
 
-	/* A frame with nothing in it, and a reason. */
-	.plate,
-	.blank {
-		display: grid;
-		place-items: center;
-		aspect-ratio: 8 / 5;
-		border-radius: var(--radius);
-		border: 1px solid var(--line-strong);
-		background:
-			repeating-linear-gradient(
-				135deg,
-				transparent,
-				transparent 9px,
-				rgba(255, 95, 69, 0.07) 9px,
-				rgba(255, 95, 69, 0.07) 10px
-			),
-			linear-gradient(140deg, var(--color-ink-700), var(--color-ink));
-	}
-
 	.code {
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		line-height: 1.75;
 		tab-size: 2;
-		/* Both are needed. Without min-width the grid track is sized by the
-		   block's min-content, which for white-space: pre is the longest line,
-		   and the whole page gains a horizontal scrollbar on a phone. */
+		/* min-width here is not sufficient on its own. When this block sits
+		   inside a grid child rather than directly in the track, that child
+		   needs min-w-0 too, or it is sized by this block's longest line and
+		   the page runs 493px wide inside a 375px phone. */
 		min-width: 0;
 		max-width: 100%;
 		overflow-x: auto;
@@ -510,29 +485,6 @@
 		background-size: 0% 1px;
 	}
 
-	.tag {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.55rem;
-		padding: 0.4rem 0.9rem 0.4rem 0.6rem;
-		border: 1px solid var(--line);
-		border-radius: 999px;
-		font-family: var(--font-mono);
-		font-size: 0.6875rem;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: var(--mute);
-	}
-
-	.tag i {
-		width: 0.45rem;
-		height: 0.45rem;
-		border-radius: 999px;
-		background: var(--color-teal);
-		flex: none;
-		box-shadow: 0 0 0 4px rgba(43, 212, 189, 0.16);
-	}
-
 	/* A state, not a label. Hollow is untouched, filled is running, hot is the
 	   one phase with real risk. */
 	.state {
@@ -577,15 +529,6 @@
 	.state-risk::before {
 		background: var(--color-hot);
 		border-color: var(--color-hot);
-	}
-
-	/* The source line under a claim. */
-	.src {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		gap: 0.75rem;
-		margin-top: 2.25rem;
 	}
 
 	/* The payment flow ---------------------------------------------------
@@ -796,60 +739,6 @@
 		font-weight: 500;
 		color: var(--color-paper);
 		white-space: nowrap;
-	}
-
-	/* Marquee ------------------------------------------------------------ */
-
-	.strip {
-		position: relative;
-		z-index: 1;
-		border-block: 1px solid var(--line);
-		padding-block: 1.15rem;
-		overflow: hidden;
-	}
-
-	.track {
-		display: flex;
-		width: max-content;
-		gap: 2.5rem;
-		padding-left: 2.5rem;
-	}
-
-	.track span {
-		display: inline-flex;
-		align-items: center;
-		gap: 2.5rem;
-		font-family: var(--font-display);
-		font-size: 1.35rem;
-		font-style: italic;
-		color: var(--faint);
-		white-space: nowrap;
-	}
-
-	.track span::after {
-		content: "";
-		width: 0.3rem;
-		height: 0.3rem;
-		border-radius: 999px;
-		background: var(--color-hot);
-		opacity: 0.8;
-	}
-
-	@media (prefers-reduced-motion: no-preference) {
-		.track {
-			animation: slide 38s linear infinite;
-		}
-	}
-
-	/* A line that moves on its own stops when you try to read it. */
-	.strip:hover .track {
-		animation-play-state: paused;
-	}
-}
-
-@keyframes slide {
-	to {
-		transform: translateX(-50%);
 	}
 }
 
