@@ -29,8 +29,8 @@ const flowFields = [
 ];
 
 const field =
-	'mt-2 w-full border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-paper';
-const errorText = 'mt-2 text-sm text-red-700';
+	'mt-2 w-full rounded-xl border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-paper';
+const errorText = 'mt-2 text-sm text-hot';
 ---
 
 <Site
@@ -70,7 +70,7 @@ const errorText = 'mt-2 text-sm text-red-700';
 					<p
 						id="form-error"
 						hidden
-						class="border border-red-700/40 bg-red-700/5 px-4 py-3 text-sm text-red-700"
+						class="rounded-xl border border-hot/40 bg-hot/10 px-4 py-3 text-sm text-hot"
 					>
 					</p>
 
@@ -106,7 +106,7 @@ const errorText = 'mt-2 text-sm text-red-700';
 						</select>
 					</div>
 
-					<fieldset class="border border-[var(--line)] p-5 md:p-6">
+					<fieldset class="rounded-2xl border border-[var(--line)] p-5 md:p-6">
 						<legend class="spec px-2">Only if it is about payments</legend>
 						<p class="prose-body text-sm">
 							Four short answers are enough for me to tell you first time whether the flow gets
@@ -155,7 +155,7 @@ const errorText = 'mt-2 text-sm text-red-700';
 				<div
 					id="form-success"
 					hidden
-					class="border border-[var(--line)] p-7"
+					class="rounded-2xl border border-[var(--line)] p-7"
 					role="status"
 					aria-live="polite"
 				>

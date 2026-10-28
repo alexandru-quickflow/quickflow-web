@@ -869,6 +869,17 @@
 			animation-range: entry 4% entry 52%;
 		}
 
+		/* Everything that repeats down a page arrives as it is reached, without
+		   every page having to say so in its markup. Sticky columns are left out:
+		   a transform on an ancestor stops position: sticky from sticking. */
+		article:not(.work-row),
+		.card,
+		main section section {
+			animation: rise linear both;
+			animation-timeline: view();
+			animation-range: entry 4% entry 52%;
+		}
+
 		/* Stagger inside a block: the same reveal on each child, offset along
 		   the entry range, so lines arrive in reading order. */
 		.stagger > * {

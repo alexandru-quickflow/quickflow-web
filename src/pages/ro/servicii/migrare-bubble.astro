@@ -120,7 +120,7 @@ const stay = [
 				livrează aproape nimic.
 			</p>
 
-			<div class="mt-12 border border-paper/15 bg-ink-800/60 p-6 md:p-10">
+			<div class="mt-12 rounded-2xl border border-paper/15 bg-ink-800/60 p-6 md:p-10">
 				<div class="flex flex-wrap items-baseline justify-between gap-4">
 					<div class="flex gap-6">
 						<p class="eyebrow text-paper/70">
@@ -173,7 +173,7 @@ const stay = [
 				Rulează asta în consola browserului, pe propriul tău site, și compară:
 			</p>
 			<pre
-				class="mt-5 overflow-x-auto border border-paper/15 bg-ink-800/60 p-5 font-mono text-[0.8rem] leading-relaxed text-paper/80"><code>{snippet}</code></pre>
+				class="mt-5 overflow-x-auto rounded-xl border border-paper/15 bg-ink-800/60 p-5 font-mono text-[0.8rem] leading-relaxed text-paper/80"><code>{snippet}</code></pre>
 
 			<p class="prose-body mt-10">
 				Mai e ceva ce nu se vede. O pagină de marketing pe Bubble poate declanșa interogări în baza
@@ -230,10 +230,10 @@ const stay = [
 		<p class="eyebrow">Ce doare și nu se poate evita</p>
 		<h2 id="doare" class="display-lg mt-5 max-w-[22ch]">Trei lucruri pe care nu le poate ocoli nimeni.</h2>
 
-		<div class="mt-12 grid gap-px bg-paper/15 md:grid-cols-3">
+		<div class="mt-12 grid gap-4 md:grid-cols-3">
 			{
 				hurts.map((h) => (
-					<article class="bg-ink px-6 py-8 md:px-7 md:py-9">
+					<article class="card rise">
 						<h3 class="display-md">{h.title}</h3>
 						<p class="mt-5 text-[0.95rem] leading-relaxed text-paper/70">{h.body}</p>
 					</article>
@@ -244,7 +244,7 @@ const stay = [
 
 	<!-- 6. Auditul -->
 	<section class="shell mt-24 md:mt-32" aria-labelledby="audit">
-		<div class="border border-teal/35 bg-ink-800/60 p-7 md:p-12">
+		<div class="rounded-2xl border border-teal/35 bg-ink-800/60 p-7 md:p-12">
 			<div class="grid gap-10 md:grid-cols-12">
 				<div class="md:col-span-5">
 					<p class="eyebrow">Auditul de migrare</p>
@@ -303,14 +303,14 @@ const stay = [
 		<p class="eyebrow">Ce urmează după primul mesaj</p>
 		<h2 id="urmeaza" class="display-lg mt-5 max-w-[20ch]">Trei pași, fără pâlnie de vânzări.</h2>
 
-		<ol class="mt-12 grid gap-px bg-paper/15 md:grid-cols-3">
+		<ol class="mt-12 grid gap-4 md:grid-cols-3">
 			{
 				[
 					'Îmi scrii ce aplicație ai și ce te deranjează cel mai tare la ea. Îți răspund în aceeași zi lucrătoare, cu o întrebare sau două.',
 					'Dacă pare că are sens, vorbim douăzeci de minute. Fără prezentare și fără ofertă pregătită dinainte.',
 					'Dacă are sens și după discuție, îți trimit o propunere de audit, cu dată de început. Atât.',
 				].map((step, i) => (
-					<li class="bg-ink px-6 py-8 md:px-7 md:py-9">
+					<li class="card rise">
 						<p class="eyebrow">{String(i + 1).padStart(2, '0')}</p>
 						<p class="mt-4 text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
 					</li>

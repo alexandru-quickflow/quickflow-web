@@ -46,7 +46,7 @@ const flowFields = [
 				     upgrades it with inline messages and no page reload. -->
 				<form id="contact-form" action="/api/contact" method="POST" novalidate class="flex flex-col gap-7">
 					<input type="hidden" name="locale" value="ro" />
-					<p id="form-error" hidden class="border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-200"></p>
+					<p id="form-error" hidden class="rounded-xl border border-hot/40 bg-hot/10 px-4 py-3 text-sm text-hot"></p>
 
 					<div>
 						<label for="nume" class="block text-sm font-medium text-paper/85">Nume</label>
@@ -56,9 +56,9 @@ const flowFields = [
 							type="text"
 							required
 							autocomplete="name"
-							class="mt-2 w-full border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
 						/>
-						<p data-error-for="nume" hidden class="mt-2 text-sm text-red-300"></p>
+						<p data-error-for="nume" hidden class="mt-2 text-sm text-hot"></p>
 					</div>
 
 					<div>
@@ -69,9 +69,9 @@ const flowFields = [
 							type="email"
 							required
 							autocomplete="email"
-							class="mt-2 w-full border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
 						/>
-						<p data-error-for="email" hidden class="mt-2 text-sm text-red-300"></p>
+						<p data-error-for="email" hidden class="mt-2 text-sm text-hot"></p>
 					</div>
 
 					<div>
@@ -83,9 +83,9 @@ const flowFields = [
 							name="proiect"
 							rows="5"
 							required
-							class="mt-2 w-full border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
 						></textarea>
-						<p data-error-for="proiect" hidden class="mt-2 text-sm text-red-300"></p>
+						<p data-error-for="proiect" hidden class="mt-2 text-sm text-hot"></p>
 					</div>
 
 					<div>
@@ -95,13 +95,13 @@ const flowFields = [
 						<select
 							id="buget"
 							name="buget"
-							class="mt-2 w-full border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
 						>
 							{budgets.map((b) => <option value={b}>{b}</option>)}
 						</select>
 					</div>
 
-					<fieldset class="border border-paper/15 p-5 md:p-6">
+					<fieldset class="rounded-2xl border border-paper/15 p-5 md:p-6">
 						<legend class="eyebrow px-2">Doar dacă e despre plăți</legend>
 						<p class="text-sm leading-relaxed text-paper/70">
 							Patru răspunsuri scurte îmi ajung ca să îți spun din prima dacă fluxul se aprobă.
@@ -118,7 +118,7 @@ const flowFields = [
 											name={f.name}
 											type="text"
 											placeholder={f.placeholder}
-											class="mt-2 w-full border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none placeholder:text-paper/30 focus:border-teal"
+											class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none placeholder:text-paper/30 focus:border-teal"
 										/>
 									</div>
 								))
@@ -149,7 +149,7 @@ const flowFields = [
 				<div
 					id="form-success"
 					hidden
-					class="border border-teal/40 bg-ink-800/60 p-7"
+					class="rounded-2xl border border-teal/40 bg-ink-800/60 p-7"
 					role="status"
 					aria-live="polite"
 				>
