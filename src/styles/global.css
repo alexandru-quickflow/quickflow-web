@@ -49,8 +49,12 @@
 		color-scheme: dark;
 		--line: rgba(224, 240, 238, 0.1);
 		--line-strong: rgba(224, 240, 238, 0.22);
+		/* Measured against the ground, not chosen by eye. mute is 8.2:1 and
+		   faint is 5.5:1 against #04080b; faint at 0.46 measured 4.2:1, which
+		   fails AA for small text, and the mono labels are small text in 154
+		   places. */
 		--mute: rgba(233, 242, 240, 0.68);
-		--faint: rgba(233, 242, 240, 0.46);
+		--faint: rgba(233, 242, 240, 0.54);
 		--radius: 16px;
 		--radius-sm: 10px;
 	}
@@ -251,7 +255,9 @@
 		font-weight: 500;
 		line-height: 1;
 		letter-spacing: -0.04em;
-		color: rgba(233, 242, 240, 0.18);
+		/* 0.18 measured 1.55:1 against the ground, which fails even the
+		   large-text threshold. A ghost can be faint; it cannot be invisible. */
+		color: rgba(233, 242, 240, 0.38);
 	}
 
 	/* A number set at the size of its importance, unit attached. */
@@ -309,7 +315,11 @@
 	.surface-paper {
 		position: relative;
 		z-index: 1;
-		background: linear-gradient(180deg, var(--color-ink-800), transparent 72%);
+		/* A solid band, not a gradient. The gradient faded out at 72% of the
+		   section's height, which on a tall section (the escrow table) leaves
+		   the top lifted and the bottom not, and reads as a rendering fault
+		   rather than a surface. */
+		background: var(--color-ink-800);
 		border-block: 1px solid var(--line);
 	}
 
