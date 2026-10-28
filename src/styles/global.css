@@ -96,6 +96,17 @@
 		   places. */
 		--mute: rgba(233, 242, 240, 0.68);
 		--faint: rgba(233, 242, 240, 0.54);
+		/* A hairline lighter than --line, for the rows inside a table where a
+		   full-strength rule every four lines turns the table into a grid.
+		   Four places in the markup were already asking for it by name and
+		   getting nothing: an invalid var() in border-color falls back to
+		   currentColor, so those rows were drawn in the text colour at full
+		   strength, which is the loudest possible version of the quietest
+		   thing on the page. */
+		--line-soft: rgba(224, 240, 238, 0.06);
+		/* The big faint numeral. A token rather than a literal, because it has
+		   to flip on the light band and a literal cannot. */
+		--ghost: rgba(233, 242, 240, 0.38);
 		--radius: 16px;
 		--radius-sm: 10px;
 	}
@@ -297,8 +308,10 @@
 		line-height: 1;
 		letter-spacing: -0.04em;
 		/* 0.18 measured 1.55:1 against the ground, which fails even the
-		   large-text threshold. A ghost can be faint; it cannot be invisible. */
-		color: rgba(233, 242, 240, 0.38);
+		   large-text threshold. A ghost can be faint; it cannot be invisible.
+		   Through a token, because on the light band it has to come back the
+		   other way and a literal cannot. */
+		color: var(--ghost);
 	}
 
 	/* A number set at the size of its importance, unit attached. */
@@ -345,15 +358,63 @@
 		border-top: 1px solid var(--line);
 	}
 
-	.invert {
+	/* The light band -----------------------------------------------------
+	 * Named .band, not .invert, and that rename is the whole fix. Tailwind
+	 * ships an `invert` utility, the utilities layer is emitted after the
+	 * components layer, so `class="invert"` was resolving to
+	 * `filter: invert(100%)` and the component rule underneath it was only
+	 * deciding what got inverted. Eighteen sections were rendering as a
+	 * photographic negative of themselves.
+	 *
+	 * That produced a light band, which is what everyone had been reviewing,
+	 * so the surface values below are the exact colours the filter produced
+	 * and the band looks the same. What it also produced, and what nobody
+	 * could see by looking, is that a filter inverts every colour inside it.
+	 * teal came out red and coral came out cyan, so on the migration page the
+	 * three phases that leave the app running were marked in the alarm colour
+	 * and the single phase with real risk was marked in the safe one. The one
+	 * italic teal word per section came out red as well.
+	 *
+	 * So the band is a surface now, not a filter, and it flips the tokens
+	 * instead of the pixels. Inside here the two ground tokens are roles
+	 * rather than colours: paper is whatever reads against this surface and
+	 * ink is the surface. Tailwind v4 compiles `text-paper/80` to a
+	 * color-mix over var(--color-paper) rather than to a literal, so every
+	 * utility in the markup follows without a single page being edited.
+	 *
+	 * The accents are darkened here rather than carried across. #2bd4bd on
+	 * #f7ece5 measures 1.5:1, which is not a colour, it is a rumour. The hue
+	 * stays, the lightness moves, the meaning survives. */
+	.band {
 		position: relative;
 		z-index: 1;
+
+		--color-ink: #f7ece5;
+		--color-paper: #160d0f;
+		--color-teal: #0b6d60;
+		--color-mint: #0e8475;
+		--color-hot: #ad3419;
+
+		--mute: rgba(22, 13, 15, 0.74);
+		--faint: rgba(22, 13, 15, 0.62);
+		--line: rgba(22, 13, 15, 0.16);
+		--line-strong: rgba(22, 13, 15, 0.3);
+		--line-soft: rgba(22, 13, 15, 0.09);
+		--ghost: rgba(22, 13, 15, 0.56);
+
 		/* A solid band, not a gradient. The gradient faded out at 72% of the
 		   section's height, which on a tall section (the escrow table) leaves
 		   the top lifted and the bottom not, and reads as a rendering fault
 		   rather than a surface. */
-		background: var(--color-ink-800);
+		background: var(--color-ink);
+		color: var(--color-paper);
 		border-block: 1px solid var(--line);
+	}
+
+	/* The primary button keeps a teal ground, and on this band that ground is
+	   dark, so its label has to come back the other way. */
+	.band .btn-primary {
+		color: var(--color-ink);
 	}
 
 	.card {
@@ -551,9 +612,12 @@
 		flex: none;
 	}
 
+	/* Mixed from the token rather than written out, so the pill follows the
+	   accent onto the light band instead of staying at the dark page's
+	   lightness and disappearing there. */
 	.state-ok {
 		color: var(--color-teal);
-		border-color: rgba(43, 212, 189, 0.3);
+		border-color: color-mix(in oklab, var(--color-teal) 32%, transparent);
 	}
 
 	.state-ok::before {
@@ -563,7 +627,7 @@
 
 	.state-risk {
 		color: var(--color-hot);
-		border-color: rgba(255, 95, 69, 0.4);
+		border-color: color-mix(in oklab, var(--color-hot) 42%, transparent);
 	}
 
 	.state-risk::before {

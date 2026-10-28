@@ -199,6 +199,26 @@ function audit() {
 		return `${el.tagName.toLowerCase()}${id}${cls}`;
 	}
 
+	/* Whether the browser actually paints this, which is not the same question
+	   as whether it has a box. The mobile menu is a closed <details> holding an
+	   absolutely positioned panel: the panel keeps a 240 by 227 rect and
+	   reports display block, visibility visible, opacity 1, while Chromium
+	   skips painting and hit-testing it entirely. Measuring by rect counted
+	   four links nobody can see, and counted them only sometimes, which is
+	   worse: the language-pair check exists to catch a drift of one element,
+	   so a measurement that wobbles by one is not a measurement. */
+	function painted(el) {
+		if (typeof el.checkVisibility !== 'function') {
+			const s = getComputedStyle(el);
+			return s.display !== 'none' && s.visibility !== 'hidden';
+		}
+		return el.checkVisibility({
+			contentVisibilityAuto: true,
+			opacityProperty: true,
+			visibilityProperty: true,
+		});
+	}
+
 	/* Elements that carry text of their own. A paragraph counts, the section
 	   that holds it does not, so one string is measured once. */
 	function textElements() {
@@ -215,13 +235,34 @@ function audit() {
 			if (!text.trim()) continue;
 
 			const style = getComputedStyle(el);
-			if (style.visibility === 'hidden' || style.display === 'none') continue;
+			if (!painted(el)) continue;
 			const rect = el.getBoundingClientRect();
 			if (rect.width < 1 || rect.height < 1) continue;
 
 			out.push({ el, text: text.trim(), style, rect });
 		}
 		return out;
+	}
+
+	/* A filter on an ancestor makes every number below it a lie. The style
+	   says one colour, the compositor paints another, and the gap between the
+	   two is invisible to a probe that only reads styles. Eighteen sections of
+	   this site rendered as a photographic negative under
+	   `filter: invert(100%)`, inherited from a Tailwind utility whose name
+	   collided with a component class. Contrast measured clean the whole time,
+	   while the safe colour painted as the alarm colour. So a filter over text
+	   is reported rather than measured through. */
+	const filtered = [];
+	for (const el of document.querySelectorAll('body *')) {
+		const style = getComputedStyle(el);
+		if (!style.filter || style.filter === 'none') continue;
+		if (!painted(el)) continue;
+		const rect = el.getBoundingClientRect();
+		if (rect.width < 1 || rect.height < 1) continue;
+		// A filter on a leaf is a graphic effect. A filter on a box that holds
+		// text is the case worth knowing about.
+		if (el.querySelectorAll('p, h1, h2, h3, h4, li, td, a').length === 0) continue;
+		filtered.push({ where: describe(el), filter: style.filter });
 	}
 
 	const failures = [];
@@ -269,7 +310,7 @@ function audit() {
 	const over = [];
 	for (const el of document.querySelectorAll('body *')) {
 		const style = getComputedStyle(el);
-		if (style.display === 'none' || style.visibility === 'hidden') continue;
+		if (!painted(el)) continue;
 		if (style.position === 'fixed') continue; // the fixed layers are decoration
 		const rect = el.getBoundingClientRect();
 		if (rect.width < 1) continue;
@@ -292,6 +333,7 @@ function audit() {
 	return {
 		elements: carriers.length,
 		failures,
+		filtered,
 		overflow: over.slice(0, 12),
 		overflowCount: over.length,
 		scrollWidth: document.scrollingElement.scrollWidth,
@@ -478,6 +520,12 @@ async function main() {
 					problems.push(
 						`${width}px ${route.url}  ${f.ratio}:1 needs ${f.need}:1  ` +
 							`${f.where} at ${f.size}px  ${f.colour} on ${f.on}  "${f.text}"`
+					);
+				}
+				for (const f of result.filtered) {
+					problems.push(
+						`${width}px ${route.url}  ${f.where} paints through ${f.filter}, ` +
+							'so no colour measured inside it is the colour on screen'
 					);
 				}
 				for (const o of result.overflow) {
