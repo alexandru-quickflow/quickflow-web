@@ -1,0 +1,145 @@
+---
+// The four service marks.
+//
+// Drawn, not iconified: four marks in one geometry read as a system, four
+// icons off a shelf read as a kit. Each one says something specific about its
+// service rather than illustrating the category, and each carries exactly one
+// teal element, which is the thing the service is actually about.
+//
+// One component because the two home pages had the same SVG pasted twice and
+// would have drifted the moment either changed.
+
+interface Props {
+	n: 0 | 1 | 2 | 3;
+	class?: string;
+}
+
+const { n, class: cls = '' } = Astro.props;
+
+const titles = [
+	'An app moving out of a platform, one layer at a time',
+	'One payment in, three shares out, part of it held',
+	'Lessons behind an access rule that expires',
+	'A process that keeps running without anyone pushing it',
+];
+---
+
+<svg
+	viewBox="0 0 96 64"
+	class={cls}
+	role="img"
+	aria-label={titles[n]}
+	fill="none"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+>
+	{
+		/* 01 Migration. The platform on the left holds four layers; the code on
+		   the right has received the first one. The three ticks on the
+		   connector are the phases in between. */
+		n === 0 && (
+			<g>
+				<rect x="1" y="12" width="32" height="40" rx="5" class="stroke-paper/30" />
+				<path d="M1,21 H33" class="stroke-paper/15" />
+				<rect x="7" y="25" width="20" height="2.5" rx="1.25" class="fill-paper/30" />
+				<rect x="7" y="32" width="20" height="2.5" rx="1.25" class="fill-paper/30" />
+				<rect x="7" y="39" width="14" height="2.5" rx="1.25" class="fill-paper/30" />
+				<circle cx="5.5" cy="16.5" r="1.1" class="fill-paper/30" />
+				<circle cx="9.5" cy="16.5" r="1.1" class="fill-paper/30" />
+
+				<path d="M36,32 H57" class="stroke-paper/45" />
+				<path d="M53.5,28.8 L57,32 L53.5,35.2" class="stroke-paper/45" />
+				<path d="M41,29 V35 M47,29 V35" class="stroke-paper/20" />
+
+				<rect x="63" y="12" width="32" height="40" rx="5" class="stroke-paper/45" />
+				<path d="M63,21 H95" class="stroke-paper/15" />
+				<rect x="69" y="25" width="20" height="2.5" rx="1.25" class="fill-teal" />
+				<path d="M69,33 l-3,3 3,3 M78,33 l3,3 -3,3" class="stroke-paper/35" />
+				<path d="M72.5,40 L75.5,31.5" class="stroke-paper/20" />
+			</g>
+		)
+	}
+	{
+		/* 02 Marketplace. One payment in, held inside the platform, then three
+		   shares out at the real proportions: 850, 120, 30. */
+		n === 1 && (
+			<g>
+				<rect x="1" y="23" width="22" height="18" rx="4" class="stroke-paper/30" />
+				<path d="M6,32 H18" class="stroke-paper/30" />
+
+				<path d="M26,32 H35" class="stroke-paper/45" />
+				<path d="M32,29.5 L35,32 L32,34.5" class="stroke-paper/45" />
+
+				<rect x="38" y="13" width="24" height="38" rx="5" class="stroke-paper/45" />
+				<rect
+					x="44"
+					y="21"
+					width="12"
+					height="22"
+					rx="4"
+					class="fill-teal/10 stroke-teal"
+				/>
+				<path d="M47,32 H53" class="stroke-teal" />
+
+				<path d="M65,20 H93" class="stroke-teal" stroke-width="2.5" />
+				<path d="M65,32 H77" class="stroke-paper/35" stroke-width="2.5" />
+				<path d="M65,44 H70" class="stroke-paper/20" stroke-width="2.5" />
+				<path d="M62,20 H65 M62,32 H65 M62,44 H65" class="stroke-paper/25" />
+			</g>
+		)
+	}
+	{
+		/* 03 Courses. Three lessons, two opened, and the clock that closes
+		   them: access that expires is the whole product. */
+		n === 2 && (
+			<g>
+				<rect x="1" y="10" width="54" height="13" rx="4" class="stroke-paper/30" />
+				<path d="M9,13.5 L14,16.5 L9,19.5 Z" class="fill-paper/40" />
+				<rect x="20" y="15.5" width="26" height="2.5" rx="1.25" class="fill-paper/25" />
+
+				<rect x="1" y="26" width="54" height="13" rx="4" class="stroke-paper/30" />
+				<path d="M9,29.5 L14,32.5 L9,35.5 Z" class="fill-paper/40" />
+				<rect x="20" y="31.5" width="20" height="2.5" rx="1.25" class="fill-paper/25" />
+
+				<rect x="1" y="42" width="54" height="13" rx="4" class="stroke-paper/18" stroke-dasharray="3 3" />
+				<rect x="20" y="47.5" width="14" height="2.5" rx="1.25" class="fill-paper/12" />
+
+				<circle cx="78" cy="32" r="13" class="stroke-paper/35" />
+				<path d="M78,24 V32 L84,35.5" class="stroke-teal" />
+				<path d="M78,19.5 V21.5 M78,42.5 V44.5 M65.5,32 H67.5 M88.5,32 H90.5" class="stroke-paper/25" />
+			</g>
+		)
+	}
+	{
+		/* 04 Automation. A closed loop with three stations on it, and the one
+		   step that used to be done by hand, now running on its own. */
+		n === 3 && (
+			<g>
+				<path
+					d="M20,12 H76 a10,10 0 0 1 10,10 v20 a10,10 0 0 1 -10,10 H20 a10,10 0 0 1 -10,-10 v-20 a10,10 0 0 1 10,-10 Z"
+					class="stroke-paper/25"
+					stroke-dasharray="4 4"
+				/>
+				<path d="M44,12 H58" class="stroke-paper/50" />
+				<path d="M54.5,9 L58,12 L54.5,15" class="stroke-paper/50" />
+
+				<rect x="12" y="26" width="16" height="12" rx="3" class="stroke-paper/35" />
+				<path d="M16,32 H24" class="stroke-paper/25" />
+
+				<rect x="40" y="26" width="16" height="12" rx="3" class="fill-teal/10 stroke-teal" />
+				<path d="M46,29.5 L49,32 L46,34.5" class="stroke-teal" />
+
+				<rect x="68" y="26" width="16" height="12" rx="3" class="stroke-paper/35" />
+				<path d="M72,32 H80" class="stroke-paper/25" />
+
+				<path d="M28,32 H38 M56,32 H66" class="stroke-paper/30" />
+			</g>
+		)
+	}
+</svg>
+
+<style>
+	svg {
+		stroke-width: 1.15;
+	}
+</style>
