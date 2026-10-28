@@ -172,8 +172,11 @@ const schema = {
 								<div class="flex items-center gap-4">
 									<dt class="spec w-20 shrink-0">On Bubble</dt>
 									<dd class="flex flex-1 items-center gap-4">
-										<span class="h-3 flex-1 bg-ink/[0.07]">
-											<span class="block h-full bg-ink/55" style={`width:${m.wa}%`} />
+										{/* Paper tints, not ink. This band is dark like the rest of the page,
+										    so an ink bar at 55% over #04080b is exactly #04080b: the whole
+										    comparison rendered as an empty track with a 3px teal tick. */}
+										<span class="h-3 flex-1 bg-paper/10">
+											<span class="block h-full bg-paper/55" style={`width:${m.wa}%`} />
 										</span>
 										<span class="w-20 shrink-0 text-right font-mono text-sm">{m.a}</span>
 									</dd>
@@ -181,7 +184,7 @@ const schema = {
 								<div class="flex items-center gap-4">
 									<dt class="spec w-20 shrink-0">In code</dt>
 									<dd class="flex flex-1 items-center gap-4">
-										<span class="h-3 flex-1 bg-ink/[0.07]">
+										<span class="h-3 flex-1 bg-paper/10">
 											<span class="block h-full min-w-[3px] bg-teal" style={`width:${m.wb}%`} />
 										</span>
 										<span class="w-20 shrink-0 text-right font-mono text-sm">{m.b}</span>
@@ -392,12 +395,14 @@ const schema = {
 			<p class="spec">What happens after the first message</p>
 			<h2 id="next" class="display-lg mt-6 max-w-[20ch]">Three steps, and no sales funnel.</h2>
 
-			<ol class="mt-12 grid gap-x-12 gap-y-8 md:grid-cols-3">
+			<ol class="mt-14 flex flex-col gap-10 md:gap-14">
 				{
 					steps.map((step, i) => (
-						<li class="hair pt-6">
-							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
-							<p class="mt-4 max-w-[34ch] text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
+						<li class="rise grid gap-3 md:grid-cols-12 md:gap-10">
+							<p class="numeral-ghost md:col-span-2">{String(i + 1).padStart(2, '0')}</p>
+							<p class="max-w-[54ch] text-lg leading-snug text-paper/80 md:col-span-9 md:pt-4">
+								{step}
+							</p>
 						</li>
 					))
 				}

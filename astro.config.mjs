@@ -19,6 +19,17 @@ export default defineConfig({
 	},
 	integrations: [
 		sitemap({
+			// A page that tells robots noindex has no business being advertised in
+			// the sitemap: the two instructions contradict each other, and Google
+			// reports the pair as an error rather than picking one. Every route
+			// that passes noindex to the layout belongs in this list, so when a
+			// page gains or loses noindex, it changes here too. Currently: the
+			// design-exploration pages, which exist until they are deleted, and
+			// the two form confirmations, which have no business in search.
+			filter: (page) =>
+				!['/lab/', '/ro/directii/', '/ro/multumesc/', '/thank-you/'].some((noindex) =>
+					page.includes(noindex),
+				),
 			i18n: {
 				defaultLocale: 'en',
 				locales: { en: 'en', ro: 'ro-RO' },

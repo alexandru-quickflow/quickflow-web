@@ -1,5 +1,6 @@
 ---
 import Site from '../../layouts/Site.astro';
+import { paths } from '../../i18n/routes';
 
 const projects = [
 	{
@@ -58,30 +59,35 @@ const projects = [
 	title="Portofoliu, Quick Flow"
 	description="Patru proiecte: un produs propriu cu plăți și confirmări, o migrare completă de pe Bubble pe cod, și două platforme de cursuri cu acces controlat."
 >
-	<section class="shell pb-16 pt-16 md:pb-20 md:pt-24">
-		<p class="eyebrow">Portofoliu</p>
-		<h1 class="display-xl mt-7 max-w-[16ch]">Patru lucruri construite, toate încă live.</h1>
-		<p class="lead mt-10 max-w-[58ch]">
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Portofoliu</p>
+			<p class="spec">04 fișe, 01 reținută</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">Patru lucruri construite, toate încă live.</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
 			Marketplace-urile cu plăți împărțite pe care le-am construit au fost livrate prin altă
 			agenție și nu le pot arăta. Astea patru sunt ale mele sau ale clienților care m-au lăsat să
 			le arăt.
 		</p>
 	</section>
 
-	<section class="shell" aria-labelledby="proiecte">
+	<section class="bleed mt-20 md:mt-24" aria-labelledby="proiecte">
 		<h2 id="proiecte" class="sr-only">Proiecte</h2>
 
 		{
 			projects.map((p) => (
-				<article class="rule grid gap-6 py-12 md:grid-cols-12 md:gap-8 md:py-16">
+				<article class="hair rise grid gap-6 py-12 md:grid-cols-12 md:gap-8 md:py-16">
 					<figure class="shot rise md:col-span-5">
 						<img src={p.img} alt={p.name} width="800" height="500" loading="lazy" />
 					</figure>
 
 					<div class="md:col-span-6 md:col-start-7">
 						<h3 class="display-lg">{p.name}</h3>
-						<p class="mt-4 font-mono text-xs uppercase tracking-widest text-teal">{p.kind}</p>
-						<p class="mt-6 text-[0.95rem] leading-relaxed text-paper/70">{p.detail}</p>
+						<p class="spec mt-5">{p.kind}</p>
+						<p class="prose-body mt-6 text-[0.95rem]">{p.detail}</p>
 						<div class="mt-6 flex flex-col gap-2 text-sm">
 							<a href={p.href} rel="noopener" target="_blank" class="link">
 								Vezi site-ul
@@ -95,23 +101,66 @@ const projects = [
 					</div>
 
 					<div class="md:col-span-6 md:col-start-7">
-						<p class="eyebrow">Problema</p>
-						<p class="prose-body mt-2">{p.problem}</p>
-						<p class="eyebrow mt-7">Ce s-a construit</p>
-						<p class="prose-body mt-2">{p.built}</p>
+						<p class="spec">Problema</p>
+						<p class="prose-body mt-3">{p.problem}</p>
+						<p class="spec mt-8">Ce s-a construit</p>
+						<p class="prose-body mt-3">{p.built}</p>
 					</div>
 				</article>
 			))
 		}
 	</section>
 
-	<section class="shell mt-20 md:mt-28">
-		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
-			<h2 class="display-lg md:col-span-7">
-				Dacă vrei să vezi cum arată partea pe care nu o pot arăta, întreabă-mă.
-			</h2>
-			<div class="md:col-span-4 md:col-start-9 md:justify-self-end md:self-end">
-				<a href="/ro/contact" class="btn btn-primary">Scrie-mi</a>
+	<!-- Fișa care nu poate fi arătată. Închide pagina în loc să fie omisă,
+	     pentru că lipsa se vede oricum, iar un câmp reținut se citește mai bine
+	     decât o tăcere. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="retinuta">
+		<article class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+			<div class="md:col-span-5">
+				<div class="flex items-baseline justify-between gap-4">
+					<h2 id="retinuta" class="display-md">
+						<span class="sr-only">Un marketplace care nu poate fi numit</span>
+						<span class="redact w-[9ch]" aria-hidden="true"></span>
+					</h2>
+					<span class="spec">05</span>
+				</div>
+				<p class="stamp mt-6">Nu poate fi arătat</p>
+			</div>
+
+			<dl class="grid grid-cols-[8.5rem_1fr] gap-x-6 gap-y-4 md:col-span-6 md:col-start-7">
+				<dt class="spec pt-1">Tip</dt>
+				<dd class="text-[0.95rem]">Marketplace cu plăți împărțite</dd>
+
+				<dt class="spec pt-1">Client</dt>
+				<dd>
+					<span class="sr-only">Reținut</span>
+					<span class="redact w-[13ch]" aria-hidden="true"></span>
+				</dd>
+
+				<dt class="spec pt-1">Livrat prin</dt>
+				<dd class="text-[0.95rem]">Altă agenție</dd>
+
+				<dt class="spec pt-1">Captură</dt>
+				<dd class="prose-body text-[0.95rem]">Indisponibilă</dd>
+
+				<dt class="spec pt-1">Ce pot spune</dt>
+				<dd class="prose-body max-w-[42ch] text-[0.95rem]">
+					Pot vorbi despre cum sunt construite plățile împărțite, verificarea vânzătorilor și
+					payout-urile. Numele nu îl pot arăta.
+				</dd>
+			</dl>
+		</article>
+	</section>
+
+	<section class="invert mt-24 md:mt-32">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Dacă vrei să vezi cum arată partea pe care nu o pot arăta, întreabă-mă.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Scrie-mi</a>
+				</div>
 			</div>
 		</div>
 	</section>

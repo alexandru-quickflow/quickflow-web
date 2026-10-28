@@ -1,5 +1,10 @@
 ---
 import Site from '../../../layouts/Site.astro';
+import PaymentFlow from '../../../components/PaymentFlow.astro';
+import { proof } from '../../../content/proof';
+import { paths } from '../../../i18n/routes';
+
+const escrow = proof('ro', 'stripe-escrow');
 
 const signs = [
 	{
@@ -38,99 +43,213 @@ const mechanics = [
 	},
 ];
 
+const questions = [
+	'Cine plătește',
+	'Cine încasează',
+	'Cine ia comision, și cât',
+	'Când se consideră livrată munca',
+];
+
 const steps = [
 	'Îmi scrii fluxul tău de plăți. Îți răspund în aceeași zi lucrătoare, în scris, dacă Stripe îl permite și ce presupune.',
 	'Dacă are sens, vorbim douăzeci de minute. Fără prezentare și fără ofertă pregătită dinainte.',
 	'Îți trimit o propunere cu scope scris și dată de început.',
 ];
+
+/** Separate charges and transfers, aceeași formă ca pe pagina engleză. Sumele
+ *  sunt în subunități, deci 100000 e 1.000,00 lei, iar 85000 e cei 850 din
+ *  desenul de sus. Identificatorii din API rămân în engleză, comentariile sunt
+ *  text pe care îl citește cineva. Maximum 58 de caractere pe linie, ca să nu
+ *  se scroleze lateral pe telefon. */
+const stripeShape = `// 01  Cumpărătorul plătește. Banii intră la platformă.
+const payment = await stripe.paymentIntents.create({
+  amount: 100000,
+  currency: 'ron',
+  transfer_group: order.id,
+});
+
+// 02  Livrarea e confirmată. Abia acum pleacă partea lui.
+await stripe.transfers.create({
+  amount: 85000,
+  currency: 'ron',
+  destination: seller.stripeAccountId,
+  transfer_group: order.id,
+});`;
+
+const title = 'Marketplace cu plăți împărțite, construit de la zero';
+const description =
+	'Onboarding de vânzători care trece verificarea, bani reținuți până la livrare, împărțiri care rezistă la refund și dispută. Trimite-mi fluxul tău de plăți și îți spun dacă Stripe îl permite.';
+
+/** Aceeași entitate ca pe pagina engleză, declarată în română. Lipsea: nicio
+ *  pagină românească nu avea date structurate, deși toate cele patru pagini
+ *  englezești le aveau. */
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Dezvoltare de marketplace cu Stripe Connect',
+	serviceType: 'Dezvoltare de marketplace, plăți împărțite',
+	description,
+	inLanguage: 'ro',
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'RO',
+};
+
+const fields = [
+	{
+		name: 'transfer_group',
+		body: 'Singurul șir care leagă încasarea și fiecare transfer de mai târziu de aceeași comandă. Fără el, un refund cerut peste trei săptămâni devine o anchetă.',
+	},
+	{
+		name: 'transfers.create',
+		body: 'Al doilea apel, făcut la confirmarea livrării. Nimic nu îl programează și nimic nu pornește pe cronometru, așa că o comandă anulată nu ajunge niciodată la el.',
+	},
+	{
+		name: 'destination',
+		body: 'Contul conectat al vânzătorului, care există doar după ce a trecut verificarea. Până atunci banii nu au unde să plece, și ăsta e motivul real pentru care onboarding-ul vine primul.',
+	},
+];
 ---
 
-<Site
-	lang="ro"
-	title="Marketplace cu plăți împărțite, construit de la zero"
-	description="Onboarding de vânzători care trece verificarea, bani reținuți până la livrare, împărțiri care rezistă la refund și dispută. Trimite-mi fluxul tău de plăți și îți spun dacă Stripe îl permite."
->
-	<!-- 1. Recognition -->
-	<section class="shell pb-16 pt-16 md:pb-24 md:pt-24">
-		<p class="eyebrow">Marketplace cu plăți</p>
-		<h1 class="display-xl mt-7 max-w-[15ch]">Marketplace-ul e partea ușoară. Împărțirea banilor <em>nu e</em>.</h1>
-		<p class="lead mt-10 max-w-[58ch]">
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recunoaștere, apoi desenul. Mișcarea banilor e subiectul paginii,
+	     deci ajunge înaintea oricărei afirmații despre ea. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Marketplace cu plăți</p>
+			<p class="spec">Stripe Connect, încasare și transfer separate</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[15ch]">
+			Marketplace-ul e partea ușoară. Împărțirea banilor <em>nu e</em>.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
 			Construiesc platforme în care vânzătorii trec verificarea de identitate, banii așteaptă
 			livrarea, iar împărțirea nu se rupe la primul refund. Din 2017 în no-code, din 2025 în cod,
 			singur de la modelul de date până la payout.
 		</p>
+
+		<div class="mt-10 md:mt-14">
+			<PaymentFlow lang="ro" />
+		</div>
 	</section>
 
-	<!-- 2. Three signs -->
-	<section class="shell" aria-labelledby="semne">
-		<div class="rule pt-12 md:pt-16">
-			<p class="eyebrow">De obicei ajungi aici după una din astea</p>
-			<h2 id="semne" class="sr-only">Trei semne</h2>
+	<!-- 2. Trei semne. Cititorul ajunge aici din unul din ele. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="semne">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">De obicei ajungi aici după una din astea</p>
+			<span class="spec">03</span>
 		</div>
 
-		{
-			signs.map((s) => (
-				<article class="rule grid gap-4 py-10 md:grid-cols-12 md:gap-8 md:py-12">
-					<p class="numeral-ghost md:col-span-1">{s.n}</p>
-					<h3 class="display-md md:col-span-4">{s.title}</h3>
-					<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
-				</article>
-			))
-		}
-	</section>
+		<h2 id="semne" class="display-lg mt-8 max-w-[22ch]">
+			Trei semne că plățile sunt partea care s-a blocat.
+		</h2>
 
-	<!-- 3. The mechanics, named -->
-	<section class="shell mt-24 md:mt-32" aria-labelledby="mecanica">
-		<p class="eyebrow">Ce construiesc, pe nume</p>
-		<h2 id="mecanica" class="display-lg mt-5 max-w-[20ch]">Patru lucruri, nu patru adjective.</h2>
-
-		<div class="mt-12 grid gap-4 md:grid-cols-2">
+		<div class="mt-4">
 			{
-				mechanics.map((m) => (
-					<article class="card rise">
-						<h3 class="display-md">{m.title}</h3>
-						<p class="mt-5 text-[0.95rem] leading-relaxed text-paper/70">{m.body}</p>
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
 					</article>
 				))
 			}
 		</div>
 	</section>
 
-	<!-- 4. Hand-off to the escrow page -->
-	<section class="shell mt-24 md:mt-32">
-		<div class="rounded-2xl border border-teal/35 bg-ink-800/60 p-7 md:p-12">
-			<div class="grid gap-8 md:grid-cols-12">
+	<!-- 3. Mecanica, pe nume. Patru lucruri, nu patru adjective. -->
+	<section class="invert mt-24 md:mt-32" aria-labelledby="mecanica">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Ce construiesc, pe nume</p>
+			<h2 id="mecanica" class="display-lg mt-6 max-w-[20ch]">Patru lucruri, nu patru adjective.</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+				{
+					mechanics.map((m, i) => (
+						<article class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<h3 class="display-md mt-4 max-w-[22ch]">{m.title}</h3>
+							<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{m.body}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. Cuvântul din cauza căruia se resping aplicațiile, trimis la pagina lui. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="escrow">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
 				<div class="md:col-span-7">
-					<p class="eyebrow">Partea pe care o greșesc cei mai mulți</p>
-					<h2 class="display-lg mt-5">Stripe nu are escrow.</h2>
-					<p class="prose-body mt-6">
-						Escrow are o definiție juridică. Stripe nu furnizează conturi de escrow și trece
-						serviciile de escrow pe lista de activități restricționate. Dacă ai scris „escrow”
-						în aplicație, asta explică de ce ți-a venit respinsă.
-					</p>
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">Partea pe care o greșesc cei mai mulți</p>
+						<span class="state state-risk">Aplicație respinsă</span>
+					</div>
+					<h2 id="escrow" class="display-lg mt-6">
+						Stripe nu are <span class="strike">escrow</span>.
+					</h2>
+					<p class="prose-body mt-7">{escrow.claim}</p>
 					<p class="prose-body mt-4">
 						Ce vrei tu de fapt se numește altfel, se construiește altfel, și se aprobă.
 					</p>
 				</div>
 				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
-					<a href="/ro/stripe-escrow-marketplace" class="btn btn-primary">Citește cum</a>
+					<a href={paths.escrow.ro} class="btn btn-primary">Citește cum se scrie</a>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- 5. What can and cannot be shown -->
-	<section class="shell mt-24 md:mt-32" aria-labelledby="dovada">
+	<!-- 5. Aceeași mecanică, în API. O pagină despre mișcarea banilor care nu
+	     arată nicio mișcare de bani e o pagină de adjective. Două apeluri, și
+	     pauza dintre ele e tot produsul. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="forma">
+		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Două apeluri, și o pauză</p>
+				<h2 id="forma" class="display-lg mt-6">Cum arată <em>în API</em>.</h2>
+				<p class="prose-body mt-7">
+					Nu există o funcție numită escrow pe care să o pornești. Există o încasare, o așteptare
+					și un transfer, iar așteptarea e partea pe care o controlezi tu.
+				</p>
+			</div>
+			{/* min-w-0, or the code block refuses to shrink below its longest line
+			    and widens the whole grid track: 493px of content inside a 375px
+			    phone, clipped by the body and unreachable. */}
+			<div class="min-w-0 md:col-span-7 md:col-start-6">
+				<pre class="code">{stripeShape}</pre>
+				<dl class="mt-8 flex flex-col">
+					{
+						fields.map((f) => (
+							<div class="hair grid gap-2 py-5 md:grid-cols-12 md:gap-6">
+								<dt class="spec md:col-span-4 md:pt-1">{f.name}</dt>
+								<dd class="prose-body text-[0.95rem] md:col-span-8">{f.body}</dd>
+							</div>
+						))
+					}
+				</dl>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. Ce se poate arăta și ce nu. Spus aici, nu lăsat să fie descoperit,
+	     pentru că o afirmație de portofoliu se verifică în două minute. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="dovada">
 		<div class="grid gap-8 md:grid-cols-12">
 			<div class="md:col-span-5">
-				<p class="eyebrow">Dovada</p>
-				<h2 id="dovada" class="display-lg mt-5">Ce pot arăta și ce nu.</h2>
+				<p class="spec">Dovada</p>
+				<h2 id="dovada" class="display-lg mt-6">Ce pot arăta și ce nu.</h2>
+				<p class="stamp mt-8">Marketplace-uri livrate prin altă agenție</p>
 			</div>
 			<div class="md:col-span-6 md:col-start-7">
 				<p class="prose-body">
 					Marketplace-urile cu plăți împărțite pe care le-am construit au fost livrate prin altă
-					agenție și nu le pot arăta. Spun asta direct, pentru că o pagină care pretinde altceva
-					se verifică în două minute.
+					agenție și nu le pot arăta. Spun asta direct, pentru că o pagină care pretinde altceva se
+					verifică în două minute.
 				</p>
 				<p class="prose-body mt-5">
 					Ce pot arăta sunt platforme cu plăți și acces controlat, livrate pe numele meu:
@@ -142,46 +261,39 @@ const steps = [
 					>, cu trei produse vândute online, fiecare cu altă regulă de acces.
 				</p>
 				<p class="prose-body mt-5">
-					Restul se verifică în cincisprezece minute de discuție, nu într-un portofoliu. Întreabă-mă
-					ce se întâmplă când un payout eșuează sau cum se împarte un refund după ce banii au plecat
-					deja la vânzător.
+					Restul se verifică în cincisprezece minute de discuție, nu într-un portofoliu.
+					Întreabă-mă ce se întâmplă când un payout eșuează sau cum se împarte un refund după ce
+					banii au plecat deja la vânzător.
 				</p>
 			</div>
 		</div>
 	</section>
 
-	<!-- 6. The entry offer, on paper -->
-	<div class="surface-paper mt-24 md:mt-32">
-		<section class="shell py-20 md:py-28" aria-labelledby="flux">
-			<p class="eyebrow">Gratuit, fără call</p>
-			<h2 id="flux" class="display-lg mt-5 max-w-[20ch]">
+	<!-- 7. Oferta de intrare. Patru întrebări, răspuns scris, fără call. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="flux">
+		<div class="hair pt-10 md:pt-14">
+			<p class="spec">Gratuit, fără call</p>
+			<h2 id="flux" class="display-lg mt-6 max-w-[20ch]">
 				Trimite-mi fluxul tău de plăți. Îți spun dacă Stripe îl permite.
 			</h2>
 
 			<div class="mt-12 grid gap-10 md:grid-cols-12 md:gap-12">
 				<div class="md:col-span-6">
-					<p class="text-lg leading-snug text-paper/85">
+					<p class="text-lg leading-snug">
 						Scrie-mi în cuvintele tale patru lucruri. Atât îmi trebuie ca să îți dau un răspuns
 						util din prima, fără să ne programăm nimic.
 					</p>
 					<ol class="mt-8 flex flex-col gap-4">
 						{
-							[
-								'Cine plătește',
-								'Cine încasează',
-								'Cine ia comision, și cât',
-								'Când se consideră livrată munca',
-							].map((q, i) => (
+							questions.map((q, i) => (
 								<li class="flex gap-4">
-									<span class="font-mono text-xs text-paper/65">
-										{String(i + 1).padStart(2, '0')}
-									</span>
-									<span class="text-lg leading-snug text-paper">{q}</span>
+									<span class="spec pt-1.5">{String(i + 1).padStart(2, '0')}</span>
+									<span class="text-lg leading-snug">{q}</span>
 								</li>
 							))
 						}
 					</ol>
-					<a href="/ro/contact" class="btn btn-primary mt-10">Trimite-mi fluxul</a>
+					<a href={paths.contact.ro} class="btn btn-primary mt-10">Trimite-mi fluxul</a>
 				</div>
 				<div class="md:col-span-5 md:col-start-8">
 					<p class="prose-body">
@@ -194,33 +306,37 @@ const steps = [
 					</p>
 				</div>
 			</div>
-		</section>
-	</div>
+		</div>
+	</section>
 
-	<!-- 7. What happens next -->
-	<section class="shell mt-24 md:mt-32" aria-labelledby="urmeaza">
-		<p class="eyebrow">Ce urmează după primul mesaj</p>
-		<h2 id="urmeaza" class="display-lg mt-5 max-w-[20ch]">Trei pași, fără pâlnie de vânzări.</h2>
+	<!-- 8. Ce urmează, pe cerneală, curgând în footer. -->
+	<section class="invert mt-24 md:mt-32" aria-labelledby="urmeaza">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<p class="spec">Ce urmează după primul mesaj</p>
+			<h2 id="urmeaza" class="display-lg mt-6 max-w-[20ch]">Trei pași, fără pâlnie de vânzări.</h2>
 
-		<ol class="mt-12 grid gap-4 md:grid-cols-3">
-			{
-				steps.map((step, i) => (
-					<li class="card rise">
-						<p class="eyebrow">{String(i + 1).padStart(2, '0')}</p>
-						<p class="mt-4 text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
-					</li>
-				))
-			}
-		</ol>
+			<ol class="mt-14 flex flex-col gap-10 md:gap-14">
+				{
+					steps.map((step, i) => (
+						<li class="rise grid gap-3 md:grid-cols-12 md:gap-10">
+							<p class="numeral-ghost md:col-span-2">{String(i + 1).padStart(2, '0')}</p>
+							<p class="max-w-[54ch] text-lg leading-snug text-paper/80 md:col-span-9 md:pt-4">
+								{step}
+							</p>
+						</li>
+					))
+				}
+			</ol>
 
-		<p class="prose-body mt-10">
-			Prețul vine după ce știu fluxul, nu înainte. Un marketplace cu trei tipuri de vânzători și
-			refund parțial nu costă cât unul cu un singur payout, iar un interval inventat înainte de
-			discuție nu ajută pe nimeni.
-		</p>
+			<p class="prose-body mt-12 max-w-[62ch]">
+				Prețul vine după ce știu fluxul, nu înainte. Un marketplace cu trei tipuri de vânzători și
+				refund parțial nu costă cât unul cu un singur payout, iar un interval inventat înainte de
+				discuție nu ajută pe nimeni.
+			</p>
 
-		<div class="mt-12">
-			<a href="/ro/contact" class="btn btn-primary">Trimite-mi fluxul de plăți</a>
+			<div class="mt-12">
+				<a href={paths.contact.ro} class="btn btn-primary">Trimite-mi fluxul de plăți</a>
+			</div>
 		</div>
 	</section>
 </Site>

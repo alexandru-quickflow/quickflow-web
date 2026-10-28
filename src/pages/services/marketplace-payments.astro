@@ -56,6 +56,40 @@ const steps = [
 	'I send you a proposal with the scope written down and a start date.',
 ];
 
+/** Separate charges and transfers, which is the shape that actually holds the
+ *  money until delivery. Amounts are in minor units, so 100000 is 1,000.00,
+ *  and 85000 is the seller's 850 from the drawing at the top of the page.
+ *  Kept under 58 characters a line so it never scrolls sideways on a phone. */
+const stripeShape = `// 01  The buyer pays. It lands in the platform balance.
+const payment = await stripe.paymentIntents.create({
+  amount: 100000,
+  currency: 'ron',
+  transfer_group: order.id,
+});
+
+// 02  Delivery is confirmed. Only now does the share leave.
+await stripe.transfers.create({
+  amount: 85000,
+  currency: 'ron',
+  destination: seller.stripeAccountId,
+  transfer_group: order.id,
+});`;
+
+const fields = [
+	{
+		name: 'transfer_group',
+		body: 'The one string that ties the charge and every later transfer to the same order. Without it, a refund three weeks later is a forensic exercise.',
+	},
+	{
+		name: 'transfers.create',
+		body: 'A second call, made when delivery is confirmed. Nothing schedules it and nothing fires on a timer, so an order that is cancelled simply never reaches it.',
+	},
+	{
+		name: 'destination',
+		body: "The seller's connected account, which exists only after they have passed verification. Until then the money has nowhere to go, which is the real reason onboarding comes first.",
+	},
+];
+
 const title = 'Stripe Connect marketplace with split payments | Quick Flow';
 const description =
 	'Two-sided marketplaces on Stripe Connect: seller onboarding that passes verification, money held until delivery, splits that survive refunds.';
@@ -146,7 +180,10 @@ const schema = {
 		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
 			<div class="grid gap-10 md:grid-cols-12">
 				<div class="md:col-span-7">
-					<p class="spec">The part most people get wrong</p>
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">The part most people get wrong</p>
+						<span class="state state-risk">Application rejected</span>
+					</div>
 					<h2 id="escrow" class="display-lg mt-6">
 						Stripe does not do <span class="strike">escrow</span>.
 					</h2>
@@ -163,7 +200,39 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- 5. What can and cannot be shown. Said here rather than left for the
+	<!-- 5. The same thing in the API. A page about payment mechanics that shows
+	     no payment mechanics is a page of adjectives. Two calls, and the gap
+	     between them is the entire product. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="shape">
+		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Two calls, and a gap</p>
+				<h2 id="shape" class="display-lg mt-6">What it looks like <em>in the API</em>.</h2>
+				<p class="prose-body mt-7">
+					There is no feature called escrow to switch on. There is a charge, a wait, and a
+					transfer, and the wait is the part you control.
+				</p>
+			</div>
+			{/* min-w-0, or the code block refuses to shrink below its longest line
+			    and widens the whole grid track: 493px of content inside a 375px
+			    phone, clipped by the body and unreachable. */}
+			<div class="min-w-0 md:col-span-7 md:col-start-6">
+				<pre class="code">{stripeShape}</pre>
+				<dl class="mt-8 flex flex-col">
+					{
+						fields.map((f) => (
+							<div class="hair grid gap-2 py-5 md:grid-cols-12 md:gap-6">
+								<dt class="spec md:col-span-4 md:pt-1">{f.name}</dt>
+								<dd class="prose-body text-[0.95rem] md:col-span-8">{f.body}</dd>
+							</div>
+						))
+					}
+				</dl>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. What can and cannot be shown. Said here rather than left for the
 	     reader to notice, because a portfolio claim is checked in two minutes. -->
 	<section class="bleed mt-24 md:mt-32" aria-labelledby="proof">
 		<div class="grid gap-8 md:grid-cols-12">
@@ -197,7 +266,7 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- 6. The entry offer. Four questions, a written answer, no call. -->
+	<!-- 7. The entry offer. Four questions, a written answer, no call. -->
 	<section class="bleed mt-24 md:mt-32" aria-labelledby="flow">
 		<div class="hair pt-10 md:pt-14">
 			<p class="spec">Free, and no call</p>
@@ -237,18 +306,20 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- 7. What happens next, on ink, flowing into the footer. -->
+	<!-- 8. What happens next, on ink, flowing into the footer. -->
 	<section class="invert mt-24 md:mt-32" aria-labelledby="next">
 		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
 			<p class="spec">What happens after the first message</p>
 			<h2 id="next" class="display-lg mt-6 max-w-[20ch]">Three steps, and no sales funnel.</h2>
 
-			<ol class="mt-12 grid gap-x-12 gap-y-8 md:grid-cols-3">
+			<ol class="mt-14 flex flex-col gap-10 md:gap-14">
 				{
 					steps.map((step, i) => (
-						<li class="hair pt-6">
-							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
-							<p class="mt-4 max-w-[34ch] text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
+						<li class="rise grid gap-3 md:grid-cols-12 md:gap-10">
+							<p class="numeral-ghost md:col-span-2">{String(i + 1).padStart(2, '0')}</p>
+							<p class="max-w-[54ch] text-lg leading-snug text-paper/80 md:col-span-9 md:pt-4">
+								{step}
+							</p>
 						</li>
 					))
 				}

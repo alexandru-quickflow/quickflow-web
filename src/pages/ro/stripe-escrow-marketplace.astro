@@ -1,10 +1,14 @@
 ---
 import Site from '../../layouts/Site.astro';
 import PaymentFlow from '../../components/PaymentFlow.astro';
+import { VERIFIED_ON } from '../../content/proof';
+import { paths } from '../../i18n/routes';
 
 // Every claim on this page is re-checked at the source before each release, and
-// the date below changes with it. Spec v5, section 7.
-const verifiedOn = '27 octombrie 2026';
+// the date below changes with it. Spec v5, section 7. It used to be a string
+// typed into this file, which meant two pages could disagree about the same
+// date; it now comes from the same place as the English one.
+const verifiedOn = VERIFIED_ON.ro;
 
 const wording = [
 	{ avoid: 'escrow', use: 'plata e reținută de platformă până la confirmarea livrării' },
@@ -12,30 +16,65 @@ const wording = [
 	{ avoid: 'portofel', use: 'sold afișat în aplicație, care reflectă transferuri reale' },
 	{ avoid: 'cont de tip trust', use: 'încasare pe platformă, transfer separat' },
 ];
+
+const faq = [
+	{
+		q: 'Stripe oferă escrow?',
+		a: 'Nu. Escrow e o activitate reglementată, nu o caracteristică de produs, iar „Escrow services” apare pe lista de activități restricționate a Stripe, la categoria servicii financiare.',
+	},
+	{
+		q: 'Ce construiești în loc?',
+		a: 'O încasare pe platformă și un transfer separat, eliberat la confirmarea livrării. Stripe documentează tiparul ca separate charges and transfers, și se aprobă.',
+	},
+	{
+		q: 'De ce mi-a fost respinsă aplicația fără explicație?',
+		a: 'Dacă într-o aplicație de cont scrie că ții banii altora, cererea ajunge la echipa de risc, nu la onboarding. Deciziile de risc nu vin cu explicații.',
+	},
+];
+
+const title = 'Stripe nu are escrow. Ce folosești în loc';
+const description =
+	'Escrow are definiție juridică, iar Stripe trece serviciile de escrow pe lista de activități restricționate. Fluxul care se aprobă e altul: încasare separată de transfer, cu transferul eliberat la confirmare.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	inLanguage: 'ro',
+	mainEntity: faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a },
+	})),
+};
 ---
 
-<Site
-	lang="ro"
-	title="Stripe nu are escrow. Ce folosești în loc"
-	description="Escrow are definiție juridică, iar Stripe trece serviciile de escrow pe lista de activități restricționate. Fluxul care se aprobă e altul: încasare separată de transfer, cu transferul eliberat la confirmare."
->
-	<!-- 1. Recognition -->
-	<section class="shell pb-16 pt-16 md:pb-24 md:pt-24">
-		<p class="eyebrow">Plăți pentru marketplace</p>
-		<h1 class="display-xl mt-7 max-w-[15ch]">Stripe nu are escrow. De-aia ți-a fost respinsă aplicația.</h1>
-		<p class="lead mt-10 max-w-[58ch]">
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recunoaștere. Cititorul a ajuns aici dintr-un email de respingere. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Plăți pentru marketplace</p>
+			<span class="stamp">Surse verificate {verifiedOn}</span>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">
+			Stripe nu are <span class="strike">escrow</span>. De-aia ți-a fost respinsă aplicația.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
 			Ai descris un flux în care banii stau undeva până la livrare, ai folosit cuvântul escrow, și
 			ți-a venit respins fără explicație. Lucrul pe care îl vrei se poate face și se aprobă. Doar
 			că nu se numește așa și nu se construiește așa.
 		</p>
 	</section>
 
-	<!-- 2. What escrow actually is -->
-	<section class="shell" aria-labelledby="ce-e">
-		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
+	<!-- 2. Ce e escrow de fapt. Fapte, cu sursa atașată. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="ce-e">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
 			<div class="md:col-span-5">
-				<p class="eyebrow">Fapte, nu opinii</p>
-				<h2 id="ce-e" class="display-lg mt-5">Escrow e un termen juridic.</h2>
+				<p class="spec">Fapte, nu opinii</p>
+				<h2 id="ce-e" class="display-lg mt-6">Escrow e un termen juridic.</h2>
 			</div>
 			<div class="md:col-span-6 md:col-start-7">
 				<p class="prose-body">
@@ -47,7 +86,7 @@ const wording = [
 					lor de activități restricționate, la categoria servicii financiare. Verificat pe
 					<a
 						href="https://stripe.com/legal/restricted-businesses"
-						rel="noopener"
+						rel="noopener nofollow"
 						target="_blank"
 						class="link">pagina lor de activități restricționate</a
 					>, {verifiedOn}.
@@ -55,18 +94,18 @@ const wording = [
 				<p class="prose-body mt-5">
 					Dacă într-o aplicație de cont scrie că ții banii în custodie pentru alții, cererea
 					ajunge la echipa de risc, nu la cea de onboarding. Nimeni nu îți explică, pentru că
-					explicațiile pe motive de risc nu se dau.
+					deciziile pe motive de risc nu vin cu explicații.
 				</p>
 			</div>
 		</div>
 	</section>
 
-	<!-- 3. What you actually want -->
-	<section class="shell mt-24 md:mt-32" aria-labelledby="ce-vrei">
-		<div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+	<!-- 3. Ce vrei de fapt, cu desenul. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="ce-vrei">
+		<div class="hair grid items-center gap-12 pt-10 lg:grid-cols-12 lg:gap-10 md:pt-14">
 			<div class="lg:col-span-5">
-				<p class="eyebrow">Ce vrei de fapt</p>
-				<h2 id="ce-vrei" class="display-lg mt-5">
+				<p class="spec">Ce vrei de fapt</p>
+				<h2 id="ce-vrei" class="display-lg mt-6">
 					Cumpărătorul plătește acum. Vânzătorul e plătit când munca e gata.
 				</h2>
 				<p class="prose-body mt-7">
@@ -74,21 +113,21 @@ const wording = [
 					confirmare. În documentația Stripe se numește
 					<a
 						href="https://docs.stripe.com/connect/separate-charges-and-transfers"
-						rel="noopener"
+						rel="noopener nofollow"
 						target="_blank"
 						class="link">separate charges and transfers</a
 					>, e un tipar documentat, și se aprobă.
 				</p>
 			</div>
-			<div class="lg:col-span-6 lg:col-start-7">
-				<PaymentFlow />
+			<div class="min-w-0 lg:col-span-6 lg:col-start-7">
+				<PaymentFlow lang="ro" />
 			</div>
 		</div>
 	</section>
 
-	<!-- 4. Why a payout delay is not the answer -->
-	<section class="shell mt-24 md:mt-32" aria-labelledby="delay">
-		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
+	<!-- 4. De ce scurtătura evidentă e greșită. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="delay">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
 			<h2 id="delay" class="display-md md:col-span-5">
 				Un payout delay e un cronometru, nu o condiție.
 			</h2>
@@ -100,8 +139,7 @@ const wording = [
 				<p class="prose-body mt-5">
 					Numai că un cronometru nu știe dacă munca a fost făcută. Dacă o comandă se anulează în
 					ziua a doua, banii sunt deja în soldul vânzătorului și trebuie scoși de acolo. Dacă
-					vânzătorul a apucat să îi retragă, îi recuperezi din următoarea lui vânzare sau
-					deloc.
+					vânzătorul a apucat să îi retragă, îi recuperezi din următoarea lui vânzare sau deloc.
 				</p>
 				<p class="prose-body mt-5">
 					Transferul la confirmare nu are problema asta. Până la confirmare, banii nu au plecat
@@ -112,14 +150,15 @@ const wording = [
 		</div>
 	</section>
 
-	<!-- 5. What to write in the account application -->
-	<div class="surface-paper mt-24 md:mt-32">
-		<section class="shell py-20 md:py-28" aria-labelledby="aplicatie">
-			<p class="eyebrow">Partea practică</p>
-			<h2 id="aplicatie" class="display-lg mt-5 max-w-[22ch]">
+	<!-- 5. Tabelul de substituție, pe cerneală. E obiectul cel mai util de pe
+	     site: patru formulări de șters și patru de scris. -->
+	<section class="invert mt-24 md:mt-32" aria-labelledby="aplicatie">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Partea practică</p>
+			<h2 id="aplicatie" class="display-lg mt-6 max-w-[22ch]">
 				Ce scrii în aplicația de cont, ca să nu fie respinsă.
 			</h2>
-			<p class="mt-7 max-w-[62ch] text-lg leading-snug text-paper/85">
+			<p class="mt-8 max-w-[62ch] text-lg leading-snug">
 				Descrie mișcarea banilor, nu construcția juridică. Cine plătește, cui, când pleacă partea
 				fiecăruia, și cine suportă refund-ul. Fără termeni care sună a serviciu financiar.
 			</p>
@@ -128,22 +167,18 @@ const wording = [
 				<table class="w-full border-collapse text-left">
 					<thead>
 						<tr>
-							<th class="border-b border-paper/15 pb-3 pr-6 font-mono text-xs uppercase tracking-widest text-paper/65">
-								În loc de
-							</th>
-							<th class="border-b border-paper/15 pb-3 font-mono text-xs uppercase tracking-widest text-paper/65">
-								Scrie
-							</th>
+							<th class="spec border-b border-[var(--line)] pb-3 pr-6">În loc de</th>
+							<th class="spec border-b border-[var(--line)] pb-3">Scrie</th>
 						</tr>
 					</thead>
 					<tbody>
 						{
 							wording.map((c) => (
 								<tr>
-									<td class="border-b border-paper/10 py-4 pr-6 align-top text-paper/68 line-through">
+									<td class="strike border-b border-[var(--line-soft)] py-4 pr-6 align-top text-paper/68">
 										{c.avoid}
 									</td>
-									<td class="border-b border-paper/10 py-4 align-top text-paper">{c.use}</td>
+									<td class="border-b border-[var(--line-soft)] py-4 align-top">{c.use}</td>
 								</tr>
 							))
 						}
@@ -151,26 +186,33 @@ const wording = [
 				</table>
 			</div>
 
-			<p class="mt-10 max-w-[62ch] text-[0.95rem] leading-relaxed text-paper/70">
+			<p class="prose-body mt-10 max-w-[62ch] text-[0.95rem]">
 				Adaugă și lucrurile concrete pe care echipa de risc le caută oricum: ce se vinde, cine
 				vinde, cât e o comandă medie, în cât timp se livrează, și ce se întâmplă când nu se
 				livrează. O descriere scurtă și precisă trece mai ușor decât una lungă și prudentă.
 			</p>
-		</section>
-	</div>
+		</div>
+	</section>
 
-	<!-- 6. The detail almost nobody knows -->
-	<section class="shell mt-24 md:mt-32" aria-labelledby="preview">
-		<div class="grid gap-8 md:grid-cols-12">
+	<!-- 6. Detaliul pe care aproape nimeni nu îl știe, și motivul de a nu
+	     construi pe el. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="preview">
+		<div class="grid gap-8 rounded-2xl border border-[var(--line)] p-7 md:grid-cols-12 md:p-12">
 			<div class="md:col-span-5">
-				<p class="eyebrow">Un detaliu rar</p>
-				<h2 id="preview" class="display-md mt-5">Există și o variantă de ținere a fondurilor.</h2>
+				<p class="spec">Un detaliu rar</p>
+				<h2 id="preview" class="display-md mt-6">
+					Există și o variantă de ținere a fondurilor.
+				</h2>
+				<p class="mt-8 flex flex-wrap gap-3">
+					<span class="state state-risk">Private preview</span>
+					<span class="state">Caz cu caz</span>
+				</p>
 			</div>
 			<div class="md:col-span-6 md:col-start-7">
 				<p class="prose-body">
-					Stripe descrie o funcție numită funds segregation, care ține fondurile unei plăți într-o
-					stare protejată înainte de transferul către contul conectat. E în private preview, iar
-					accesul se cere prin managerul de cont.
+					Stripe descrie o funcție numită funds segregation, care ține fondurile unei plăți
+					într-o stare protejată înainte de transferul către contul conectat. E în private
+					preview, iar accesul se cere prin managerul de cont.
 				</p>
 				<p class="prose-body mt-5">
 					Nu construiesc pe ea și nici nu ți-o recomand ca plan principal, pentru că nu poți
@@ -181,25 +223,46 @@ const wording = [
 		</div>
 	</section>
 
-	<!-- 7. Close -->
-	<section class="shell mt-24 md:mt-32">
-		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
-			<div class="md:col-span-7">
-				<h2 class="display-lg">Trimite-mi fluxul tău și îți spun dacă se aprobă.</h2>
-				<p class="prose-body mt-6">
-					Scrie-mi cine plătește, cine încasează, cine ia comision și când se consideră livrată
-					munca. Îți răspund în aceeași zi lucrătoare, în scris. Gratuit, fără call.
-				</p>
-				<p class="mt-8 font-mono text-xs uppercase tracking-widest text-paper/65">
-					Faptele de pe pagina asta au fost verificate la sursă pe {verifiedOn}
-				</p>
-			</div>
-			<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
-				<a href="/ro/contact" class="btn btn-primary">Trimite-mi fluxul</a>
-				<p class="mt-6 text-sm text-paper/70">
-					Sau citește <a href="/ro/servicii/marketplace-plati" class="link">ce construiesc</a> pentru
-					marketplace-uri.
-				</p>
+	<!-- 7. Cele trei întrebări pe care le primește pagina, scrise ca să poată
+	     fi citite fără pagină, și ca să le citească și Google. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="faq">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Cel mai des întrebat</p>
+			<span class="spec">03</span>
+		</div>
+		<h2 id="faq" class="display-lg mt-8 max-w-[24ch]">Trei întrebări, cu un rând de răspuns.</h2>
+
+		<dl class="mt-12 flex flex-col">
+			{
+				faq.map((f) => (
+					<div class="hair grid gap-4 py-8 md:grid-cols-12 md:gap-8">
+						<dt class="display-md md:col-span-5">{f.q}</dt>
+						<dd class="prose-body md:col-span-6 md:col-start-7">{f.a}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</section>
+
+	<!-- 8. Închidere, pe cerneală. -->
+	<section class="invert mt-24 md:mt-32">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<h2 class="display-lg">Trimite-mi fluxul tău și îți spun dacă se aprobă.</h2>
+					<p class="prose-body mt-7">
+						Scrie-mi cine plătește, cine încasează, cine ia comision și când se consideră livrată
+						munca. Îți răspund în aceeași zi lucrătoare, în scris. Gratuit, fără call.
+					</p>
+					<p class="stamp mt-9">Faptele de pe pagina asta au fost verificate la sursă pe {verifiedOn}</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Trimite-mi fluxul</a>
+					<p class="mt-6 text-sm text-paper/70">
+						Sau citește <a href={paths.marketplace.ro} class="link">ce construiesc</a> pentru
+						marketplace-uri.
+					</p>
+				</div>
 			</div>
 		</div>
 	</section>
