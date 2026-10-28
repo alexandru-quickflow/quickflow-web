@@ -1,0 +1,324 @@
+---
+import Base from '../../layouts/Base.astro';
+
+// Measured 2026-10-27. This is a property of the Bubble runtime, which ships
+// on every public page of every Bubble app regardless of what the page holds,
+// not a measurement of any particular site. Spec v7 forbids publishing a
+// comparison between two identifiable sites.
+const metrics = [
+	{ label: 'JavaScript livrat înainte de primul cuvânt', a: '1.371 KB', b: '13 KB', wa: 100, wb: 1 },
+];
+
+// Kept under 58 characters a line so it never needs sideways scrolling.
+const snippet = `const r = performance.getEntriesByType('resource');
+const n = performance.getEntriesByType('navigation')[0];
+const kb = x => Math.round(x / 1024) + ' KB';
+const sum = a => a.reduce((t, x) => t + x.encodedBodySize, 0);
+const js = r.filter(x => /\\.js(\\?|$)/.test(x.name));
+
+console.table({
+  total: kb(sum(r) + n.encodedBodySize),
+  javascript: kb(sum(js)),
+  load: Math.round(n.loadEventEnd) + ' ms',
+});`;
+
+const phases = [
+	{
+		n: '00',
+		title: 'Audit',
+		what:
+			'Îți citesc aplicația: modelul de date, workflow-urile, plugin-urile, integrările. Iese un document cu ce se traduce direct, ce trebuie regândit, planul pe faze și cât te costă lunar după.',
+		state: 'Neatinsă',
+	},
+	{
+		n: '01',
+		title: 'Stratul public',
+		what:
+			'Site-ul public, paginile de prezentare, landing-urile și blogul ies din platformă.',
+		state: 'Funcționează. Pentru utilizatori nu se schimbă nimic',
+	},
+	{
+		n: '02',
+		title: 'Citirile',
+		what:
+			'Paginile care doar afișează date trec pe cod. Platforma rămâne sursa adevărului.',
+		state: 'Funcționează',
+	},
+	{
+		n: '03',
+		title: 'Scrierile și plățile',
+		what: 'Fluxurile prin care intră date și bani trec pe cod, unul câte unul.',
+		state: 'Funcționează, bucată cu bucată',
+	},
+	{
+		n: '04',
+		title: 'Conturile și tăierea',
+		what: 'Utilizatorii trec, platforma veche se oprește.',
+		state: 'Singurul moment cu risc real',
+	},
+];
+
+const hurts = [
+	{
+		title: 'Parolele',
+		body:
+			'Parolele utilizatorilor nu ies din platformă. Cine îți promite altceva fie nu a făcut-o niciodată, fie nu îți spune tot. La faza 4, oamenii își resetează parola. Nu e un detaliu tehnic, e un email care trebuie scris bine și trimis în momentul potrivit, altfel pierzi utilizatori care nu s-au logat de trei luni.',
+	},
+	{
+		title: 'Două sisteme în paralel',
+		body:
+			'Între faza 2 și faza 4 rulează amândouă. În fiecare moment doar unul e sursa adevărului, și se stabilește la audit care și când se mută. Dacă nu se decide explicit, apar date care nu se potrivesc, iar asta se repară scump.',
+	},
+	{
+		title: 'Plugin-urile',
+		body:
+			'Unele nu au echivalent direct în cod. Fiecare e fie rescris, fie înlocuit cu un serviciu, fie tăiat pentru că oricum nu îl folosea nimeni. Lista apare în audit, nu la mijlocul proiectului.',
+	},
+];
+
+const stay = [
+	{
+		title: 'Dacă încă nu știi dacă produsul are piață',
+		body: 'Viteza cu care schimbi lucrurile valorează mai mult decât factura. Rămâi.',
+	},
+	{
+		title: 'Dacă aplicația e internă, cu câțiva zeci de utilizatori',
+		body: 'Nu o caută nimeni pe Google. Nu ai ce câștiga.',
+	},
+	{
+		title: 'Dacă factura lunară e mică și nu crește',
+		body: 'Dacă nu te doare, nu e o problemă.',
+	},
+];
+---
+
+<Base
+	title="Migrare de pe Bubble pe cod, pe faze"
+	description="Scot aplicații din Bubble pe faze, fără să le opresc. Începe cu un audit de două zile, 600 EUR, scăzut din prețul proiectului."
+>
+	<!-- 1. Recunoaștere -->
+	<section class="shell pb-16 pt-16 md:pb-24 md:pt-24">
+		<p class="eyebrow">Migrare de pe Bubble pe cod</p>
+		<h1 class="display-xl mt-7 max-w-[16ch]">A fost rapid de construit. Acum e ce te ține pe loc.</h1>
+		<p class="lead mt-10 max-w-[58ch]">
+			Aplicația funcționează și are clienți. Dar factura crește odată cu traficul, paginile publice
+			se încarcă în câteva secunde bune, iar Google le indexează prost. Și la prima discuție
+			serioasă cu un investitor sau cu un cumpărător, cineva întreabă ce se întâmplă dacă platforma
+			își schimbă prețurile sau dispare.
+		</p>
+	</section>
+
+	<!-- 2. Măsurat -->
+	<section class="shell" aria-labelledby="masurat">
+		<div class="rule pt-12 md:pt-16">
+			<p class="eyebrow">Cât te costă, măsurat</p>
+			<h2 id="masurat" class="display-lg mt-5 max-w-[24ch]">Nu e o impresie. Se măsoară în treizeci de secunde.</h2>
+			<p class="prose-body mt-7">
+				O pagină publică servită de Bubble livrează runtime-ul platformei înainte să afișeze primul
+				cuvânt. Nu depinde de ce ai pus pe pagină. Aceeași pagină scrisă în cod și servită static nu
+				livrează aproape nimic.
+			</p>
+
+			<div class="mt-12 border border-paper/15 bg-ink-800/60 p-6 md:p-10">
+				<div class="flex flex-wrap items-baseline justify-between gap-4">
+					<div class="flex gap-6">
+						<p class="eyebrow text-paper/60">
+							<span class="mr-2 inline-block h-2 w-6 translate-y-[1px] bg-paper/55"></span>
+							Pe Bubble
+						</p>
+						<p class="eyebrow">
+							<span class="mr-2 inline-block h-2 w-6 translate-y-[1px] bg-teal"></span>
+							În cod
+						</p>
+					</div>
+					<p class="eyebrow text-paper/45">Măsurat 27.10.2026</p>
+				</div>
+
+				<dl class="mt-8 flex flex-col gap-8">
+					{
+						metrics.map((m) => (
+							<div>
+								<dt class="font-mono text-xs uppercase tracking-widest text-paper/55">
+									{m.label}
+								</dt>
+								<dd class="mt-3 flex flex-col gap-2">
+									<div class="flex items-center gap-4">
+										<div class="h-3 flex-1 bg-paper/8">
+											<div class="h-full bg-paper/55" style={`width:${m.wa}%`} />
+										</div>
+										<span class="w-24 shrink-0 text-right font-mono text-sm text-paper/70">
+											{m.a}
+										</span>
+									</div>
+									<div class="flex items-center gap-4">
+										<div class="h-3 flex-1 bg-paper/8">
+											<div
+												class="h-full min-w-[3px] bg-teal"
+												style={`width:${m.wb}%`}
+											/>
+										</div>
+										<span class="w-24 shrink-0 text-right font-mono text-sm text-teal">
+											{m.b}
+										</span>
+									</div>
+								</dd>
+							</div>
+						))
+					}
+				</dl>
+			</div>
+
+			<p class="prose-body mt-10">
+				Rulează asta în consola browserului, pe propriul tău site, și compară:
+			</p>
+			<pre
+				class="mt-5 overflow-x-auto border border-paper/15 bg-ink-800/60 p-5 font-mono text-[0.8rem] leading-relaxed text-paper/80"><code>{snippet}</code></pre>
+
+			<p class="prose-body mt-10">
+				Mai e ceva ce nu se vede. O pagină de marketing pe Bubble poate declanșa interogări în baza
+				de date la fiecare afișare, inclusiv pentru roboții Google. Fiecare costă workload units,
+				adică bani, pentru vizitatori care nu au cerut nimic. Aceeași pagină servită static costă
+				zero pe vizită, oricâți o citesc.
+			</p>
+		</div>
+	</section>
+
+	<!-- 3. Ce nu îți propun -->
+	<section class="shell mt-24 md:mt-32">
+		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
+			<h2 class="display-md md:col-span-5">
+				Nu îți propun o rescriere de la zero, predată în bloc peste șase luni.
+			</h2>
+			<p class="prose-body md:col-span-6 md:col-start-7">
+				Nu pentru că nu s-ar putea, ci pentru că așa eșuează migrările: plătești luni întregi fără
+				să vezi nimic, iar la final primești ceva ce nu mai seamănă cu ce aveai.
+			</p>
+		</div>
+	</section>
+
+	<!-- 4. Traseul -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="traseul">
+		<p class="eyebrow">Traseul</p>
+		<h2 id="traseul" class="display-lg mt-5 max-w-[22ch]">Cinci faze. Cumperi una pe rând.</h2>
+
+		<ol class="mt-12">
+			{
+				phases.map((p) => (
+					<li class="rule grid gap-4 py-8 md:grid-cols-12 md:gap-8 md:py-10">
+						<p class="eyebrow md:col-span-1">{p.n}</p>
+						<h3 class="display-md md:col-span-3">{p.title}</h3>
+						<p class="prose-body md:col-span-5">{p.what}</p>
+						<p class="md:col-span-3 md:text-right">
+							<span class="font-mono text-xs uppercase tracking-widest text-teal">
+								{p.state}
+							</span>
+						</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<p class="prose-body mt-10">
+			Nu cumperi tot traseul la început. Cumperi auditul. După audit decizi dacă faci faza 1, și
+			abia după ce vezi faza 1 livrată decizi dacă mergem mai departe.
+		</p>
+	</section>
+
+	<!-- 5. Ce doare -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="doare">
+		<p class="eyebrow">Ce doare și nu se poate evita</p>
+		<h2 id="doare" class="display-lg mt-5 max-w-[22ch]">Trei lucruri pe care nu le poate ocoli nimeni.</h2>
+
+		<div class="mt-12 grid gap-px bg-paper/15 md:grid-cols-3">
+			{
+				hurts.map((h) => (
+					<article class="bg-ink px-6 py-8 md:px-7 md:py-9">
+						<h3 class="display-md">{h.title}</h3>
+						<p class="mt-5 text-[0.95rem] leading-relaxed text-paper/70">{h.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 6. Auditul -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="audit">
+		<div class="border border-teal/35 bg-ink-800/60 p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="eyebrow">Auditul de migrare</p>
+					<p class="display-xl mt-6 text-teal">600 €</p>
+					<p class="mt-3 font-mono text-sm uppercase tracking-widest text-paper/60">Două zile</p>
+					<a href="/contact" class="btn btn-primary mt-9">Cere un audit</a>
+				</div>
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="audit" class="display-md">Primești un document cu:</h2>
+					<ul class="mt-6 flex flex-col gap-3">
+						{
+							[
+								'Inventarul aplicației: tipuri de date, câmpuri, relații',
+								'Workflow-urile, cu ce face fiecare și ce se întâmplă cu el',
+								'Plugin-urile și integrările, cu echivalentul în cod sau cu lipsa lui',
+								'Planul pe faze, cu ce se poate livra separat',
+								'Cât te costă lunar după, față de cât te costă acum',
+							].map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed text-paper/75">
+									<span class="mt-[0.45rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+					<p class="mt-8 text-[0.95rem] leading-relaxed text-paper/75">
+						Dacă mergem mai departe, cei 600 EUR se scad din prețul proiectului.
+					</p>
+					<p class="mt-3 text-[0.95rem] leading-relaxed text-paper/75">
+						Dacă nu mergem, rămâi cu documentul. E al tău și îl poți da oricui altcuiva.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. Când să rămâi -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="ramai">
+		<p class="eyebrow">Când să rămâi unde ești</p>
+		<h2 id="ramai" class="display-lg mt-5 max-w-[22ch]">Nu orice aplicație are ce căuta în cod.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				stay.map((s) => (
+					<div class="rule grid gap-3 py-8 md:grid-cols-12 md:gap-8">
+						<h3 class="display-md md:col-span-6">{s.title}</h3>
+						<p class="prose-body md:col-span-5 md:col-start-8">{s.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 8. Ce urmează -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="urmeaza">
+		<p class="eyebrow">Ce urmează după primul mesaj</p>
+		<h2 id="urmeaza" class="display-lg mt-5 max-w-[20ch]">Trei pași, fără pâlnie de vânzări.</h2>
+
+		<ol class="mt-12 grid gap-px bg-paper/15 md:grid-cols-3">
+			{
+				[
+					'Îmi scrii ce aplicație ai și ce te deranjează cel mai tare la ea. Îți răspund în aceeași zi lucrătoare, cu o întrebare sau două.',
+					'Dacă pare că are sens, vorbim douăzeci de minute. Fără prezentare și fără ofertă pregătită dinainte.',
+					'Dacă are sens și după discuție, îți trimit o propunere de audit, cu dată de început. Atât.',
+				].map((step, i) => (
+					<li class="bg-ink px-6 py-8 md:px-7 md:py-9">
+						<p class="eyebrow">{String(i + 1).padStart(2, '0')}</p>
+						<p class="mt-4 text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<div class="mt-14">
+			<a href="/contact" class="btn btn-primary">Spune-mi ce aplicație ai</a>
+		</div>
+	</section>
+</Base>

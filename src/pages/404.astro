@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+
+const links = [
+	{ href: '/', label: 'Pagina de start' },
+	{ href: '/servicii/marketplace-plati', label: 'Marketplace cu plăți' },
+	{ href: '/servicii/migrare-bubble', label: 'Migrare de pe Bubble' },
+	{ href: '/stripe-escrow-marketplace', label: 'De ce Stripe nu are escrow' },
+	{ href: '/portofoliu', label: 'Portofoliu' },
+	{ href: '/contact', label: 'Contact' },
+];
+---
+
+<Base
+	title="Pagina nu există, Quick Flow"
+	description="Adresa cerută nu duce nicăieri. Mai jos sunt paginile care există."
+	noindex
+>
+	<section class="shell py-24 md:py-36">
+		<p class="eyebrow">Eroare 404</p>
+		<h1 class="display-xl mt-7 max-w-[14ch]">Adresa asta nu duce nicăieri.</h1>
+		<p class="lead mt-10 max-w-[48ch]">
+			Fie link-ul e greșit, fie pagina a existat și nu mai există. Mai jos e tot ce există acum.
+		</p>
+
+		<ul class="mt-14 flex flex-col">
+			{
+				links.map((l) => (
+					<li class="rule">
+						<a
+							href={l.href}
+							class="flex items-baseline justify-between gap-6 py-5 text-paper/80 transition-colors hover:text-teal"
+						>
+							<span class="display-md">{l.label}</span>
+							<span class="font-mono text-xs text-paper/40">{l.href}</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<p class="prose-body mt-12">
+			Dacă ai ajuns aici dintr-un link de pe alt site și crezi că ar trebui să existe ceva,
+			<a href="/contact" class="link">scrie-mi</a> și repar.
+		</p>
+	</section>
+</Base>

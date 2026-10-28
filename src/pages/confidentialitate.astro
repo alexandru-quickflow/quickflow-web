@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+
+const updated = '27 octombrie 2026';
+
+const sections = [
+	{
+		title: 'Cine prelucrează datele',
+		body: [
+			'Alexandru Trofaniuc, care operează Quick Flow. Scrie-mi la alexandru@quickflow.dev pentru orice întrebare legată de datele tale.',
+		],
+	},
+	{
+		title: 'Ce colectez',
+		body: [
+			'Doar ce scrii tu în formularul de contact: numele, adresa de email, descrierea proiectului și intervalul de buget. Dacă e despre un flux de plăți, și cele patru răspunsuri scurte despre cine plătește, cine încasează, cine ia comision și când se consideră livrată munca.',
+			'Nu cer și nu colectez date despre sănătate, convingeri, date financiare sau orice alt fel de date sensibile. Dacă le scrii din proprie inițiativă în descriere, ajung în emailul meu, deci evită-le.',
+		],
+	},
+	{
+		title: 'Ce fac cu ele',
+		body: [
+			'Îți răspund. Atât. Nu le folosesc pentru publicitate, nu le vând, nu le dau mai departe și nu construiesc niciun profil pe baza lor.',
+		],
+	},
+	{
+		title: 'Unde ajung',
+		body: [
+			'Formularul trimite conținutul pe email, prin Resend, la adresa mea, și o singură copie la adresa pe care ai scris-o tu. Site-ul nu are bază de date și nu stochează nimic pe server.',
+			'Emailurile rămân în căsuța mea atât timp cât discuția are sens. Dacă vrei să le șterg, îmi scrii și le șterg.',
+		],
+	},
+	{
+		title: 'Cine mai vede datele, ca furnizor',
+		body: [
+			'Cloudflare, care găzduiește site-ul și rulează funcția formularului. Cloudflare Turnstile verifică dacă trimiterea vine de la un om, iar pentru asta procesează adresa IP și semnale tehnice despre browser.',
+			'Resend, care livrează emailul.',
+			'Calendly, doar dacă alegi să rezervi un interval. Atunci datele pe care le dai acolo sunt prelucrate de ei, după politica lor.',
+		],
+	},
+	{
+		title: 'Cookies',
+		body: [
+			'Site-ul nu pune niciun cookie. Statisticile de trafic vin de la Cloudflare Web Analytics, care nu folosește cookies și nu identifică vizitatori individuali. De-aia nu vezi niciun banner de cookies.',
+		],
+	},
+	{
+		title: 'Ce drepturi ai',
+		body: [
+			'Poți cere să vezi ce date am despre tine, să le corectez, să le șterg sau să te opui prelucrării. Îmi scrii la alexandru@quickflow.dev și rezolv. Dacă nu ești mulțumit de cum am rezolvat, te poți adresa Autorității Naționale de Supraveghere a Prelucrării Datelor cu Caracter Personal.',
+		],
+	},
+	{
+		title: 'Dacă se schimbă ceva',
+		body: [
+			'Actualizez pagina asta și schimb data de mai jos. Nu există versiuni ascunse și nu trimit notificări, deci dacă te interesează, verifică data.',
+		],
+	},
+];
+---
+
+<Base
+	title="Politica de confidențialitate, Quick Flow"
+	description="Ce date colectează formularul, unde ajung, cât sunt păstrate și cum pot fi șterse. Fără cookies, fără publicitate."
+>
+	<section class="shell pb-12 pt-16 md:pb-16 md:pt-24">
+		<p class="eyebrow">Confidențialitate</p>
+		<h1 class="display-xl mt-7 max-w-[16ch]">Ce se întâmplă cu ce scrii aici.</h1>
+		<p class="lead mt-10 max-w-[56ch]">
+			Pe scurt: ce scrii în formular ajunge pe emailul meu, ca să îți pot răspunde. Site-ul nu
+			are bază de date, nu pune cookies și nu te urmărește.
+		</p>
+	</section>
+
+	<section class="shell">
+		{
+			sections.map((s) => (
+				<section class="rule grid gap-4 py-10 md:grid-cols-12 md:gap-8 md:py-12">
+					<h2 class="display-md md:col-span-4">{s.title}</h2>
+					<div class="md:col-span-7 md:col-start-6">
+						{s.body.map((p, i) => (
+							<p class:list={['prose-body', i > 0 && 'mt-5']}>{p}</p>
+						))}
+					</div>
+				</section>
+			))
+		}
+
+		<p class="mt-10 font-mono text-xs uppercase tracking-widest text-paper/45">
+			Ultima actualizare: {updated}
+		</p>
+	</section>
+</Base>

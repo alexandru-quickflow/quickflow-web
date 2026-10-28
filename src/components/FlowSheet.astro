@@ -1,0 +1,262 @@
+---
+// The money flow as an engineering drawing, not an illustration (CR-06).
+// Two registers, the way a drawing sheet carries a plan and a section: the
+// route the money takes, then the split at true proportion.
+//
+// 850 + 120 + 30 = 1000. The segment widths are computed from those figures,
+// so the drawing cannot say something the arithmetic does not. Figures
+// approved 2026-10-27 as representative, not taken from a client.
+//
+// Deliberately not animated. A time-based entrance has to hide its own content
+// until the animation runs, and the scroll timeline used elsewhere on the page
+// resolves mid-range for an element that is already partly in view on load.
+// Both failure modes land on the hero. The reveals live below the fold.
+
+const TOTAL = 1000;
+const parts = [
+	{ amount: 850, label: 'Vânzător' },
+	{ amount: 120, label: 'Comision platformă' },
+	{ amount: 30, label: 'Procesare' },
+];
+
+// Register 2, desktop: the bar runs 40 to 1160.
+const barX = 40;
+const barW = 1120;
+let cursor = barX;
+const segments = parts.map((p) => {
+	const w = (p.amount / TOTAL) * barW;
+	const seg = { ...p, x: cursor, w, mid: cursor + w / 2 };
+	cursor += w;
+	return seg;
+});
+
+// Register 2, portrait: 20 to 360.
+const mBarX = 20;
+const mBarW = 340;
+let mCursor = mBarX;
+const mSegments = parts.map((p) => {
+	const w = (p.amount / TOTAL) * mBarW;
+	const seg = { ...p, x: mCursor, w, mid: mCursor + w / 2 };
+	mCursor += w;
+	return seg;
+});
+
+const fmt = (n: number) => n.toLocaleString('ro-RO');
+---
+
+<figure class="m-0">
+	<figcaption class="sr-only">
+		O plată de 1.000 de lei intră la platformă, e reținută până la confirmarea livrării, apoi se
+		împarte în 850 de lei către vânzător, 120 de lei comision de platformă și 30 de lei costuri de
+		procesare.
+	</figcaption>
+
+	<!-- Landscape drawing. -->
+	<svg
+		viewBox="0 0 1200 470"
+		class="hidden h-auto w-full md:block"
+		role="presentation"
+		aria-hidden="true"
+	>
+		<!-- Datum line across the sheet. -->
+		<path d="M0,46 H1200" class="stroke-ink/25" stroke-width="1"></path>
+		<text x="40" y="36" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]">
+			Flux de plată
+		</text>
+		<text
+			x="1160"
+			y="36"
+			text-anchor="end"
+			class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]"
+		>
+			Separate charges and transfers, rev. 2026-10
+		</text>
+
+		<!-- Register 1: the route. -->
+		<rect x="40" y="90" width="260" height="120" class="fill-ink/[0.03] stroke-ink/30"></rect>
+		<text x="60" y="124" class="fill-ink/55 font-mono text-[12px] uppercase tracking-[0.16em]">
+			Cumpărător
+		</text>
+		<text x="60" y="178" class="fill-ink font-sans text-[32px] font-bold">{fmt(TOTAL)} lei</text>
+
+		<rect x="470" y="90" width="260" height="120" class="fill-ink/[0.03] stroke-ink/30"></rect>
+		<text x="490" y="124" class="fill-ink/55 font-mono text-[12px] uppercase tracking-[0.16em]">
+			Platformă
+		</text>
+		<!-- The hold. Not escrow, and the caption below says why. -->
+		<rect
+			x="575"
+			y="90"
+			width="50"
+			height="120"
+			class="fill-teal/10 stroke-teal"
+			stroke-width="1.25"></rect>
+		<text
+			x="600"
+			y="150"
+			transform="rotate(-90 600 150)"
+			text-anchor="middle"
+			class="fill-ink font-mono text-[12px] uppercase tracking-[0.22em]">Reținut</text
+		>
+		<rect x="571" y="146" width="8" height="8" class="fill-teal"></rect>
+		<rect x="621" y="146" width="8" height="8" class="fill-teal"></rect>
+
+		<rect x="900" y="90" width="260" height="120" class="fill-ink/[0.03] stroke-ink/30"></rect>
+		<text x="920" y="124" class="fill-ink/55 font-mono text-[12px] uppercase tracking-[0.16em]">
+			Vânzător
+		</text>
+		<text x="920" y="178" class="fill-ink font-sans text-[32px] font-bold">850 lei</text>
+
+		<!-- Connectors. -->
+		<path d="M300,150 H462" class="stroke-ink/45" stroke-width="1"></path>
+		<path d="M454,145 l8,5 -8,5" class="fill-none stroke-ink/45" stroke-width="1"></path>
+		<path d="M730,150 H892" class="stroke-ink/45" stroke-width="1"></path>
+		<path d="M884,145 l8,5 -8,5" class="fill-none stroke-ink/45" stroke-width="1"></path>
+
+		<text
+			x="381"
+			y="138"
+			text-anchor="middle"
+			class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]">01 Încasare</text
+		>
+		<text
+			x="811"
+			y="138"
+			text-anchor="middle"
+			class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]">03 Eliberare</text
+		>
+
+		<!-- Dimension on the hold. -->
+		<path d="M575,232 H625 M575,226 V238 M625,226 V238" class="stroke-ink/40" stroke-width="1"
+		></path>
+		<text
+			x="600"
+			y="262"
+			text-anchor="middle"
+			class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]"
+			>02 Reținere, până la confirmare</text
+		>
+
+		<!-- Register 2: the split, at true proportion. -->
+		<path d="M0,316 H1200" class="stroke-ink/15" stroke-width="1"></path>
+		<text x="40" y="344" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]">
+			Împărțirea, la eliberare
+		</text>
+
+		{
+			segments.map((s, i) => (
+				<rect
+					x={s.x}
+					y={360}
+					width={s.w}
+					height={40}
+					class:list={[i === 0 ? 'fill-ink' : 'fill-ink/[0.06]', 'stroke-ink/30']}
+				/>
+			))
+		}
+		<text x="56" y="386" class="fill-paper font-mono text-[12px] uppercase tracking-[0.16em]">
+			Vânzător, 850 lei
+		</text>
+
+		<!-- Leaders for the two segments too narrow to carry a label. -->
+		<path d={`M${segments[1].mid},400 V424`} class="stroke-ink/35" stroke-width="1"></path>
+		<text
+			x={segments[1].mid}
+			y={440}
+			text-anchor="middle"
+			class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]">Comision, 120 lei</text
+		>
+		<path d={`M${segments[2].mid},400 V452`} class="stroke-ink/35" stroke-width="1"></path>
+		<text
+			x="1160"
+			y={466}
+			text-anchor="end"
+			class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.16em]">Procesare, 30 lei</text
+		>
+	</svg>
+
+	<!-- Portrait drawing. Same two registers, stacked, with type large enough
+	     to survive 375px. -->
+	<svg viewBox="0 0 380 600" class="h-auto w-full md:hidden" role="presentation" aria-hidden="true">
+		<path d="M0,34 H380" class="stroke-ink/25" stroke-width="1"></path>
+		<text x="20" y="25" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			Flux de plată
+		</text>
+
+		<rect x="20" y="64" width="340" height="68" class="fill-ink/[0.03] stroke-ink/30"></rect>
+		<text x="36" y="92" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			Cumpărător
+		</text>
+		<text x="36" y="119" class="fill-ink font-sans text-[22px] font-bold">{fmt(TOTAL)} lei</text>
+
+		<path d="M190,132 V168" class="stroke-ink/45" stroke-width="1"></path>
+		<path d="M185,160 l5,8 5,-8" class="fill-none stroke-ink/45" stroke-width="1"></path>
+		<text x="204" y="156" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			01 Încasare
+		</text>
+
+		<rect x="20" y="168" width="340" height="96" class="fill-ink/[0.03] stroke-ink/30"></rect>
+		<text x="36" y="196" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			Platformă
+		</text>
+		<rect
+			x="20"
+			y="214"
+			width="340"
+			height="34"
+			class="fill-teal/10 stroke-teal"
+			stroke-width="1.25"></rect>
+		<text x="36" y="236" class="fill-ink font-mono text-[12px] uppercase tracking-[0.2em]">
+			Reținut
+		</text>
+		<rect x="330" y="227" width="8" height="8" class="fill-teal"></rect>
+
+		<text x="36" y="286" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			02 Până la confirmare
+		</text>
+
+		<path d="M190,296 V332" class="stroke-ink/45" stroke-width="1"></path>
+		<path d="M185,324 l5,8 5,-8" class="fill-none stroke-ink/45" stroke-width="1"></path>
+		<text x="204" y="320" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			03 Eliberare
+		</text>
+
+		<rect x="20" y="332" width="340" height="68" class="fill-ink/[0.03] stroke-ink/30"></rect>
+		<text x="36" y="360" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			Vânzător
+		</text>
+		<text x="36" y="387" class="fill-ink font-sans text-[22px] font-bold">850 lei</text>
+
+		<path d="M0,444 H380" class="stroke-ink/15" stroke-width="1"></path>
+		<text x="20" y="470" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			Împărțirea, la eliberare
+		</text>
+
+		{
+			mSegments.map((s, i) => (
+				<rect
+					x={s.x}
+					y={486}
+					width={s.w}
+					height={34}
+					class:list={[i === 0 ? 'fill-ink' : 'fill-ink/[0.06]', 'stroke-ink/30']}
+				/>
+			))
+		}
+		<text x="36" y="508" class="fill-paper font-mono text-[11px] uppercase tracking-[0.14em]">
+			850
+		</text>
+		<path d={`M${mSegments[1].mid},520 V542`} class="stroke-ink/35" stroke-width="1"></path>
+		<text x="20" y="562" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			Comision 120 lei
+		</text>
+		<text x="20" y="584" class="fill-ink/55 font-mono text-[11px] uppercase tracking-[0.14em]">
+			Procesare 30 lei
+		</text>
+	</svg>
+
+	<p class="prose-body mt-6 max-w-[52ch] text-[0.95rem]">
+		Reținut de platformă, eliberat la confirmare. Nu e escrow: escrow are o definiție legală pe care
+		Stripe nu o oferă.
+	</p>
+</figure>

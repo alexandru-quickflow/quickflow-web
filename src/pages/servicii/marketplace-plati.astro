@@ -1,0 +1,225 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const signs = [
+	{
+		n: '01',
+		title: 'Stripe ți-a respins aplicația',
+		body: 'Ai descris un flux în care banii stau undeva până la livrare, ți-a venit respins, și nimeni nu ți-a explicat de ce.',
+	},
+	{
+		n: '02',
+		title: 'Payout-urile se fac de mână',
+		body: 'Cineva exportă o listă, o verifică și face transferuri. Merge până când cineva e în concediu sau greșește o sumă.',
+	},
+	{
+		n: '03',
+		title: 'Totul e gata în afară de plăți',
+		body: 'Restul produsului a durat șase săptămâni. Plățile sunt „în lucru” de trei luni.',
+	},
+];
+
+const mechanics = [
+	{
+		title: 'Onboarding de vânzător care trece verificarea',
+		body: 'Conturi conectate, verificare de identitate, documentele pe care Stripe le cere în funcție de țară. Vânzătorul le încarcă singur, tu nu alergi după nimeni.',
+	},
+	{
+		title: 'Banii așteaptă livrarea',
+		body: 'Cumpărătorul plătește platforma. Partea vânzătorului pleacă la confirmare, nu după un cronometru care continuă să meargă și dacă s-a anulat comanda.',
+	},
+	{
+		title: 'Împărțirea rezistă la cazurile limită',
+		body: 'Comision, partea vânzătorului, refund, refund parțial, dispută, un vânzător care își șterge contul cu sold în așteptare. Acolo se sparg marketplace-urile, nu la tranzacția obișnuită.',
+	},
+	{
+		title: 'Payout-uri pe care le poți explica',
+		body: 'Fiecare transfer legat de o comandă, într-un loc unde omul tău de operațiuni se uită fără să mă sune.',
+	},
+];
+
+const steps = [
+	'Îmi scrii fluxul tău de plăți. Îți răspund în aceeași zi lucrătoare, în scris, dacă Stripe îl permite și ce presupune.',
+	'Dacă are sens, vorbim douăzeci de minute. Fără prezentare și fără ofertă pregătită dinainte.',
+	'Îți trimit o propunere cu scope scris și dată de început.',
+];
+---
+
+<Base
+	title="Marketplace cu plăți împărțite, construit de la zero"
+	description="Onboarding de vânzători care trece verificarea, bani reținuți până la livrare, împărțiri care rezistă la refund și dispută. Trimite-mi fluxul tău de plăți și îți spun dacă Stripe îl permite."
+>
+	<!-- 1. Recognition -->
+	<section class="shell pb-16 pt-16 md:pb-24 md:pt-24">
+		<p class="eyebrow">Marketplace cu plăți</p>
+		<h1 class="display-xl mt-7 max-w-[15ch]">Marketplace-ul e partea ușoară. Împărțirea banilor nu e.</h1>
+		<p class="lead mt-10 max-w-[58ch]">
+			Construiesc platforme în care vânzătorii trec verificarea de identitate, banii așteaptă
+			livrarea, iar împărțirea nu se rupe la primul refund. Din 2017 în no-code, din 2025 în cod,
+			singur de la modelul de date până la payout.
+		</p>
+	</section>
+
+	<!-- 2. Three signs -->
+	<section class="shell" aria-labelledby="semne">
+		<div class="rule pt-12 md:pt-16">
+			<p class="eyebrow">De obicei ajungi aici după una din astea</p>
+			<h2 id="semne" class="sr-only">Trei semne</h2>
+		</div>
+
+		{
+			signs.map((s) => (
+				<article class="rule grid gap-4 py-10 md:grid-cols-12 md:gap-8 md:py-12">
+					<p class="numeral-ghost md:col-span-1">{s.n}</p>
+					<h3 class="display-md md:col-span-4">{s.title}</h3>
+					<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+				</article>
+			))
+		}
+	</section>
+
+	<!-- 3. The mechanics, named -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="mecanica">
+		<p class="eyebrow">Ce construiesc, pe nume</p>
+		<h2 id="mecanica" class="display-lg mt-5 max-w-[20ch]">Patru lucruri, nu patru adjective.</h2>
+
+		<div class="mt-12 grid gap-px bg-paper/15 md:grid-cols-2">
+			{
+				mechanics.map((m) => (
+					<article class="bg-ink px-6 py-8 md:px-8 md:py-10">
+						<h3 class="display-md">{m.title}</h3>
+						<p class="mt-5 text-[0.95rem] leading-relaxed text-paper/70">{m.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 4. Hand-off to the escrow page -->
+	<section class="shell mt-24 md:mt-32">
+		<div class="border border-teal/35 bg-ink-800/60 p-7 md:p-12">
+			<div class="grid gap-8 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<p class="eyebrow">Partea pe care o greșesc cei mai mulți</p>
+					<h2 class="display-lg mt-5">Stripe nu are escrow.</h2>
+					<p class="prose-body mt-6">
+						Escrow are o definiție juridică. Stripe nu furnizează conturi de escrow și trece
+						serviciile de escrow pe lista de activități restricționate. Dacă ai scris „escrow”
+						în aplicație, asta explică de ce ți-a venit respinsă.
+					</p>
+					<p class="prose-body mt-4">
+						Ce vrei tu de fapt se numește altfel, se construiește altfel, și se aprobă.
+					</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
+					<a href="/stripe-escrow-marketplace" class="btn btn-primary">Citește cum</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. What can and cannot be shown -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="dovada">
+		<div class="grid gap-8 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="eyebrow">Dovada</p>
+				<h2 id="dovada" class="display-lg mt-5">Ce pot arăta și ce nu.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Marketplace-urile cu plăți împărțite pe care le-am construit au fost livrate prin altă
+					agenție și nu le pot arăta. Spun asta direct, pentru că o pagină care pretinde altceva
+					se verifică în două minute.
+				</p>
+				<p class="prose-body mt-5">
+					Ce pot arăta sunt platforme cu plăți și acces controlat, livrate pe numele meu:
+					<a href="https://jemshitmavlyanov.com" rel="noopener" target="_blank" class="link"
+						>jemshitmavlyanov.com</a
+					>, cu conturi, coș, plată și acces care expiră, în nouă limbi, și
+					<a href="https://elenaviscu.com" rel="noopener" target="_blank" class="link"
+						>elenaviscu.com</a
+					>, cu trei produse vândute online, fiecare cu altă regulă de acces.
+				</p>
+				<p class="prose-body mt-5">
+					Restul se verifică în cincisprezece minute de discuție, nu într-un portofoliu. Întreabă-mă
+					ce se întâmplă când un payout eșuează sau cum se împarte un refund după ce banii au plecat
+					deja la vânzător.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. The entry offer, on paper -->
+	<div class="surface-paper mt-24 md:mt-32">
+		<section class="shell py-20 md:py-28" aria-labelledby="flux">
+			<p class="eyebrow">Gratuit, fără call</p>
+			<h2 id="flux" class="display-lg mt-5 max-w-[20ch]">
+				Trimite-mi fluxul tău de plăți. Îți spun dacă Stripe îl permite.
+			</h2>
+
+			<div class="mt-12 grid gap-10 md:grid-cols-12 md:gap-12">
+				<div class="md:col-span-6">
+					<p class="text-lg leading-snug text-ink/85">
+						Scrie-mi în cuvintele tale patru lucruri. Atât îmi trebuie ca să îți dau un răspuns
+						util din prima, fără să ne programăm nimic.
+					</p>
+					<ol class="mt-8 flex flex-col gap-4">
+						{
+							[
+								'Cine plătește',
+								'Cine încasează',
+								'Cine ia comision, și cât',
+								'Când se consideră livrată munca',
+							].map((q, i) => (
+								<li class="flex gap-4">
+									<span class="font-mono text-xs text-ink-600">
+										{String(i + 1).padStart(2, '0')}
+									</span>
+									<span class="text-lg leading-snug text-ink">{q}</span>
+								</li>
+							))
+						}
+					</ol>
+					<a href="/contact" class="btn btn-primary mt-10">Trimite-mi fluxul</a>
+				</div>
+				<div class="md:col-span-5 md:col-start-8">
+					<p class="prose-body">
+						Îți răspund în aceeași zi lucrătoare, în scris. Îți spun dacă fluxul e permis, ce
+						înseamnă tehnic, și unde o să te doară.
+					</p>
+					<p class="prose-body mt-5">
+						Dacă răspunsul e „da, se poate, și e simplu”, ți-l spun și pe ăsta. Nu primești o
+						ofertă nesolicitată și nu intri în nicio secvență de emailuri.
+					</p>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<!-- 7. What happens next -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="urmeaza">
+		<p class="eyebrow">Ce urmează după primul mesaj</p>
+		<h2 id="urmeaza" class="display-lg mt-5 max-w-[20ch]">Trei pași, fără pâlnie de vânzări.</h2>
+
+		<ol class="mt-12 grid gap-px bg-paper/15 md:grid-cols-3">
+			{
+				steps.map((step, i) => (
+					<li class="bg-ink px-6 py-8 md:px-7 md:py-9">
+						<p class="eyebrow">{String(i + 1).padStart(2, '0')}</p>
+						<p class="mt-4 text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<p class="prose-body mt-10">
+			Prețul vine după ce știu fluxul, nu înainte. Un marketplace cu trei tipuri de vânzători și
+			refund parțial nu costă cât unul cu un singur payout, iar un interval inventat înainte de
+			discuție nu ajută pe nimeni.
+		</p>
+
+		<div class="mt-12">
+			<a href="/contact" class="btn btn-primary">Trimite-mi fluxul de plăți</a>
+		</div>
+	</section>
+</Base>

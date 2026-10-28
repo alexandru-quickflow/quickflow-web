@@ -1,0 +1,205 @@
+---
+import Base from '../layouts/Base.astro';
+import MoneyFlow from '../components/MoneyFlow.astro';
+
+// Every claim on this page is re-checked at the source before each release, and
+// the date below changes with it. Spec v5, section 7.
+const verifiedOn = '27 octombrie 2026';
+
+const wording = [
+	{ avoid: 'escrow', use: 'plata e reținută de platformă până la confirmarea livrării' },
+	{ avoid: 'ținem banii în custodie', use: 'transferul către vânzător pleacă după confirmare' },
+	{ avoid: 'portofel', use: 'sold afișat în aplicație, care reflectă transferuri reale' },
+	{ avoid: 'cont de tip trust', use: 'încasare pe platformă, transfer separat' },
+];
+---
+
+<Base
+	title="Stripe nu are escrow. Ce folosești în loc"
+	description="Escrow are definiție juridică, iar Stripe trece serviciile de escrow pe lista de activități restricționate. Fluxul care se aprobă e altul: încasare separată de transfer, cu transferul eliberat la confirmare."
+>
+	<!-- 1. Recognition -->
+	<section class="shell pb-16 pt-16 md:pb-24 md:pt-24">
+		<p class="eyebrow">Plăți pentru marketplace</p>
+		<h1 class="display-xl mt-7 max-w-[15ch]">Stripe nu are escrow. De-aia ți-a fost respinsă aplicația.</h1>
+		<p class="lead mt-10 max-w-[58ch]">
+			Ai descris un flux în care banii stau undeva până la livrare, ai folosit cuvântul escrow, și
+			ți-a venit respins fără explicație. Lucrul pe care îl vrei se poate face și se aprobă. Doar
+			că nu se numește așa și nu se construiește așa.
+		</p>
+	</section>
+
+	<!-- 2. What escrow actually is -->
+	<section class="shell" aria-labelledby="ce-e">
+		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
+			<div class="md:col-span-5">
+				<p class="eyebrow">Fapte, nu opinii</p>
+				<h2 id="ce-e" class="display-lg mt-5">Escrow e un termen juridic.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Escrow înseamnă că o terță parte neutră ține banii în numele a două părți, sub reguli
+					prestabilite. E o activitate reglementată, nu o caracteristică de produs.
+				</p>
+				<p class="prose-body mt-5">
+					Stripe nu are un asemenea produs. Mai mult, „Escrow services” apare explicit pe lista
+					lor de activități restricționate, la categoria servicii financiare. Verificat pe
+					<a
+						href="https://stripe.com/legal/restricted-businesses"
+						rel="noopener"
+						target="_blank"
+						class="link">pagina lor de activități restricționate</a
+					>, {verifiedOn}.
+				</p>
+				<p class="prose-body mt-5">
+					Dacă într-o aplicație de cont scrie că ții banii în custodie pentru alții, cererea
+					ajunge la echipa de risc, nu la cea de onboarding. Nimeni nu îți explică, pentru că
+					explicațiile pe motive de risc nu se dau.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3. What you actually want -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="ce-vrei">
+		<div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
+			<div class="lg:col-span-5">
+				<p class="eyebrow">Ce vrei de fapt</p>
+				<h2 id="ce-vrei" class="display-lg mt-5">
+					Cumpărătorul plătește acum. Vânzătorul e plătit când munca e gata.
+				</h2>
+				<p class="prose-body mt-7">
+					Asta nu e escrow. E o încasare pe platformă și un transfer separat, eliberat la
+					confirmare. În documentația Stripe se numește
+					<a
+						href="https://docs.stripe.com/connect/separate-charges-and-transfers"
+						rel="noopener"
+						target="_blank"
+						class="link">separate charges and transfers</a
+					>, e un tipar documentat, și se aprobă.
+				</p>
+			</div>
+			<div class="lg:col-span-6 lg:col-start-7">
+				<MoneyFlow />
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. Why a payout delay is not the answer -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="delay">
+		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
+			<h2 id="delay" class="display-md md:col-span-5">
+				Un payout delay e un cronometru, nu o condiție.
+			</h2>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Prima soluție la care ajunge toată lumea e să întârzie payout-ul pe contul conectat al
+					vânzătorului. Pare să rezolve, pentru că banii chiar ajung mai târziu.
+				</p>
+				<p class="prose-body mt-5">
+					Numai că un cronometru nu știe dacă munca a fost făcută. Dacă o comandă se anulează în
+					ziua a doua, banii sunt deja în soldul vânzătorului și trebuie scoși de acolo. Dacă
+					vânzătorul a apucat să îi retragă, îi recuperezi din următoarea lui vânzare sau
+					deloc.
+				</p>
+				<p class="prose-body mt-5">
+					Transferul la confirmare nu are problema asta. Până la confirmare, banii nu au plecat
+					niciodată din platformă, iar o anulare e un simplu refund, pe un traseu pe care Stripe
+					îl tratează deja.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. What to write in the account application -->
+	<div class="surface-paper mt-24 md:mt-32">
+		<section class="shell py-20 md:py-28" aria-labelledby="aplicatie">
+			<p class="eyebrow">Partea practică</p>
+			<h2 id="aplicatie" class="display-lg mt-5 max-w-[22ch]">
+				Ce scrii în aplicația de cont, ca să nu fie respinsă.
+			</h2>
+			<p class="mt-7 max-w-[62ch] text-lg leading-snug text-ink/85">
+				Descrie mișcarea banilor, nu construcția juridică. Cine plătește, cui, când pleacă partea
+				fiecăruia, și cine suportă refund-ul. Fără termeni care sună a serviciu financiar.
+			</p>
+
+			<div class="mt-12 overflow-x-auto">
+				<table class="w-full border-collapse text-left">
+					<thead>
+						<tr>
+							<th class="border-b border-ink/15 pb-3 pr-6 font-mono text-xs uppercase tracking-widest text-ink-600">
+								În loc de
+							</th>
+							<th class="border-b border-ink/15 pb-3 font-mono text-xs uppercase tracking-widest text-ink-600">
+								Scrie
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{
+							wording.map((c) => (
+								<tr>
+									<td class="border-b border-ink/10 py-4 pr-6 align-top text-ink/55 line-through">
+										{c.avoid}
+									</td>
+									<td class="border-b border-ink/10 py-4 align-top text-ink">{c.use}</td>
+								</tr>
+							))
+						}
+					</tbody>
+				</table>
+			</div>
+
+			<p class="mt-10 max-w-[62ch] text-[0.95rem] leading-relaxed text-ink/70">
+				Adaugă și lucrurile concrete pe care echipa de risc le caută oricum: ce se vinde, cine
+				vinde, cât e o comandă medie, în cât timp se livrează, și ce se întâmplă când nu se
+				livrează. O descriere scurtă și precisă trece mai ușor decât una lungă și prudentă.
+			</p>
+		</section>
+	</div>
+
+	<!-- 6. The detail almost nobody knows -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="preview">
+		<div class="grid gap-8 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="eyebrow">Un detaliu rar</p>
+				<h2 id="preview" class="display-md mt-5">Există și o variantă de ținere a fondurilor.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Stripe descrie o funcție numită funds segregation, care ține fondurile unei plăți într-o
+					stare protejată înainte de transferul către contul conectat. E în private preview, iar
+					accesul se cere prin managerul de cont.
+				</p>
+				<p class="prose-body mt-5">
+					Nu construiesc pe ea și nici nu ți-o recomand ca plan principal, pentru că nu poți
+					depinde de o funcție la care accesul se acordă caz cu caz. O menționez pentru că e
+					singura apropiere reală de ce își imaginează lumea că înseamnă escrow la Stripe.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. Close -->
+	<section class="shell mt-24 md:mt-32">
+		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
+			<div class="md:col-span-7">
+				<h2 class="display-lg">Trimite-mi fluxul tău și îți spun dacă se aprobă.</h2>
+				<p class="prose-body mt-6">
+					Scrie-mi cine plătește, cine încasează, cine ia comision și când se consideră livrată
+					munca. Îți răspund în aceeași zi lucrătoare, în scris. Gratuit, fără call.
+				</p>
+				<p class="mt-8 font-mono text-xs uppercase tracking-widest text-paper/45">
+					Faptele de pe pagina asta au fost verificate la sursă pe {verifiedOn}
+				</p>
+			</div>
+			<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
+				<a href="/contact" class="btn btn-primary">Trimite-mi fluxul</a>
+				<p class="mt-6 text-sm text-paper/60">
+					Sau citește <a href="/servicii/marketplace-plati" class="link">ce construiesc</a> pentru
+					marketplace-uri.
+				</p>
+			</div>
+		</div>
+	</section>
+</Base>

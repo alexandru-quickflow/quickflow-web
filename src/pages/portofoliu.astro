@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+
+const projects = [
+	{
+		n: '01',
+		name: 'aeinvitatii.ro',
+		href: 'https://aeinvitatii.ro',
+		kind: 'Produs propriu, în producție',
+		problem:
+			'Un cuplu trimite invitațiile la nuntă și apoi sună oamenii unul câte unul ca să afle cine vine.',
+		built:
+			'Produs cu douăsprezece modele desenate de la zero, link personalizat pentru fiecare familie, confirmare cu meniu, transport și cazare, și o listă de invitați care se actualizează pe loc. Plată o singură dată, 299 de lei. Invitația există în două limbi, iar fiecare limbă în plus se cumpără separat.',
+		detail: 'Plăți, linkuri personalizate, panou de confirmări, multilingv.',
+	},
+	{
+		n: '02',
+		name: 'jemshitmavlyanov.com',
+		href: 'https://jemshitmavlyanov.com',
+		kind: 'Migrare completă de pe Bubble pe cod',
+		problem:
+			'Academie de cursuri video construită pe Bubble. Paginile publice se încărcau greu, costul creștea cu traficul, iar tot produsul depindea de o platformă pe care clientul nu o controla.',
+		built:
+			'Aplicația a fost mutată integral pe cod: conturi, autentificare, coș, plată, acces care expiră după șase luni, certificat de absolvire și panou de administrare. Nouă limbi, cu audio în rusă și subtitrări pentru fiecare.',
+		detail: 'Conturi și plăți mutate, nu doar site-ul public.',
+		archive: 'https://web.archive.org/web/20260521013426/https://jemshitmavlyanov.com/',
+	},
+	{
+		n: '03',
+		name: 'elenaviscu.com',
+		href: 'https://elenaviscu.com',
+		kind: 'Platformă de coaching cu plăți',
+		problem:
+			'Trei produse diferite, vândute aceluiași om, fiecare cu altă regulă de acces și alt preț.',
+		built:
+			'Curs video cu acces limitat în timp, ședințe individuale cu programare, și o a treia sesiune de autocunoaștere. Plăți în lei, acces deschis automat după plată, fără ca cineva să dea drepturi de mână.',
+		detail: 'Trei tipuri de produs, trei reguli de acces.',
+	},
+	{
+		n: '04',
+		name: 'easonline.academy',
+		href: 'https://easonline.academy',
+		kind: 'Academie online cu plată și acces',
+		problem: 'Cursuri de coafură ținute până atunci doar față în față, fără livrare online.',
+		built:
+			'Academie cu lecții video, conturi de cursant, plată și acces deschis după plată. Primul pas al afacerii din sala de curs în online.',
+		detail: 'Lecții video, conturi, plată.',
+	},
+];
+---
+
+<Base
+	title="Portofoliu, Quick Flow"
+	description="Patru proiecte: un produs propriu cu plăți și confirmări, o migrare completă de pe Bubble pe cod, și două platforme de cursuri cu acces controlat."
+>
+	<section class="shell pb-16 pt-16 md:pb-20 md:pt-24">
+		<p class="eyebrow">Portofoliu</p>
+		<h1 class="display-xl mt-7 max-w-[16ch]">Patru lucruri construite, toate încă live.</h1>
+		<p class="lead mt-10 max-w-[58ch]">
+			Marketplace-urile cu plăți împărțite pe care le-am construit au fost livrate prin altă
+			agenție și nu le pot arăta. Astea patru sunt ale mele sau ale clienților care m-au lăsat să
+			le arăt.
+		</p>
+	</section>
+
+	<section class="shell" aria-labelledby="proiecte">
+		<h2 id="proiecte" class="sr-only">Proiecte</h2>
+
+		{
+			projects.map((p) => (
+				<article class="rule grid gap-6 py-12 md:grid-cols-12 md:gap-8 md:py-16">
+					<p class="numeral-ghost md:col-span-1">{p.n}</p>
+
+					<div class="md:col-span-4">
+						<h3 class="display-lg">{p.name}</h3>
+						<p class="mt-4 font-mono text-xs uppercase tracking-widest text-teal">{p.kind}</p>
+						<p class="mt-6 text-[0.95rem] leading-relaxed text-paper/60">{p.detail}</p>
+						<div class="mt-6 flex flex-col gap-2 text-sm">
+							<a href={p.href} rel="noopener" target="_blank" class="link">
+								Vezi site-ul
+							</a>
+							{p.archive && (
+								<a href={p.archive} rel="noopener nofollow" target="_blank" class="link">
+									Vezi versiunea veche, arhivată
+								</a>
+							)}
+						</div>
+					</div>
+
+					<div class="md:col-span-6 md:col-start-7">
+						<p class="eyebrow">Problema</p>
+						<p class="prose-body mt-2">{p.problem}</p>
+						<p class="eyebrow mt-7">Ce s-a construit</p>
+						<p class="prose-body mt-2">{p.built}</p>
+					</div>
+				</article>
+			))
+		}
+	</section>
+
+	<section class="shell mt-20 md:mt-28">
+		<div class="rule grid gap-8 pt-12 md:grid-cols-12 md:pt-16">
+			<h2 class="display-lg md:col-span-7">
+				Dacă vrei să vezi cum arată partea pe care nu o pot arăta, întreabă-mă.
+			</h2>
+			<div class="md:col-span-4 md:col-start-9 md:justify-self-end md:self-end">
+				<a href="/contact" class="btn btn-primary">Scrie-mi</a>
+			</div>
+		</div>
+	</section>
+</Base>

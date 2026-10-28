@@ -1,11 +1,224 @@
 @import "tailwindcss";
 
-/* Tokenurile de design se stabilesc la M2, dupa alegerea directiei vizuale.
-   Deocamdata doar ce e nevoie ca pagina sa nu arate rupt. */
+/* Brand tokens. Taken from logo/quickflow_logo.svg, the November 2023 revision,
+   which supersedes the earlier indigo set. */
 @theme {
-	--font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+	--color-ink: #04232f;
+	--color-ink-800: #062c3a;
+	--color-ink-700: #0a3545;
+	--color-ink-600: #12495c;
+	--color-teal: #2bd4bd;
+	--color-mint: #5deace;
+	--color-paper: #fbfbf9;
+	--color-paper-200: #eceae4;
+
+	/* Loaded from a CDN in development. Production self-hosts all three with
+	   font-display: swap, see the launch checklist. */
+	--font-display: "Cabinet Grotesk", "Satoshi", system-ui, sans-serif;
+	--font-sans: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 }
 
-:root {
-	color-scheme: light dark;
+@layer base {
+	:root {
+		color-scheme: dark;
+	}
+
+	body {
+		background-color: var(--color-ink);
+		color: var(--color-paper);
+		font-family: var(--font-sans);
+		-webkit-font-smoothing: antialiased;
+		text-rendering: optimizeLegibility;
+	}
+
+	/* The grain keeps large flat areas of ink from reading as a flat fill.
+	   Low enough that it never shows as texture, only as depth. */
+	body::before {
+		content: "";
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		opacity: 0.035;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+	}
+
+	::selection {
+		background-color: var(--color-teal);
+		color: var(--color-ink);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-teal);
+		outline-offset: 3px;
+	}
+
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
+	}
+}
+
+@layer components {
+	/* Horizontal rhythm. One container, one gutter, everywhere. */
+	.shell {
+		width: 100%;
+		max-width: 78rem;
+		margin-inline: auto;
+		padding-inline: 1.25rem;
+	}
+
+	@media (min-width: 768px) {
+		.shell {
+			padding-inline: 2.5rem;
+		}
+	}
+
+	/* Type scale. Three display sizes, one lead, one body. Nothing else. */
+	.display-xl {
+		font-family: var(--font-display);
+		font-size: clamp(2.75rem, 7.4vw, 5.75rem);
+		line-height: 0.95;
+		letter-spacing: -0.035em;
+		font-weight: 800;
+	}
+
+	.display-lg {
+		font-family: var(--font-display);
+		font-size: clamp(2rem, 4.4vw, 3.25rem);
+		line-height: 1.02;
+		letter-spacing: -0.03em;
+		font-weight: 700;
+	}
+
+	.display-md {
+		font-family: var(--font-display);
+		font-size: clamp(1.4rem, 2.5vw, 1.95rem);
+		line-height: 1.1;
+		letter-spacing: -0.02em;
+		font-weight: 700;
+	}
+
+	.lead {
+		font-size: clamp(1.0625rem, 1.45vw, 1.3rem);
+		line-height: 1.55;
+		color: color-mix(in oklab, var(--color-paper) 78%, transparent);
+	}
+
+	.prose-body {
+		font-size: 1.0625rem;
+		line-height: 1.65;
+		color: color-mix(in oklab, var(--color-paper) 72%, transparent);
+		max-width: 62ch;
+	}
+
+	/* Small mono label. Carries section numbers, dates and units. */
+	.eyebrow {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-teal);
+	}
+
+	.rule {
+		border-top: 1px solid color-mix(in oklab, var(--color-paper) 14%, transparent);
+	}
+
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		padding: 0.95rem 1.6rem;
+		border-radius: 0;
+		font-weight: 700;
+		font-size: 1rem;
+		line-height: 1;
+		transition: transform 120ms ease, background-color 120ms ease, color 120ms ease;
+	}
+
+	.btn:active {
+		transform: translateY(1px);
+	}
+
+	.btn-primary {
+		background-color: var(--color-teal);
+		color: var(--color-ink);
+	}
+
+	.btn-primary:hover {
+		background-color: var(--color-mint);
+	}
+
+	.btn-ghost {
+		border: 1px solid color-mix(in oklab, var(--color-paper) 28%, transparent);
+		color: var(--color-paper);
+	}
+
+	.btn-ghost:hover {
+		border-color: var(--color-teal);
+		color: var(--color-teal);
+	}
+
+	/* Inline link inside running text. */
+	.link {
+		color: var(--color-teal);
+		text-underline-offset: 0.25em;
+		text-decoration-line: underline;
+		text-decoration-thickness: 1px;
+		text-decoration-color: color-mix(in oklab, var(--color-teal) 45%, transparent);
+	}
+
+	.link:hover {
+		text-decoration-color: var(--color-teal);
+	}
+
+	/* Oversized mono numeral. One per section, never two. */
+	.numeral-ghost {
+		font-family: var(--font-mono);
+		font-size: clamp(2.5rem, 4.5vw, 4rem);
+		line-height: 0.9;
+		color: color-mix(in oklab, var(--color-paper) 20%, transparent);
+	}
+
+	/* The page is mostly ink. Two blocks on paper give it rhythm instead of
+	   one continuous dark field. Everything inside flips tone. */
+	.surface-paper {
+		background-color: var(--color-paper);
+		color: var(--color-ink);
+	}
+
+	.surface-paper .eyebrow {
+		color: var(--color-ink-600);
+	}
+
+	.surface-paper .lead,
+	.surface-paper .prose-body {
+		color: color-mix(in oklab, var(--color-ink) 72%, transparent);
+	}
+
+	.surface-paper .rule {
+		border-top-color: color-mix(in oklab, var(--color-ink) 15%, transparent);
+	}
+
+	.surface-paper .numeral-ghost {
+		color: color-mix(in oklab, var(--color-ink) 18%, transparent);
+	}
+
+	.surface-paper .link {
+		color: var(--color-ink-600);
+		text-decoration-color: color-mix(in oklab, var(--color-ink-600) 40%, transparent);
+	}
+
+	.surface-paper .link:hover {
+		text-decoration-color: var(--color-ink-600);
+	}
 }

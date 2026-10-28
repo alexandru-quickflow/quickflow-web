@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	note: string;
+}
+
+const { title, description, note } = Astro.props;
+---
+
+<Base title={title} description={description}>
+	<section class="shell py-24 md:py-36">
+		<p class="eyebrow">In lucru</p>
+		<h1 class="display-lg mt-5 max-w-[20ch]">{title}</h1>
+		<p class="prose-body mt-7">{note}</p>
+		<a href="/" class="link mt-8 inline-block text-sm">Inapoi la pagina de start</a>
+	</section>
+</Base>

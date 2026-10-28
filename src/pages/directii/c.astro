@@ -1,0 +1,136 @@
+---
+import PreviewLayout from '../../layouts/PreviewLayout.astro';
+
+// Numbers below are an illustrative example, not a client's real figures.
+const split = [
+	{ label: 'Vânzător', amount: '850 lei', note: 'după perioada de retur' },
+	{ label: 'Comision platformă', amount: '120 lei', note: 'reținut automat' },
+	{ label: 'Taxe Stripe', amount: '30 lei', note: 'scăzute la sursă' },
+];
+---
+
+<PreviewLayout title="Direcția C: diagrama ca argument" theme="light">
+	<div class="min-h-[100dvh] bg-paper font-sans text-ink antialiased">
+		<header class="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 md:px-8">
+			<a href="/directii" class="flex items-center gap-2.5">
+				<img src="/brand/icon.svg" alt="Quick Flow" class="h-7 w-auto" />
+				<span class="text-[15px] font-medium tracking-tight">Quick Flow</span>
+			</a>
+			<nav class="hidden items-center gap-8 text-[14.5px] text-ink/65 md:flex">
+				<a href="#" class="transition-colors hover:text-ink">Servicii</a>
+				<a href="#" class="transition-colors hover:text-ink">Proiecte</a>
+				<a href="#" class="transition-colors hover:text-ink">Despre</a>
+				<a
+					href="#"
+					class="rounded-md bg-ink px-4 py-2 font-medium text-paper transition-all hover:bg-ink-700 active:translate-y-px"
+					>Hai să vorbim</a
+				>
+			</nav>
+			<button class="text-ink/65 md:hidden" aria-label="Meniu">
+				<svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5">
+					<path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
+				</svg>
+			</button>
+		</header>
+
+		<main class="mx-auto max-w-7xl px-4 pt-14 pb-24 md:px-8 md:pt-20">
+			<div class="max-w-[46rem]">
+				<h1
+					class="font-display text-[2.5rem] leading-[1.06] font-semibold tracking-tight text-balance md:text-[3.5rem]"
+				>
+					Banii intră o dată. Ies de trei ori, corect.
+				</h1>
+				<p class="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-ink/60 md:text-lg">
+					Asta e partea grea a unui marketplace, și e exact partea pe care o construiesc.
+				</p>
+			</div>
+
+			<!-- The hero visual is the mechanism itself, not a product shot. -->
+			<div class="mt-12 rounded-xl border border-ink/10 bg-white p-5 md:mt-14 md:p-9">
+				<div class="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1.1fr)_auto_minmax(0,1.3fr)]">
+					<!-- stage 1 -->
+					<div class="rounded-lg border border-ink/10 bg-paper px-5 py-6">
+						<p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/40">Pas 1</p>
+						<h2 class="mt-2.5 text-[17px] font-semibold tracking-tight">Cumpărătorul plătește</h2>
+						<p class="mt-2 text-[14.5px] leading-relaxed text-ink/55">
+							Card, o singură dată, pe platformă. Nu în contul vânzătorului.
+						</p>
+						<p class="mt-4 font-mono text-[22px] font-medium text-ink">1.000 lei</p>
+					</div>
+
+					<div class="flex items-center justify-center py-1 lg:px-1">
+						<svg
+							viewBox="0 0 24 24"
+							class="h-6 w-6 rotate-90 text-teal lg:rotate-0"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.75"
+							aria-hidden="true"
+						>
+							<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+
+					<!-- stage 2 -->
+					<div class="rounded-lg border-2 border-teal bg-teal/[0.07] px-5 py-6">
+						<p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/45">Pas 2</p>
+						<h2 class="mt-2.5 text-[17px] font-semibold tracking-tight">Banii stau în escrow</h2>
+						<p class="mt-2 text-[14.5px] leading-relaxed text-ink/60">
+							Nimeni nu îi atinge până marfa ajunge. Dacă nu ajunge, se întorc.
+						</p>
+						<p class="mt-4 font-mono text-[13px] text-ink/50">
+							Stripe Connect, cont custodial
+						</p>
+					</div>
+
+					<div class="flex items-center justify-center py-1 lg:px-1">
+						<svg
+							viewBox="0 0 24 24"
+							class="h-6 w-6 rotate-90 text-teal lg:rotate-0"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.75"
+							aria-hidden="true"
+						>
+							<path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</div>
+
+					<!-- stage 3 -->
+					<div class="rounded-lg border border-ink/10 bg-paper px-5 py-6">
+						<p class="font-mono text-[10.5px] uppercase tracking-[0.18em] text-ink/40">Pas 3</p>
+						<h2 class="mt-2.5 text-[17px] font-semibold tracking-tight">Se împart în trei</h2>
+						<ul class="mt-3.5 space-y-2.5">
+							{
+								split.map((row) => (
+									<li class="flex items-baseline justify-between gap-4">
+										<span class="text-[14.5px] text-ink/70">{row.label}</span>
+										<span class="font-mono text-[14.5px] font-medium whitespace-nowrap text-ink"
+											>{row.amount}</span
+										>
+									</li>
+								))
+							}
+						</ul>
+					</div>
+				</div>
+
+				<p class="mt-6 text-[13px] text-ink/45">
+					Exemplu, cu cifre rotunde. Pe un proiect real intră și TVA-ul, retururile parțiale și
+					ce se întâmplă când un payout eșuează.
+				</p>
+			</div>
+
+			<div class="mt-11 flex flex-wrap items-center gap-5">
+				<a
+					href="#"
+					class="rounded-md bg-ink px-6 py-3.5 text-[15px] font-semibold text-paper transition-all hover:bg-ink-700 active:translate-y-px"
+					>Hai să vorbim</a
+				>
+				<span class="text-[14.5px] text-ink/50">
+					Sau citește cum arată când se rupe.
+				</span>
+			</div>
+		</main>
+	</div>
+</PreviewLayout>
