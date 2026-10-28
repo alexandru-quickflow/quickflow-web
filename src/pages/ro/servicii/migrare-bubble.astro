@@ -64,7 +64,11 @@ const hurts = [
 	},
 	{
 		title: 'Plugin-urile',
-		body: 'Unele nu au echivalent direct în cod. Fiecare e fie rescris, fie înlocuit cu un serviciu, fie tăiat pentru că oricum nu îl folosea nimeni. Lista apare în audit, nu la mijlocul proiectului.',
+		body: 'Unele nu au echivalent direct în cod. Fiecare e fie rescris, fie înlocuit cu un serviciu, fie tăiat pentru că oricum nu îl folosea nimeni. Împărțirea nu e niciodată egală: în aplicația pe care am mutat-o, din unsprezece plugin-uri, patru doar apelau un API, adică o după-amiază fiecare, și șapte făceau ceva în browser, iar astea sunt cele care costă. Lista apare în audit, nu la mijlocul proiectului.',
+	},
+	{
+		title: 'Coada pe care nu o vede nimeni',
+		body: 'Orice e programat în viitor trăiește doar pe platformă, și nu există niciun fel de a o lista sau exporta. Accesul care expiră la șase luni după cumpărare nu e un câmp verificat când se încarcă pagina: e câte o sarcină programată per comandă, stând într-o coadă, datată cu luni înainte. Dacă o ratezi, accesul nu mai expiră niciodată pe sistemul nou, fără nimic în niciun log care să o spună, până scrie primul om care ar fi trebuit să rămână pe dinafară. Se reconstruiește din date, nu din coadă, pentru că datele de final stau pe înregistrări, dar numai dacă cineva știe să se uite.',
 	},
 ];
 
@@ -312,11 +316,11 @@ const schema = {
 	<section class="bleed mt-24 md:mt-32" aria-labelledby="doare">
 		<div class="hair flex items-baseline justify-between gap-6 pt-5">
 			<p class="spec">Ce doare și nu se poate evita</p>
-			<span class="spec">03</span>
+			<span class="spec">04</span>
 		</div>
 
 		<h2 id="doare" class="display-lg mt-8 max-w-[22ch]">
-			Trei lucruri pe care nu le poate ocoli nimeni.
+			Patru lucruri pe care nu le poate ocoli nimeni.
 		</h2>
 
 		<ol class="mt-14 flex flex-col gap-12 md:gap-16">

@@ -62,7 +62,11 @@ const hurts = [
 	},
 	{
 		title: 'The plugins',
-		body: 'Some have no direct equivalent in code. Each one is either rewritten, replaced with a service, or cut because nobody was using it anyway. That list appears in the audit, not halfway through the project.',
+		body: 'Some have no direct equivalent in code. Each one is either rewritten, replaced with a service, or cut because nobody was using it anyway. The split is never even: in the app I moved, eleven plugins came to four that only called an API, which are an afternoon each, and seven that did something in the browser, which are the ones that cost. That list appears in the audit, not halfway through the project.',
+	},
+	{
+		title: 'The queue nobody can see',
+		body: 'Anything scheduled for the future lives only on the platform, and there is no way to list it or export it. Access that expires six months after purchase is not a field checked when the page loads: it is one scheduled job per order, sitting in a queue, dated months ahead. Miss it and access never expires on the new system, with nothing in any log to say so, until the first person who should have been locked out writes in. It is rebuilt from the data rather than from the queue, because the dates are on the records, but only if someone knows to look.',
 	},
 ];
 
@@ -319,10 +323,10 @@ const schema = {
 	<section class="bleed mt-24 md:mt-32" aria-labelledby="hurts">
 		<div class="hair flex items-baseline justify-between gap-6 pt-5">
 			<p class="spec">What hurts and cannot be avoided</p>
-			<span class="spec">03</span>
+			<span class="spec">04</span>
 		</div>
 
-		<h2 id="hurts" class="display-lg mt-8 max-w-[22ch]">Three things nobody can work around.</h2>
+		<h2 id="hurts" class="display-lg mt-8 max-w-[22ch]">Four things nobody can work around.</h2>
 
 		<ol class="mt-14 flex flex-col gap-12 md:gap-16">
 			{
