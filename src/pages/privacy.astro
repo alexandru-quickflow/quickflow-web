@@ -2,6 +2,12 @@
 import Site from '../layouts/Site.astro';
 import { VERIFIED_ON } from '../content/proof';
 
+// Pagina descrie ce face site-ul, nu ce e plănuit. Aceeași variabilă decide și
+// dacă beaconul se încarcă, în Site.astro, deci cele două nu pot ajunge să
+// spună lucruri diferite. Au ajuns o dată: pagina anunța statistici care nu
+// existau.
+const analytics = Boolean(import.meta.env.PUBLIC_CF_BEACON_TOKEN);
+
 const updated = VERIFIED_ON.en;
 
 // This page describes what the site actually does, so it changes when the site
@@ -40,12 +46,17 @@ const sections = [
 		body: [
 			'Cloudflare, which hosts the site and runs the form function. Cloudflare Turnstile checks whether the submission comes from a person, and to do that it processes the IP address and technical signals about the browser.',
 			'Resend, which delivers the email.',
+			...(analytics
+				? ['Cloudflare Web Analytics, which counts page views. It stores no cookie and builds no profile.']
+				: []),
 		],
 	},
 	{
 		title: 'Cookies',
 		body: [
-			'The site sets no cookies and carries no analytics script at all. That is why you see no cookie banner. If I add traffic statistics later it will be Cloudflare Web Analytics, which uses no cookies and does not identify individual visitors, and this page will say so on the day it goes live, not before.',
+			analytics
+				? 'The site sets no cookies. Traffic statistics come from Cloudflare Web Analytics, which uses no cookies, sets no identifier and does not recognise you from one visit to the next. That is why you see no cookie banner.'
+				: 'The site sets no cookies and carries no analytics script at all. That is why you see no cookie banner. If I add traffic statistics later it will be Cloudflare Web Analytics, which uses no cookies and does not identify individual visitors, and this page will say so on the day it goes live, not before.',
 		],
 	},
 	{

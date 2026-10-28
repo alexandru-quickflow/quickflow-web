@@ -1,0 +1,7 @@
+# Everything here is meant to be read, including by machines.
+# The pages that are not are marked noindex and kept out of the sitemap.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://quickflow.dev/sitemap-index.xml
