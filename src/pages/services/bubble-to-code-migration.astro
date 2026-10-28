@@ -1,0 +1,369 @@
+---
+import Sheet from '../../layouts/Sheet.astro';
+import { proof, weightSnippet, VERIFIED_ON } from '../../content/proof';
+import { paths } from '../../i18n/routes';
+
+const weight = proof('en', 'bubble-weight');
+
+// Measured 2026-10-27. This is a property of the Bubble runtime, which ships
+// on every public page of every Bubble app regardless of what the page holds,
+// not a measurement of any particular site. Spec v7 forbids publishing a
+// comparison between two identifiable sites.
+const metrics = [
+	{ label: 'JavaScript delivered before the first word', a: '1,371 KB', b: '13 KB', wa: 100, wb: 1 },
+];
+
+const phases = [
+	{
+		n: '00',
+		title: 'Audit',
+		what: 'I read your app: the data model, the workflows, the plugins, the integrations. Out comes a document with what translates directly, what has to be rethought, the plan by phase, and what it costs you per month afterwards.',
+		state: 'Untouched',
+		tone: 'idle',
+	},
+	{
+		n: '01',
+		title: 'The public layer',
+		what: 'The public site, the marketing pages, the landing pages and the blog leave the platform. For users nothing changes.',
+		state: 'Running',
+		tone: 'ok',
+	},
+	{
+		n: '02',
+		title: 'The reads',
+		what: 'Pages that only display data move to code. The platform stays the source of truth.',
+		state: 'Running',
+		tone: 'ok',
+	},
+	{
+		n: '03',
+		title: 'The writes and the payments',
+		what: 'The flows that bring in data and money move to code, one at a time.',
+		state: 'Running',
+		tone: 'ok',
+	},
+	{
+		n: '04',
+		title: 'Accounts and the cutover',
+		what: 'Users move across, the old platform is switched off. The only moment with real risk.',
+		state: 'Real risk',
+		tone: 'risk',
+	},
+];
+
+const hurts = [
+	{
+		title: 'Passwords',
+		body: 'User passwords do not leave the platform. Anyone who promises otherwise has either never done it or is not telling you everything. At phase 4, people reset their password. That is not a technical detail, it is an email that has to be written well and sent at the right moment, or you lose users who have not logged in for three months.',
+	},
+	{
+		title: 'Two systems in parallel',
+		body: 'Between phase 2 and phase 4 both are running. At any moment only one is the source of truth, and the audit decides which and when it moves. If that is not decided out loud, you get data that does not match, and that is expensive to repair.',
+	},
+	{
+		title: 'The plugins',
+		body: 'Some have no direct equivalent in code. Each one is either rewritten, replaced with a service, or cut because nobody was using it anyway. That list appears in the audit, not halfway through the project.',
+	},
+];
+
+const stay = [
+	{
+		title: 'If you still do not know whether the product has a market',
+		body: 'The speed at which you can change things is worth more than the bill. Stay.',
+	},
+	{
+		title: 'If the app is internal, with a few dozen users',
+		body: 'Nobody is looking for it on Google. There is nothing to gain.',
+	},
+	{
+		title: 'If the monthly bill is small and not growing',
+		body: 'If it does not hurt, it is not a problem.',
+	},
+];
+
+const deliverables = [
+	'An inventory of the app: data types, fields, relationships',
+	'The workflows, what each one does and what happens to it',
+	'The plugins and integrations, with their equivalent in code or the lack of one',
+	'The plan by phase, with what can be delivered on its own',
+	'What it costs you per month afterwards, against what it costs you now',
+];
+
+const steps = [
+	'You write to me about the app you have and what bothers you most about it. I answer the same working day, with a question or two.',
+	'If it looks like it makes sense, we talk for twenty minutes. No deck, and no proposal prepared in advance.',
+	'If it still makes sense after that, I send you an audit proposal with a start date. That is all.',
+];
+
+const title = 'Bubble to code migration, phase by phase | Quick Flow';
+const description =
+	'I move apps off Bubble onto code in phases, without taking them down. It starts with a two-day audit, 600 EUR, deducted from the price of the project.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Bubble to code migration',
+	serviceType: 'Bubble to code migration',
+	description,
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'Worldwide',
+	offers: {
+		'@type': 'Offer',
+		name: 'Migration audit',
+		price: '600',
+		priceCurrency: 'EUR',
+		description: 'A two-day audit of the app, delivered as a document you keep.',
+	},
+};
+---
+
+<Sheet lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recognition. The reader has to see their own situation in the first
+	     two sentences, or nothing below matters. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Bubble to code migration</p>
+			<p class="spec">Phase by phase, the app stays up</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">It was fast to build. Now it is what holds you back.</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			The app works and has customers. But the bill grows with traffic, public pages take seconds to
+			load, and Google indexes them badly. And the first time you have a serious conversation with
+			an investor or a buyer, someone asks what happens if the platform changes its pricing or
+			disappears.
+		</p>
+	</section>
+
+	<!-- 2. Measured. The number comes with the code that reproduces it, so the
+	     reader never has to take my word for anything. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="measured">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">What it costs you, measured</p>
+			<span class="stamp">Measured {VERIFIED_ON.en}</span>
+		</div>
+
+		<h2 id="measured" class="display-lg mt-8 max-w-[24ch]">
+			It is not an impression. It takes thirty seconds to measure.
+		</h2>
+
+		<div class="mt-10 grid gap-x-16 gap-y-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="figure">
+					{weight.value}
+					<span>{weight.unit}</span>
+				</p>
+				<p class="prose-body mt-7 max-w-[46ch] text-[0.95rem]">
+					A public page served by Bubble delivers the platform runtime before it shows the first
+					word. It does not depend on what you put on the page. The same page written in code and
+					served as a static file delivers almost nothing.
+				</p>
+			</div>
+
+			<div class="min-w-0 md:col-span-6 md:col-start-7">
+				{
+					metrics.map((m) => (
+						<div class="hair pt-5">
+							<p class="spec">{m.label}</p>
+							<dl class="mt-6 flex flex-col gap-4">
+								<div class="flex items-center gap-4">
+									<dt class="spec w-20 shrink-0">On Bubble</dt>
+									<dd class="flex flex-1 items-center gap-4">
+										<span class="h-3 flex-1 bg-ink/[0.07]">
+											<span class="block h-full bg-ink/55" style={`width:${m.wa}%`} />
+										</span>
+										<span class="w-20 shrink-0 text-right font-mono text-sm">{m.a}</span>
+									</dd>
+								</div>
+								<div class="flex items-center gap-4">
+									<dt class="spec w-20 shrink-0">In code</dt>
+									<dd class="flex flex-1 items-center gap-4">
+										<span class="h-3 flex-1 bg-ink/[0.07]">
+											<span class="block h-full min-w-[3px] bg-teal" style={`width:${m.wb}%`} />
+										</span>
+										<span class="w-20 shrink-0 text-right font-mono text-sm">{m.b}</span>
+									</dd>
+								</div>
+							</dl>
+						</div>
+					))
+				}
+
+				<p class="spec mt-10">Your browser console, on your own site</p>
+				<pre class="code mt-3">{weightSnippet}</pre>
+				<div class="hair mt-6 flex flex-wrap items-baseline justify-between gap-3 pt-3">
+					<a href={weight.source.href} rel="noopener nofollow" target="_blank" class="link spec"
+						>{weight.source.label}</a
+					>
+					<span class="spec">Checked {weight.verifiedOn}</span>
+				</div>
+			</div>
+		</div>
+
+		<p class="prose-body mt-14 max-w-[62ch]">
+			There is something else you cannot see. A marketing page on Bubble can trigger database
+			queries on every view, including for Google's crawlers. Each one costs workload units, which
+			is money, for visitors who asked for nothing. The same page served statically costs zero per
+			visit, however many people read it.
+		</p>
+	</section>
+
+	<!-- 3. What I do not propose. The objection arrives before the offer. -->
+	<section class="bleed mt-24 md:mt-32">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h2 class="display-md md:col-span-5">
+				I am not proposing a rewrite from scratch, handed over in one piece six months from now.
+			</h2>
+			<p class="prose-body md:col-span-6 md:col-start-7">
+				Not because it cannot be done, but because that is how migrations fail: you pay for months
+				without seeing anything, and at the end you get something that no longer resembles what you
+				had.
+			</p>
+		</div>
+	</section>
+
+	<!-- 4. The route, on ink. The state column is the whole argument: four of
+	     the five phases leave the app running. -->
+	<section class="invert mt-24 md:mt-32" aria-labelledby="route">
+		<div class="bleed py-20 md:py-28">
+			<div class="grid gap-12 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">The route</p>
+					<h2 id="route" class="display-lg mt-6 max-w-[14ch]">Five phases. You buy one at a time.</h2>
+					<p class="prose-body mt-7 max-w-[40ch] text-[0.95rem]">
+						The right-hand column says what state the app is left in at the end of each phase. You
+						do not buy the whole route up front. You buy the audit. After the audit you decide
+						whether to do phase 1, and only after you have seen phase 1 delivered do you decide
+						whether we go further.
+					</p>
+				</div>
+
+				<ol class="md:col-span-6 md:col-start-7">
+					{
+						phases.map((p) => (
+							<li class="hair grid grid-cols-[2.25rem_1fr] gap-x-5 py-7 first:border-t-0 first:pt-0">
+								<span class="spec pt-1.5">{p.n}</span>
+								<div>
+									<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+										<h3 class="text-lg font-medium leading-snug">{p.title}</h3>
+										<span
+											class:list={[
+												'state',
+												p.tone === 'ok' && 'state-ok',
+												p.tone === 'risk' && 'state-risk',
+											]}
+										>
+											{p.state}
+										</span>
+									</div>
+									<p class="prose-body mt-3 max-w-[46ch] text-[0.95rem]">{p.what}</p>
+								</div>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. What hurts. Naming the three unavoidable costs is worth more than
+	     any reassurance, because the reader has already been promised that
+	     nothing will hurt by someone else. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="hurts">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">What hurts and cannot be avoided</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="hurts" class="display-lg mt-8 max-w-[22ch]">Three things nobody can work around.</h2>
+
+		<div class="mt-12 grid gap-x-12 gap-y-12 md:grid-cols-3">
+			{
+				hurts.map((h) => (
+					<article class="rise">
+						<h3 class="display-md">{h.title}</h3>
+						<p class="prose-body mt-5 text-[0.95rem]">{h.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 6. The audit. One price, one duration, one list of what arrives. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="audit">
+		<div class="border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">The migration audit</p>
+					<p class="figure mt-6">600 <span>EUR</span></p>
+					<p class="spec mt-4">Two days</p>
+					<a href={paths.contact.en} class="btn btn-primary mt-9">Ask for an audit</a>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="audit" class="display-md">You get a document with:</h2>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							deliverables.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+					<p class="prose-body mt-8 text-[0.95rem]">
+						If we go further, the 600 EUR comes off the price of the project.
+					</p>
+					<p class="prose-body mt-3 text-[0.95rem]">
+						If we do not, you keep the document. It is yours, and you can hand it to anyone else.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. When to stay. The page that tells you not to buy is the one you
+	     believe when it tells you to. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="stay">
+		<p class="spec">When to stay where you are</p>
+		<h2 id="stay" class="display-lg mt-6 max-w-[22ch]">Not every app belongs in code.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				stay.map((s) => (
+					<div class="hair grid gap-3 py-8 md:grid-cols-12 md:gap-8">
+						<h3 class="display-md md:col-span-6">{s.title}</h3>
+						<p class="prose-body md:col-span-5 md:col-start-8">{s.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 8. What happens next, on ink, flowing into the footer. -->
+	<section class="invert mt-24 md:mt-32" aria-labelledby="next">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<p class="spec">What happens after the first message</p>
+			<h2 id="next" class="display-lg mt-6 max-w-[20ch]">Three steps, and no sales funnel.</h2>
+
+			<ol class="mt-12 grid gap-x-12 gap-y-8 md:grid-cols-3">
+				{
+					steps.map((step, i) => (
+						<li class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<p class="mt-4 max-w-[34ch] text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
+						</li>
+					))
+				}
+			</ol>
+
+			<div class="mt-14">
+				<a href={paths.contact.en} class="btn btn-primary">Tell me what app you have</a>
+			</div>
+		</div>
+	</section>
+</Sheet>

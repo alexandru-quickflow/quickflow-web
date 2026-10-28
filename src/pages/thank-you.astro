@@ -1,0 +1,26 @@
+---
+import Sheet from '../layouts/Sheet.astro';
+import { paths } from '../i18n/routes';
+---
+
+<Sheet
+	lang="en"
+	title="Request received, Quick Flow"
+	description="The message is on its way. The answer comes the same working day."
+	noindex
+>
+	<section class="bleed py-24 md:py-36">
+		<p class="spec">Sent</p>
+		<h1 class="display-xl mt-7 max-w-[16ch]">Got it. I will answer the same working day.</h1>
+		<p class="lead mt-10 max-w-[52ch] text-lg">
+			I have sent you a copy by email too, so you keep what you wrote. If it does not arrive within
+			a few minutes, check your spam folder or write to me directly at
+			<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>.
+		</p>
+
+		<div class="mt-12 flex flex-wrap gap-4">
+			<a href={paths.home.en} class="btn btn-ghost">Back to the home page</a>
+			<a href={paths.escrow.en} class="btn btn-ghost">Read about escrow</a>
+		</div>
+	</section>
+</Sheet>

@@ -1,0 +1,101 @@
+---
+import Sheet from '../layouts/Sheet.astro';
+import { VERIFIED_ON } from '../content/proof';
+
+const updated = VERIFIED_ON.en;
+
+// This page describes what the site actually does, so it changes when the site
+// does. Two open decisions touch it: the Cloudflare Web Analytics beacon, which
+// is in the technical annex but not yet on the site, and booking, which the
+// English contact page does not offer, so no booking processor is listed here.
+const sections = [
+	{
+		title: 'Who processes the data',
+		body: [
+			'Alexandru Trofaniuc, trading as Quick Flow. Write to alexandru@quickflow.dev with any question about your data.',
+		],
+	},
+	{
+		title: 'What I collect',
+		body: [
+			'Only what you write in the contact form: your name, your email address, the description of the project and the budget range. If it is about a payment flow, also the four short answers about who pays, who is paid, who takes a cut and when the work counts as delivered.',
+			'I do not ask for and do not collect health data, beliefs, financial data or any other kind of sensitive data. If you write them into the description of your own accord they end up in my inbox, so avoid them.',
+		],
+	},
+	{
+		title: 'What I do with it',
+		body: [
+			'I answer you. That is all. I do not use it for advertising, I do not sell it, I do not pass it on, and I do not build a profile out of it.',
+		],
+	},
+	{
+		title: 'Where it goes',
+		body: [
+			'The form sends its contents by email, through Resend, to my address, and a single copy to the address you wrote. The site has no database and stores nothing on the server.',
+			'The emails stay in my inbox for as long as the conversation makes sense. If you want them deleted, write to me and I delete them.',
+		],
+	},
+	{
+		title: 'Who else sees the data, as a provider',
+		body: [
+			'Cloudflare, which hosts the site and runs the form function. Cloudflare Turnstile checks whether the submission comes from a person, and to do that it processes the IP address and technical signals about the browser.',
+			'Resend, which delivers the email.',
+		],
+	},
+	{
+		title: 'Cookies',
+		body: [
+			'The site sets no cookies. Traffic statistics come from Cloudflare Web Analytics, which uses no cookies and does not identify individual visitors. That is why you see no cookie banner.',
+		],
+	},
+	{
+		title: 'Your rights',
+		body: [
+			'You can ask to see what data I hold about you, to have it corrected, to have it deleted, or to object to the processing. Write to alexandru@quickflow.dev and I will deal with it. If you are not satisfied with how I dealt with it, you can complain to the Romanian data protection authority, ANSPDCP, or to the supervisory authority in your own country.',
+		],
+	},
+	{
+		title: 'If anything changes',
+		body: [
+			'I update this page and change the date below. There are no hidden versions and I send no notifications, so if it matters to you, check the date.',
+		],
+	},
+];
+---
+
+<Sheet
+	lang="en"
+	title="Privacy policy, Quick Flow"
+	description="What the form collects, where it goes, how long it is kept and how it can be deleted. No cookies, no advertising."
+>
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Privacy</p>
+			<span class="stamp">Last updated {updated}</span>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">What happens to what you write here.</h1>
+
+		<p class="lead mt-9 max-w-[54ch] text-lg">
+			In short: what you write in the form reaches my inbox, so that I can answer you. The site has
+			no database, sets no cookies and does not track you.
+		</p>
+	</section>
+
+	<section class="bleed mt-16 md:mt-20">
+		{
+			sections.map((s) => (
+				<section class="hair grid gap-4 py-10 md:grid-cols-12 md:gap-8 md:py-12">
+					<h2 class="display-md md:col-span-4">{s.title}</h2>
+					<div class="md:col-span-7 md:col-start-6">
+						{s.body.map((p, i) => (
+							<p class:list={['prose-body', i > 0 && 'mt-5']}>{p}</p>
+						))}
+					</div>
+				</section>
+			))
+		}
+
+		<p class="spec mt-10">Last updated: {updated}</p>
+	</section>
+</Sheet>

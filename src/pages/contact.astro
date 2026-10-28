@@ -1,0 +1,267 @@
+---
+import Sheet from '../layouts/Sheet.astro';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+
+const budgets = [
+	'I do not know yet',
+	'Under 5,000 EUR',
+	'5,000 to 15,000 EUR',
+	'15,000 to 30,000 EUR',
+	'Over 30,000 EUR',
+];
+
+// The field names stay as they are. They are what the Pages Function reads,
+// and renaming them in one language would break the form in that language.
+const flowFields = [
+	{ name: 'plateste', label: 'Who pays', placeholder: 'the buyer, at booking' },
+	{
+		name: 'incaseaza',
+		label: 'Who gets paid',
+		placeholder: 'the provider, once the service is delivered',
+	},
+	{ name: 'comision', label: 'Who takes a cut, and how much', placeholder: 'the platform, 12%' },
+	{
+		name: 'livrare',
+		label: 'When the work counts as delivered',
+		placeholder: 'when the buyer confirms in the app',
+	},
+];
+
+const field =
+	'mt-2 w-full border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-ink';
+const errorText = 'mt-2 text-sm text-red-700';
+---
+
+<Sheet
+	lang="en"
+	title="Contact, Quick Flow"
+	description="Tell me what you are building. If it is about a payment flow, I will tell you the same working day whether Stripe allows it."
+>
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Contact</p>
+			<p class="spec">An answer the same working day, in writing</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">Tell me what you are building.</h1>
+
+		<p class="lead mt-9 max-w-[54ch] text-lg">
+			If it is about a payment flow, fill in the last four fields too. I will tell you the same
+			working day, in writing, whether Stripe allows it and what it involves. Free, and no call.
+		</p>
+	</section>
+
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="form">
+		<div class="hair grid gap-12 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-7">
+				<h2 id="form" class="sr-only">Contact form</h2>
+
+				<!-- Works as a plain POST without JavaScript. The script below only
+				     upgrades it with inline messages and no page reload. -->
+				<form
+					id="contact-form"
+					action="/api/contact"
+					method="POST"
+					novalidate
+					class="flex flex-col gap-7"
+				>
+					<input type="hidden" name="locale" value="en" />
+					<p
+						id="form-error"
+						hidden
+						class="border border-red-700/40 bg-red-700/5 px-4 py-3 text-sm text-red-700"
+					>
+					</p>
+
+					<div>
+						<label for="nume" class="block text-sm font-medium">Name</label>
+						<input id="nume" name="nume" type="text" required autocomplete="name" class={field} />
+						<p data-error-for="nume" hidden class={errorText}></p>
+					</div>
+
+					<div>
+						<label for="email" class="block text-sm font-medium">Email</label>
+						<input
+							id="email"
+							name="email"
+							type="email"
+							required
+							autocomplete="email"
+							class={field}
+						/>
+						<p data-error-for="email" hidden class={errorText}></p>
+					</div>
+
+					<div>
+						<label for="proiect" class="block text-sm font-medium">What you want to build</label>
+						<textarea id="proiect" name="proiect" rows="5" required class={field}></textarea>
+						<p data-error-for="proiect" hidden class={errorText}></p>
+					</div>
+
+					<div>
+						<label for="buget" class="block text-sm font-medium">Approximate budget</label>
+						<select id="buget" name="buget" class={field}>
+							{budgets.map((b) => <option value={b}>{b}</option>)}
+						</select>
+					</div>
+
+					<fieldset class="border border-[var(--line)] p-5 md:p-6">
+						<legend class="spec px-2">Only if it is about payments</legend>
+						<p class="prose-body text-sm">
+							Four short answers are enough for me to tell you first time whether the flow gets
+							approved.
+						</p>
+						<div class="mt-5 flex flex-col gap-5">
+							{
+								flowFields.map((f) => (
+									<div>
+										<label for={f.name} class="block text-sm font-medium">
+											{f.label}
+										</label>
+										<input
+											id={f.name}
+											name={f.name}
+											type="text"
+											placeholder={f.placeholder}
+											class={`${field} placeholder:text-ink/30`}
+										/>
+									</div>
+								))
+							}
+						</div>
+					</fieldset>
+
+					<!-- Honeypot. Hidden from people, filled in by most bots. -->
+					<div class="absolute left-[-9999px]" aria-hidden="true">
+						<label for="website">Website</label>
+						<input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+					</div>
+
+					{
+						siteKey && (
+							<div class="cf-turnstile" data-sitekey={siteKey} data-theme="light" data-language="en" />
+						)
+					}
+
+					<div>
+						<button type="submit" id="submit-btn" class="btn btn-primary">Send</button>
+						<p id="form-note" class="prose-body mt-4 text-sm">
+							You get a copy by email too, so you keep what you wrote.
+						</p>
+					</div>
+				</form>
+
+				<div
+					id="form-success"
+					hidden
+					class="border border-[var(--line)] p-7"
+					role="status"
+					aria-live="polite"
+				>
+					<p class="spec">Sent</p>
+					<h2 class="display-md mt-4">Got it. I will answer the same working day.</h2>
+					<p class="prose-body mt-5">
+						I have sent you a copy by email. If it does not arrive within a few minutes, check your
+						spam folder or write to me directly at
+						<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>.
+					</p>
+				</div>
+			</div>
+
+			<aside class="md:col-span-4 md:col-start-9">
+				<p class="spec">Or, if you prefer</p>
+				<h2 class="display-md mt-4">Twenty minutes of talking.</h2>
+				<p class="prose-body mt-5">
+					No deck and no proposal prepared in advance. If it does not make sense after the call, I
+					will tell you on the spot.
+				</p>
+				<p class="prose-body mt-5">
+					Write to me and I will send you two or three slots in the next few days.
+				</p>
+				<p class="prose-body mt-8 text-sm">
+					Plain writing, if you want no form at all:<br />
+					<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>
+				</p>
+			</aside>
+		</div>
+	</section>
+</Sheet>
+
+{
+	siteKey && (
+		<script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js" />
+	)
+}
+
+<script>
+	const form = document.getElementById('contact-form') as HTMLFormElement | null;
+	const success = document.getElementById('form-success');
+	const banner = document.getElementById('form-error');
+	const button = document.getElementById('submit-btn') as HTMLButtonElement | null;
+	const note = document.getElementById('form-note');
+
+	function clearErrors() {
+		banner?.setAttribute('hidden', '');
+		document.querySelectorAll('[data-error-for]').forEach((el) => {
+			el.setAttribute('hidden', '');
+			el.textContent = '';
+		});
+	}
+
+	function showFieldErrors(errors: Record<string, string>) {
+		let first: HTMLElement | null = null;
+		for (const [field, message] of Object.entries(errors)) {
+			const el = document.querySelector(`[data-error-for="${field}"]`);
+			if (!el) continue;
+			el.textContent = message;
+			el.removeAttribute('hidden');
+			if (!first) first = document.getElementById(field);
+		}
+		first?.focus();
+	}
+
+	form?.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		clearErrors();
+
+		if (button) {
+			button.disabled = true;
+			button.textContent = 'Sending...';
+		}
+
+		try {
+			const response = await fetch(form.action, {
+				method: 'POST',
+				headers: { Accept: 'application/json' },
+				body: new FormData(form),
+			});
+			const data = await response.json().catch(() => ({}));
+
+			if (response.ok) {
+				form.hidden = true;
+				success?.removeAttribute('hidden');
+				success?.scrollIntoView({ block: 'center' });
+				return;
+			}
+
+			if (data.fields) showFieldErrors(data.fields);
+			if (data.message && banner) {
+				banner.textContent = data.message;
+				banner.removeAttribute('hidden');
+			}
+		} catch {
+			if (banner) {
+				banner.textContent =
+					'I could not send the request right now. Write directly to alexandru@quickflow.dev or try again in a few minutes.';
+				banner.removeAttribute('hidden');
+			}
+		} finally {
+			if (button) {
+				button.disabled = false;
+				button.textContent = 'Send';
+			}
+			if (note) note.hidden = false;
+		}
+	});
+</script>

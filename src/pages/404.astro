@@ -1,38 +1,40 @@
 ---
-import Base from '../layouts/Base.astro';
+import Sheet from '../layouts/Sheet.astro';
+import { paths, localeNames } from '../i18n/routes';
 
+// One 404 serves both trees, and it sits at the root, so it is written in
+// English with a line out to the Romanian site at the bottom.
 const links = [
-	{ href: '/', label: 'Pagina de start' },
-	{ href: '/servicii/marketplace-plati', label: 'Marketplace cu plăți' },
-	{ href: '/servicii/migrare-bubble', label: 'Migrare de pe Bubble' },
-	{ href: '/stripe-escrow-marketplace', label: 'De ce Stripe nu are escrow' },
-	{ href: '/portofoliu', label: 'Portofoliu' },
-	{ href: '/contact', label: 'Contact' },
+	{ href: paths.home.en, label: 'Home' },
+	{ href: paths.migration.en, label: 'Bubble to code migration' },
+	{ href: paths.marketplace.en, label: 'Marketplace with payments' },
+	{ href: paths.escrow.en, label: 'Why Stripe does not do escrow' },
+	{ href: paths.work.en, label: 'Work' },
+	{ href: paths.contact.en, label: 'Contact' },
 ];
 ---
 
-<Base
-	title="Pagina nu există, Quick Flow"
-	description="Adresa cerută nu duce nicăieri. Mai jos sunt paginile care există."
+<Sheet
+	lang="en"
+	title="Page not found, Quick Flow"
+	description="The address you asked for does not lead anywhere. Below are the pages that exist."
 	noindex
 >
-	<section class="shell py-24 md:py-36">
-		<p class="eyebrow">Eroare 404</p>
-		<h1 class="display-xl mt-7 max-w-[14ch]">Adresa asta nu duce nicăieri.</h1>
-		<p class="lead mt-10 max-w-[48ch]">
-			Fie link-ul e greșit, fie pagina a existat și nu mai există. Mai jos e tot ce există acum.
+	<section class="bleed py-24 md:py-36">
+		<p class="spec">Error 404</p>
+		<h1 class="display-xl mt-7 max-w-[14ch]">This address does not lead anywhere.</h1>
+		<p class="lead mt-10 max-w-[48ch] text-lg">
+			Either the link is wrong, or the page existed and does not any more. Below is everything that
+			exists now.
 		</p>
 
 		<ul class="mt-14 flex flex-col">
 			{
 				links.map((l) => (
-					<li class="rule">
-						<a
-							href={l.href}
-							class="flex items-baseline justify-between gap-6 py-5 text-paper/80 transition-colors hover:text-teal"
-						>
+					<li class="hair">
+						<a href={l.href} class="flex items-baseline justify-between gap-6 py-5">
 							<span class="display-md">{l.label}</span>
-							<span class="font-mono text-xs text-paper/40">{l.href}</span>
+							<span class="spec">{l.href}</span>
 						</a>
 					</li>
 				))
@@ -40,8 +42,13 @@ const links = [
 		</ul>
 
 		<p class="prose-body mt-12">
-			Dacă ai ajuns aici dintr-un link de pe alt site și crezi că ar trebui să existe ceva,
-			<a href="/contact" class="link">scrie-mi</a> și repar.
+			If you got here from a link on another site and you think something should be here,
+			<a href={paths.contact.en} class="link">write to me</a> and I will fix it.
+		</p>
+
+		<p class="prose-body mt-5">
+			The site also exists in Romanian:
+			<a href={paths.home.ro} hreflang="ro-RO" lang="ro" class="link">{localeNames.ro.full}</a>.
 		</p>
 	</section>
-</Base>
+</Sheet>

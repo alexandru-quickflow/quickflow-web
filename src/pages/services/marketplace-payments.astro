@@ -1,0 +1,268 @@
+---
+import Sheet from '../../layouts/Sheet.astro';
+import FlowSheet from '../../components/FlowSheet.astro';
+import { proof } from '../../content/proof';
+import { paths } from '../../i18n/routes';
+
+const escrow = proof('en', 'stripe-escrow');
+
+const signs = [
+	{
+		n: '01',
+		title: 'Stripe rejected your application',
+		body: 'You described a flow where the money sits somewhere until delivery, the answer came back rejected, and nobody explained why.',
+	},
+	{
+		n: '02',
+		title: 'Payouts are done by hand',
+		body: 'Someone exports a list, checks it and makes the transfers. It works until that someone is on holiday or gets an amount wrong.',
+	},
+	{
+		n: '03',
+		title: 'Everything is ready except the payments',
+		body: 'The rest of the product took six weeks. Payments have been "in progress" for three months.',
+	},
+];
+
+const mechanics = [
+	{
+		title: 'Seller onboarding that passes verification',
+		body: 'Connected accounts, identity verification, the documents Stripe asks for depending on the country. The seller uploads them, you chase nobody.',
+	},
+	{
+		title: 'The money waits for delivery',
+		body: "The buyer pays the platform. The seller's share leaves on confirmation, not on a timer that keeps running after the order was cancelled.",
+	},
+	{
+		title: 'The split survives the edge cases',
+		body: 'Platform fee, the seller share, refund, partial refund, dispute, a seller who deletes their account with a pending balance. That is where marketplaces break, not on the ordinary transaction.',
+	},
+	{
+		title: 'Payouts you can explain',
+		body: 'Every transfer tied to an order, somewhere your operations person can look without calling me.',
+	},
+];
+
+const questions = [
+	'Who pays',
+	'Who gets paid',
+	'Who takes a cut, and how much',
+	'When the work counts as delivered',
+];
+
+const steps = [
+	'You write me your payment flow. I answer the same working day, in writing, telling you whether Stripe allows it and what it involves.',
+	'If it makes sense, we talk for twenty minutes. No deck, and no proposal prepared in advance.',
+	'I send you a proposal with the scope written down and a start date.',
+];
+
+const title = 'Stripe Connect marketplace with split payments | Quick Flow';
+const description =
+	'Two-sided marketplaces on Stripe Connect: seller onboarding that passes verification, money held until delivery, splits that survive refunds.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Marketplace development with Stripe Connect',
+	serviceType: 'Marketplace development, split payments',
+	description,
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'Worldwide',
+};
+---
+
+<Sheet lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recognition, then the drawing. The flow of money is the subject of
+	     this page, so it arrives before any claim about it. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Marketplace with payments</p>
+			<p class="spec">Stripe Connect, separate charges and transfers</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[15ch]">
+			The marketplace is the easy part. Splitting the money is not.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			I build platforms where sellers pass identity verification, the money waits for delivery, and
+			the split does not break on the first refund. In no-code since 2017, writing code since 2025,
+			one person from the data model to the payout.
+		</p>
+
+		<div class="mt-10 md:mt-14">
+			<FlowSheet lang="en" />
+		</div>
+	</section>
+
+	<!-- 2. Three signs. The reader arrives here from one of them. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="signs">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">You usually get here after one of these</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="signs" class="display-lg mt-8 max-w-[22ch]">
+			Three signs the payments are the part that is stuck.
+		</h2>
+
+		<div class="mt-4">
+			{
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 3. The mechanics, named. Four things, not four adjectives. -->
+	<section class="invert mt-24 md:mt-32" aria-labelledby="mechanics">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">What I build, by name</p>
+			<h2 id="mechanics" class="display-lg mt-6 max-w-[20ch]">Four things, not four adjectives.</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+				{
+					mechanics.map((m, i) => (
+						<article class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<h3 class="display-md mt-4 max-w-[22ch]">{m.title}</h3>
+							<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{m.body}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. The word that gets applications rejected, handed to its own page. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="escrow">
+		<div class="border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<p class="spec">The part most people get wrong</p>
+					<h2 id="escrow" class="display-lg mt-6">
+						Stripe does not do <span class="strike">escrow</span>.
+					</h2>
+					<p class="prose-body mt-7">{escrow.claim}</p>
+					<p class="prose-body mt-4">
+						What you actually want is called something else, is built differently, and gets
+						approved.
+					</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
+					<a href={paths.escrow.en} class="btn btn-primary">Read how to word it</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. What can and cannot be shown. Said here rather than left for the
+	     reader to notice, because a portfolio claim is checked in two minutes. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="proof">
+		<div class="grid gap-8 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="spec">The proof</p>
+				<h2 id="proof" class="display-lg mt-6">What I can show, and what I cannot.</h2>
+				<p class="stamp mt-8">Marketplaces delivered under another agency</p>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					The marketplaces with split payments that I have built were delivered through another
+					agency and I cannot show them. I say that plainly, because a page that claims otherwise
+					gets checked in two minutes.
+				</p>
+				<p class="prose-body mt-5">
+					What I can show are platforms with payments and controlled access, delivered in my own
+					name:
+					<a href="https://jemshitmavlyanov.com" rel="noopener" target="_blank" class="link"
+						>jemshitmavlyanov.com</a
+					>, with accounts, a cart, payment and access that expires, in nine languages, and
+					<a href="https://elenaviscu.com" rel="noopener" target="_blank" class="link"
+						>elenaviscu.com</a
+					>, with three products sold online, each under a different access rule.
+				</p>
+				<p class="prose-body mt-5">
+					The rest is checked in fifteen minutes of conversation, not in a portfolio. Ask me what
+					happens when a payout fails, or how a refund is split after the money has already left
+					for the seller.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. The entry offer. Four questions, a written answer, no call. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="flow">
+		<div class="hair pt-10 md:pt-14">
+			<p class="spec">Free, and no call</p>
+			<h2 id="flow" class="display-lg mt-6 max-w-[20ch]">
+				Send me your payment flow. I will tell you whether Stripe allows it.
+			</h2>
+
+			<div class="mt-12 grid gap-10 md:grid-cols-12 md:gap-12">
+				<div class="md:col-span-6">
+					<p class="text-lg leading-snug">
+						Write four things in your own words. That is all I need to give you a useful answer
+						first time, without either of us booking anything.
+					</p>
+					<ol class="mt-8 flex flex-col gap-4">
+						{
+							questions.map((q, i) => (
+								<li class="flex gap-4">
+									<span class="spec pt-1.5">{String(i + 1).padStart(2, '0')}</span>
+									<span class="text-lg leading-snug">{q}</span>
+								</li>
+							))
+						}
+					</ol>
+					<a href={paths.contact.en} class="btn btn-primary mt-10">Send me the flow</a>
+				</div>
+				<div class="md:col-span-5 md:col-start-8">
+					<p class="prose-body">
+						I answer the same working day, in writing. I tell you whether the flow is allowed, what
+						it means technically, and where it will hurt.
+					</p>
+					<p class="prose-body mt-5">
+						If the answer is "yes, it can be done, and it is simple", you get that answer too. You
+						do not get an unsolicited proposal and you do not enter an email sequence.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. What happens next, on ink, flowing into the footer. -->
+	<section class="invert mt-24 md:mt-32" aria-labelledby="next">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<p class="spec">What happens after the first message</p>
+			<h2 id="next" class="display-lg mt-6 max-w-[20ch]">Three steps, and no sales funnel.</h2>
+
+			<ol class="mt-12 grid gap-x-12 gap-y-8 md:grid-cols-3">
+				{
+					steps.map((step, i) => (
+						<li class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<p class="mt-4 max-w-[34ch] text-[0.95rem] leading-relaxed text-paper/80">{step}</p>
+						</li>
+					))
+				}
+			</ol>
+
+			<p class="prose-body mt-12 max-w-[62ch]">
+				The price comes after I know the flow, not before. A marketplace with three kinds of seller
+				and partial refunds does not cost what one with a single payout costs, and a range invented
+				before the conversation helps nobody.
+			</p>
+
+			<div class="mt-12">
+				<a href={paths.contact.en} class="btn btn-primary">Send me your payment flow</a>
+			</div>
+		</div>
+	</section>
+</Sheet>

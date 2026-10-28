@@ -1,0 +1,160 @@
+---
+import Sheet from '../layouts/Sheet.astro';
+import { paths } from '../i18n/routes';
+
+const projects = [
+	{
+		n: '01',
+		name: 'aeinvitatii.ro',
+		href: 'https://aeinvitatii.ro',
+		kind: 'My own product, in production',
+		problem:
+			'A couple sends out their wedding invitations and then calls people one by one to find out who is coming.',
+		built:
+			'A product with twelve designs drawn from scratch, a personal link for each family, an RSVP with menu, transport and accommodation, and a guest list that updates live. Paid once, 299 lei. The invitation exists in two languages, and each further language is bought separately.',
+		detail: 'Payments, personal links, an RSVP dashboard, multilingual.',
+	},
+	{
+		n: '02',
+		name: 'jemshitmavlyanov.com',
+		href: 'https://jemshitmavlyanov.com',
+		kind: 'Full migration from Bubble to code',
+		problem:
+			'A video course academy built on Bubble. The public pages loaded slowly, the cost grew with traffic, and the whole product depended on a platform the client did not control.',
+		built:
+			'The app was moved onto code in full: accounts, authentication, cart, payment, access that expires after six months, a certificate of completion and an admin panel. Nine languages, with Russian audio and subtitles for each.',
+		detail: 'Accounts and payments moved, not just the public site.',
+		archive: 'https://web.archive.org/web/20260521013426/https://jemshitmavlyanov.com/',
+	},
+	{
+		n: '03',
+		name: 'elenaviscu.com',
+		href: 'https://elenaviscu.com',
+		kind: 'Coaching platform with payments',
+		problem:
+			'Three different products, sold to the same person, each with its own access rule and its own price.',
+		built:
+			'A video course with time-limited access, one-to-one sessions with booking, and a third self-knowledge session. Payments in the local currency, access opened automatically after payment, with nobody granting rights by hand.',
+		detail: 'Three product types, three access rules.',
+	},
+	{
+		n: '04',
+		name: 'easonline.academy',
+		href: 'https://easonline.academy',
+		kind: 'Online academy with payment and access',
+		problem: 'Hairdressing courses taught face to face until then, with no way to deliver online.',
+		built:
+			'An academy with video lessons, student accounts, payment and access opened after payment. The first step of the business out of the classroom and into the browser.',
+		detail: 'Video lessons, accounts, payment.',
+	},
+];
+
+const title = 'Work: Bubble migration, course platforms | Quick Flow';
+const description =
+	'Four projects, all still live: my own product with payments and RSVPs, a full migration from Bubble to code, and two course platforms with controlled access.';
+---
+
+<Sheet lang="en" title={title} description={description}>
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Work</p>
+			<p class="spec">04 records, 01 withheld</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">Four things built, all still live.</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			The marketplaces with split payments that I have built were delivered through another agency
+			and I cannot show them. These four are mine, or belong to clients who let me show them.
+		</p>
+	</section>
+
+	<section class="bleed mt-20 md:mt-24" aria-labelledby="projects">
+		<h2 id="projects" class="sr-only">Projects</h2>
+
+		{
+			projects.map((p) => (
+				<article class="hair rise grid gap-6 py-12 md:grid-cols-12 md:gap-8 md:py-16">
+					<p class="spec md:col-span-1 md:pt-3">{p.n}</p>
+
+					<div class="md:col-span-4">
+						<h3 class="display-lg">{p.name}</h3>
+						<p class="spec mt-5">{p.kind}</p>
+						<p class="prose-body mt-6 text-[0.95rem]">{p.detail}</p>
+						<div class="mt-6 flex flex-col gap-2 text-sm">
+							<a href={p.href} rel="noopener" target="_blank" class="link">
+								Visit the site
+							</a>
+							{p.archive && (
+								<a href={p.archive} rel="noopener nofollow" target="_blank" class="link">
+									See the old version, archived
+								</a>
+							)}
+						</div>
+					</div>
+
+					<div class="md:col-span-6 md:col-start-7">
+						<p class="spec">The problem</p>
+						<p class="prose-body mt-3">{p.problem}</p>
+						<p class="spec mt-8">What was built</p>
+						<p class="prose-body mt-3">{p.built}</p>
+					</div>
+				</article>
+			))
+		}
+	</section>
+
+	<!-- The record that cannot be shown. It closes the page rather than being
+	     left out, because the gap is visible anyway and a withheld field reads
+	     better than a silence. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="withheld">
+		<article class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+			<div class="md:col-span-5">
+				<div class="flex items-baseline justify-between gap-4">
+					<h2 id="withheld" class="display-md">
+						<span class="sr-only">A marketplace that cannot be named</span>
+						<span class="redact w-[9ch]" aria-hidden="true"></span>
+					</h2>
+					<span class="spec">05</span>
+				</div>
+				<p class="stamp mt-6">Cannot be shown</p>
+			</div>
+
+			<dl class="grid grid-cols-[8.5rem_1fr] gap-x-6 gap-y-4 md:col-span-6 md:col-start-7">
+				<dt class="spec pt-1">Type</dt>
+				<dd class="text-[0.95rem]">Marketplace with split payments</dd>
+
+				<dt class="spec pt-1">Client</dt>
+				<dd>
+					<span class="sr-only">Withheld</span>
+					<span class="redact w-[13ch]" aria-hidden="true"></span>
+				</dd>
+
+				<dt class="spec pt-1">Delivered through</dt>
+				<dd class="text-[0.95rem]">Another agency</dd>
+
+				<dt class="spec pt-1">Screenshot</dt>
+				<dd class="prose-body text-[0.95rem]">Unavailable</dd>
+
+				<dt class="spec pt-1">What I can say</dt>
+				<dd class="prose-body max-w-[42ch] text-[0.95rem]">
+					I can talk about how the split payments, the seller verification and the payouts are
+					built. I cannot show the name.
+				</dd>
+			</dl>
+		</article>
+	</section>
+
+	<section class="invert mt-24 md:mt-32">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					If you want to see what the part I cannot show looks like, ask me.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Write to me</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</Sheet>
