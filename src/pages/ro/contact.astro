@@ -3,6 +3,12 @@ import Site from '../../layouts/Site.astro';
 
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
+// Aceleași clase ca pe pagina engleză. Erau scrise de mână, de cinci ori, cu altă
+// culoare de chenar și alt fundal, deci cele două formulare arătau diferit.
+const field =
+	'mt-2 w-full rounded-xl border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-paper';
+const errorText = 'mt-2 text-sm text-hot';
+
 const budgets = [
 	'Nu știu încă',
 	'Sub 5.000 EUR',
@@ -61,9 +67,9 @@ const flowFields = [
 							type="text"
 							required
 							autocomplete="name"
-							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class={field}
 						/>
-						<p data-error-for="nume" hidden class="mt-2 text-sm text-hot"></p>
+						<p data-error-for="nume" hidden class={errorText}></p>
 					</div>
 
 					<div>
@@ -74,9 +80,9 @@ const flowFields = [
 							type="email"
 							required
 							autocomplete="email"
-							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class={field}
 						/>
-						<p data-error-for="email" hidden class="mt-2 text-sm text-hot"></p>
+						<p data-error-for="email" hidden class={errorText}></p>
 					</div>
 
 					<div>
@@ -88,9 +94,9 @@ const flowFields = [
 							name="proiect"
 							rows="5"
 							required
-							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class={field}
 						></textarea>
-						<p data-error-for="proiect" hidden class="mt-2 text-sm text-hot"></p>
+						<p data-error-for="proiect" hidden class={errorText}></p>
 					</div>
 
 					<div>
@@ -100,7 +106,7 @@ const flowFields = [
 						<select
 							id="buget"
 							name="buget"
-							class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none focus:border-teal"
+							class={field}
 						>
 							{budgets.map((b) => <option value={b}>{b}</option>)}
 						</select>
@@ -123,7 +129,7 @@ const flowFields = [
 											name={f.name}
 											type="text"
 											placeholder={f.placeholder}
-											class="mt-2 w-full rounded-xl border border-paper/20 bg-ink-800/60 px-4 py-3 text-paper outline-none placeholder:text-paper/30 focus:border-teal"
+											class={`${field} placeholder:text-paper/30`}
 										/>
 									</div>
 								))
