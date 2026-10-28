@@ -8,6 +8,8 @@ import { VERIFIED_ON } from '../../content/proof';
 // existau.
 const analytics = Boolean(import.meta.env.PUBLIC_CF_BEACON_TOKEN);
 
+import { BOOKING } from '../../content/booking';
+
 const updated = VERIFIED_ON.ro;
 
 // This page describes what the site actually does, so it changes when the site
@@ -49,6 +51,9 @@ const sections = [
 			'Resend, care livrează emailul.',
 			...(analytics
 				? ['Cloudflare Web Analytics, care numără afișările de pagină. Nu pune niciun cookie și nu construiește niciun profil.']
+				: []),
+			...(BOOKING
+				? ['Calendly, doar dacă alegi să rezervi un interval. Ce scrii acolo e prelucrat de ei, după politica lor, iar eu văd doar rezervarea.']
 				: []),
 		],
 	},

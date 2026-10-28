@@ -9,6 +9,8 @@ const field =
 	'mt-2 w-full rounded-xl border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-paper';
 const errorText = 'mt-2 text-sm text-hot';
 
+import { BOOKING, BOOKING_URL } from '../../content/booking';
+
 const budgets = [
 	'Nu știu încă',
 	'Sub 5.000 EUR',
@@ -181,9 +183,17 @@ const flowFields = [
 					Fără prezentare și fără ofertă pregătită dinainte. Dacă după discuție nu are sens, îți
 					spun pe loc.
 				</p>
-				<p class="prose-body mt-5">
-					Scrie-mi și îți trimit două sau trei intervale în zilele următoare.
-				</p>
+				{
+					BOOKING ? (
+						<a href={BOOKING_URL} rel="noopener" target="_blank" class="btn btn-ghost mt-6">
+							Alege un interval
+						</a>
+					) : (
+						<p class="prose-body mt-5">
+							Scrie-mi și îți trimit două sau trei intervale în zilele următoare.
+						</p>
+					)
+				}
 				<p class="prose-body mt-8 text-sm">
 					Scris simplu, dacă nu vrei niciun formular:<br />
 					<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>

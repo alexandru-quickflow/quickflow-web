@@ -8,6 +8,8 @@ import { VERIFIED_ON } from '../content/proof';
 // existau.
 const analytics = Boolean(import.meta.env.PUBLIC_CF_BEACON_TOKEN);
 
+import { BOOKING } from '../content/booking';
+
 const updated = VERIFIED_ON.en;
 
 // This page describes what the site actually does, so it changes when the site
@@ -48,6 +50,9 @@ const sections = [
 			'Resend, which delivers the email.',
 			...(analytics
 				? ['Cloudflare Web Analytics, which counts page views. It stores no cookie and builds no profile.']
+				: []),
+			...(BOOKING
+				? ['Calendly, but only if you choose to book a slot. What you type there is processed by them, under their own policy, and I only see the booking.']
 				: []),
 		],
 	},

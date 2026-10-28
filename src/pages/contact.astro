@@ -31,6 +31,8 @@ const flowFields = [
 const field =
 	'mt-2 w-full rounded-xl border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-paper';
 const errorText = 'mt-2 text-sm text-hot';
+
+import { BOOKING, BOOKING_URL } from '../content/booking';
 ---
 
 <Site
@@ -176,9 +178,17 @@ const errorText = 'mt-2 text-sm text-hot';
 					No deck and no proposal prepared in advance. If it does not make sense after the call, I
 					will tell you on the spot.
 				</p>
-				<p class="prose-body mt-5">
-					Write to me and I will send you two or three slots in the next few days.
-				</p>
+				{
+					BOOKING ? (
+						<a href={BOOKING_URL} rel="noopener" target="_blank" class="btn btn-ghost mt-6">
+							Pick a slot
+						</a>
+					) : (
+						<p class="prose-body mt-5">
+							Write to me and I will send you two or three slots in the next few days.
+						</p>
+					)
+				}
 				<p class="prose-body mt-8 text-sm">
 					Plain writing, if you want no form at all:<br />
 					<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>
