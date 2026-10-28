@@ -225,21 +225,63 @@ const stay = [
 		</p>
 	</section>
 
-	<!-- 5. Ce doare -->
+
+	<!-- 5. Una care chiar s-a făcut. Pagina argumenta munca pe patru ecrane
+	     fără să arate nimic ieșit din ea, iar linkul spre arhivă lasă
+	     cititorul să vadă ce a înlocuit. -->
+	<section class="shell mt-24 md:mt-32" aria-labelledby="caz">
+		<div class="grid items-center gap-10 md:grid-cols-12 md:gap-16">
+			<figure class="shot rise md:col-span-7">
+				<img
+					src="/work/jemshitmavlyanov.jpg"
+					alt="jemshitmavlyanov.com după migrare"
+					width="800"
+					height="500"
+					loading="lazy"
+				/>
+			</figure>
+
+			<div class="stagger md:col-span-5">
+				<p class="eyebrow">Una care s-a făcut</p>
+				<h2 id="caz" class="display-lg mt-6 max-w-[14ch]">
+					O academie video, mutată <em>integral</em>.
+				</h2>
+				<p class="prose-body mt-6">
+					Conturi, autentificare, coș, plată, acces care expiră după șase luni, certificat de
+					absolvire și panou de administrare. Nouă limbi, cu audio în rusă și subtitrări pentru
+					fiecare.
+				</p>
+				<p class="mt-7 flex flex-wrap gap-x-6 gap-y-2">
+					<a href="https://jemshitmavlyanov.com" rel="noopener" target="_blank" class="link text-sm"
+						>jemshitmavlyanov.com</a
+					>
+					<a
+						href="https://web.archive.org/web/20260521013426/https://jemshitmavlyanov.com/"
+						rel="noopener nofollow"
+						target="_blank"
+						class="spec">Vezi-o pe Bubble, arhivată</a
+					>
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. Ce doare -->
 	<section class="shell mt-24 md:mt-32" aria-labelledby="doare">
 		<p class="eyebrow">Ce doare și nu se poate evita</p>
 		<h2 id="doare" class="display-lg mt-5 max-w-[22ch]">Trei lucruri pe care nu le poate ocoli nimeni.</h2>
 
-		<div class="mt-12 grid gap-4 md:grid-cols-3">
+		<ol class="mt-14 flex flex-col gap-12 md:gap-16">
 			{
-				hurts.map((h) => (
-					<article class="card rise">
-						<h3 class="display-md">{h.title}</h3>
-						<p class="mt-5 text-[0.95rem] leading-relaxed text-paper/70">{h.body}</p>
-					</article>
+				hurts.map((h, i) => (
+					<li class="rise grid gap-4 md:grid-cols-12 md:gap-10">
+						<p class="numeral-ghost md:col-span-2">{String(i + 1).padStart(2, '0')}</p>
+						<h3 class="display-md md:col-span-4 md:pt-3">{h.title}</h3>
+						<p class="prose-body md:col-span-6 md:pt-4">{h.body}</p>
+					</li>
 				))
 			}
-		</div>
+		</ol>
 	</section>
 
 	<!-- 6. Auditul -->
