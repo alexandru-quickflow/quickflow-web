@@ -792,10 +792,16 @@
 
 @media (prefers-reduced-motion: no-preference) {
 	@supports (animation-timeline: view()) {
+		/* The class a page puts on one specific block. On cover, for the same
+		   reason .stagger is: the blocks written this way are short, and on a
+		   141px block an entry range is 68px of scrolling, which a reader on an
+		   inertial scroller passes in a single flick. The blanket rule below
+		   keeps its entry range, because the things it catches are sections and
+		   cards with real height. */
 		.rise {
 			animation: rise linear both;
 			animation-timeline: view();
-			animation-range: entry 4% entry 52%;
+			animation-range: cover 5% cover 28%;
 		}
 
 		/* Everything that repeats down a page arrives as it is reached, without
@@ -809,25 +815,222 @@
 			animation-range: entry 4% entry 52%;
 		}
 
-		/* Stagger inside a block: the same reveal on each child, offset along
-		   the entry range, so lines arrive in reading order. */
+		/* Stagger inside a block: the same reveal on each child, offset so
+		   lines arrive in reading order.
+		
+		   On cover rather than entry, because the children here are single
+		   lines. An entry range is as long as the element, and a nineteen
+		   pixel paragraph was measured going from opacity 0 to opacity 1 while
+		   its top was still at 1028px on a 900px screen: the whole reveal spent
+		   below the fold, every time, on every page. */
 		.stagger > * {
 			animation: rise linear both;
 			animation-timeline: view();
-			animation-range: entry 6% entry 46%;
+			animation-range: cover 6% cover 26%;
 		}
 
 		.stagger > :nth-child(2) {
-			animation-range: entry 14% entry 54%;
+			animation-range: cover 10% cover 30%;
 		}
 
 		.stagger > :nth-child(3) {
-			animation-range: entry 22% entry 62%;
+			animation-range: cover 14% cover 34%;
 		}
 
 		.stagger > :nth-child(n + 4) {
-			animation-range: entry 30% entry 70%;
+			animation-range: cover 18% cover 38%;
 		}
+
+		/* Beyond the reveal -------------------------------------------------
+		 * The reveal above moves every block the same 28px, which is motion a
+		 * reader stops noticing by the second section. What follows is motion
+		 * that belongs to the thing it moves: the drawings draw, the split
+		 * splits, the figures land, the work rows come from the side they sit
+		 * on, and the ghost numerals keep moving the whole time their section
+		 * is on screen rather than arriving once and stopping.
+		 *
+		 * Every one is written so that the absence of the animation is the
+		 * finished state. A browser with no view timelines, or a reader who
+		 * asked for less motion, gets the page with everything in place, which
+		 * is why none of these hidden states lives outside this block. */
+
+		/* The four service marks draw themselves. pathLength is 1 on every
+		   outline in the component, so the tall window and the short connector
+		   take the same time instead of the big shape lagging behind. The
+		   dashed connectors in 04 carry no pathLength and are left alone: this
+		   sets stroke-dasharray, and it would eat their dash pattern. */
+		/* The ranges below are written against cover, not entry, and the
+		   difference is the whole effect. An entry range is exactly as long as
+		   the element, so on an eighty pixel mark `entry 8% entry 58%` is forty
+		   pixels of scrolling, spent while the mark is still on the bottom edge
+		   of the screen. It was measured finishing at progress 1 before the
+		   mark had properly arrived: correct, running, and invisible. A cover
+		   range is the viewport plus the element, so the same percentages buy
+		   three hundred pixels of scrolling in the middle of the screen, which
+		   is where a reader is actually looking. */
+		.mark [pathLength] {
+			animation: draw linear both;
+			animation-timeline: view();
+			animation-range: cover 10% cover 44%;
+		}
+
+		/* The filled parts arrive after the outline that holds them, so a mark
+		   reads as drawn and then inked rather than faded in whole. */
+		.mark [class*="fill-"] {
+			animation: ink linear both;
+			animation-timeline: view();
+			animation-range: cover 26% cover 52%;
+		}
+
+		/* The flow reads left to right, so it arrives left to right: buyer,
+		   charge, platform, release, seller. The wrapper gave up its own .rise
+		   when this went in, or the block would fade in as one piece first and
+		   the sequence would have nothing left to show. */
+		.flowmap > * {
+			animation: rise linear both;
+			animation-timeline: view();
+			animation-range: cover 6% cover 28%;
+		}
+
+		.flowmap > :nth-child(2) {
+			animation-range: cover 10% cover 32%;
+		}
+
+		.flowmap > :nth-child(3) {
+			animation-range: cover 14% cover 36%;
+		}
+
+		.flowmap > :nth-child(4) {
+			animation-range: cover 18% cover 40%;
+		}
+
+		.flowmap > :nth-child(5) {
+			animation-range: cover 22% cover 44%;
+		}
+
+		/* The split wipes open from the left. A clip, not a scaleX: the bar
+		   carries its amount as text, and scaling the box stretches the digits
+		   with it. */
+		.bar {
+			animation: wipe linear both;
+			animation-timeline: view();
+			animation-range: cover 14% cover 40%;
+		}
+
+		/* A number that carries an argument lands rather than rises. */
+		.figure,
+		.fig {
+			animation: land linear both;
+			animation-timeline: view();
+			animation-range: cover 10% cover 38%;
+		}
+
+		/* The work rows alternate which side the screenshot sits on, so each
+		   half enters from the side it ends up on. Only where the row actually
+		   has two sides: below 880px it stacks, and a horizontal entrance there
+		   throws the capture off the edge of a phone for no gain. */
+		@media (min-width: 880px) {
+			.work-row .shot {
+				animation: from-left linear both;
+				animation-timeline: view();
+				animation-range: cover 8% cover 38%;
+			}
+
+			.work-row .meta {
+				animation: from-right linear both;
+				animation-timeline: view();
+				animation-range: cover 12% cover 42%;
+			}
+
+			.work-row:nth-of-type(even) .shot {
+				animation-name: from-right;
+			}
+
+			.work-row:nth-of-type(even) .meta {
+				animation-name: from-left;
+			}
+		}
+
+		/* The one piece of motion here that is not an entrance. The ghost
+		   numerals drift for the whole time their section crosses the viewport,
+		   which is what makes the page feel driven by the scroll rather than
+		   merely decorated at the top of each block. */
+		.numeral-ghost {
+			animation: drift-up linear both;
+			animation-timeline: view();
+			animation-range: cover 0% cover 100%;
+		}
+	}
+}
+
+@keyframes draw {
+	from {
+		stroke-dasharray: 1;
+		stroke-dashoffset: 1;
+	}
+	to {
+		stroke-dasharray: 1;
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes ink {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes wipe {
+	from {
+		clip-path: inset(0 100% 0 0);
+	}
+	to {
+		clip-path: inset(0 0 0 0);
+	}
+}
+
+@keyframes land {
+	from {
+		opacity: 0;
+		transform: translateY(20px) scale(0.94);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes from-left {
+	from {
+		opacity: 0;
+		transform: translateX(-40px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes from-right {
+	from {
+		opacity: 0;
+		transform: translateX(40px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes drift-up {
+	from {
+		transform: translateY(22px);
+	}
+	to {
+		transform: translateY(-22px);
 	}
 }
 

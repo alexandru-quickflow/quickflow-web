@@ -8,8 +8,27 @@
 // plumbing diagrams that said nothing about the service, and 02's payout lines
 // ran outside the box.
 //
-// Each carries exactly one teal element, which is the thing the service is
-// actually about. One component because the two home pages had the same SVG
+// The subjects survived a second round against two abstract alternatives, a
+// measured technical plate and a system of one repeated unit, both built and
+// both rejected for the same reason: a reader with a Bubble app and a
+// marketplace recognises a window, a card, a lesson and two systems faster
+// than any shape that has to be decoded first.
+//
+// What that round did change is the craft, and these are the rules the four
+// now keep:
+//
+//   - One box. All four fill 96 by 64 to the same margins, so the row sits on
+//     one baseline instead of four.
+//   - One scale inside a mark. The lock used to be a third of the player it
+//     belonged to, which is what made 03 look like two drawings on one line.
+//   - One radius family, 5 to 7 units, which is the 16px radius of the page
+//     seen at this size.
+//   - About the same teal in each. 02 and 04 used to be half teal while 01 and
+//     03 carried a hairline of it, and unequal accent is most of what made the
+//     row read as assembled rather than drawn.
+//
+// Each still carries exactly one teal element, which is the thing the service
+// is actually about. One component because the two home pages had the same SVG
 // pasted twice and would have drifted the moment either changed.
 
 interface Props {
@@ -29,7 +48,7 @@ const titles = [
 
 <svg
 	viewBox="0 0 96 64"
-	class={cls}
+	class={`mark ${cls}`}
 	role="img"
 	aria-label={titles[n]}
 	fill="none"
@@ -37,86 +56,97 @@ const titles = [
 	stroke-linejoin="round"
 >
 	{
-		/* 01 Migration. A platform window holding four layers, three phase ticks
-		   on the connector, and a code window that has the first layer. */
+		/* 01 Migration. The platform window, and the same app as code. Both
+		   windows are the same size on purpose: what the migration changes is
+		   what is inside, not how much there is of it. */
 		n === 0 && (
 			<g>
-				<rect x="1" y="12" width="32" height="40" rx="5" class="stroke-paper/30" />
-				<path d="M1,21 H33" class="stroke-paper/15" />
-				<rect x="7" y="25" width="20" height="2.5" rx="1.25" class="fill-paper/30" />
-				<rect x="7" y="32" width="20" height="2.5" rx="1.25" class="fill-paper/30" />
-				<rect x="7" y="39" width="14" height="2.5" rx="1.25" class="fill-paper/30" />
-				<circle cx="5.5" cy="16.5" r="1.1" class="fill-paper/30" />
-				<circle cx="9.5" cy="16.5" r="1.1" class="fill-paper/30" />
+				<rect x="2" y="10" width="36" height="44" rx="7" class="stroke-paper/35" pathLength="1" />
+				<path d="M2,19 H38" class="stroke-paper/15" pathLength="1" />
+				<circle cx="6.8" cy="14.5" r="1.2" class="fill-paper/25" />
+				<circle cx="11" cy="14.5" r="1.2" class="fill-paper/25" />
+				<rect x="8" y="26" width="24" height="3" rx="1.5" class="fill-paper/25" />
+				<rect x="8" y="33" width="24" height="3" rx="1.5" class="fill-paper/25" />
+				<rect x="8" y="40" width="15" height="3" rx="1.5" class="fill-paper/25" />
 
-				<path d="M36,32 H57" class="stroke-paper/45" />
-				<path d="M53.5,28.8 L57,32 L53.5,35.2" class="stroke-paper/45" />
-				<path d="M41,29 V35 M47,29 V35" class="stroke-paper/20" />
+				<path d="M43,32 H53" class="stroke-paper/40" pathLength="1" />
+				<path d="M50,29.2 L53,32 L50,34.8" class="stroke-paper/40" pathLength="1" />
 
-				<rect x="63" y="12" width="32" height="40" rx="5" class="stroke-paper/45" />
-				<path d="M63,21 H95" class="stroke-paper/15" />
-				<rect x="69" y="25" width="20" height="2.5" rx="1.25" class="fill-teal" />
-				<path d="M69,33 l-3,3 3,3 M78,33 l3,3 -3,3" class="stroke-paper/35" />
-				<path d="M72.5,40 L75.5,31.5" class="stroke-paper/20" />
+				<rect x="58" y="10" width="36" height="44" rx="7" class="stroke-paper/35" pathLength="1" />
+				<path d="M58,19 H94" class="stroke-paper/15" pathLength="1" />
+				<rect x="64" y="25" width="24" height="3" rx="1.5" class="fill-teal" />
+				<path d="M68,34 l-3.5,3.5 3.5,3.5 M84,34 l3.5,3.5 -3.5,3.5" class="stroke-paper/25" pathLength="1" />
+				<path d="M78,33.5 L74,41.5" class="stroke-paper/25" pathLength="1" />
 			</g>
 		)
 	}
 	{
 		/* 02 Marketplace. A card goes in, and comes out as three shares at the
-		   real proportions: 850, 120, 30. The split bar is the site's own
-		   device, so the mark and the drawing on the page say the same thing. */
+		   real proportions: 850, 120, 30. The fee carries the colour the legend
+		   on the page gives it; the processing share keeps a neutral one,
+		   because at thirty parts in a thousand the legend's own near-black
+		   would leave the segment invisible, and a split that loses a segment
+		   stops being the drawing the page makes. */
 		n === 1 && (
 			<g>
-				<rect x="2" y="20" width="30" height="24" rx="5" class="stroke-paper/35" />
-				<path d="M2,27 H32" class="stroke-paper/35" />
-				<rect x="7" y="34" width="9" height="2.5" rx="1.25" class="fill-paper/30" />
-				<circle cx="25" cy="36" r="3" class="stroke-paper/25" />
+				<rect x="2" y="16" width="36" height="26" rx="7" class="stroke-paper/35" pathLength="1" />
+				<path d="M2,24 H38" class="stroke-paper/15" pathLength="1" />
+				<rect x="7" y="31" width="11" height="3" rx="1.5" class="fill-paper/25" />
+				<circle cx="30.5" cy="33" r="3.4" class="stroke-paper/25" pathLength="1" />
 
-				<path d="M36,32 H47" class="stroke-paper/45" />
-				<path d="M43.5,28.8 L47,32 L43.5,35.2" class="stroke-paper/45" />
+				<path d="M43,29 H53" class="stroke-paper/40" pathLength="1" />
+				<path d="M50,26.2 L53,29 L50,31.8" class="stroke-paper/40" pathLength="1" />
 
-				<rect x="51" y="24" width="26" height="16" rx="4" class="fill-teal" />
-				<rect x="79" y="24" width="9" height="16" rx="2.5" class="fill-paper/22" />
-				<rect x="90" y="24" width="4" height="16" rx="2" class="fill-paper/12" />
+				<rect x="58" y="24" width="29" height="10" rx="3" class="fill-teal" />
+				<rect x="88.5" y="24" width="4" height="10" rx="1.5" class="fill-seg-fee" />
+				<rect x="94" y="24" width="1.6" height="10" rx="0.8" class="fill-paper/25" />
 			</g>
 		)
 	}
 	{
 		/* 03 Courses. A lesson that plays, and the lock that decides for how
-		   long: access that expires is the product, not a feature of it. */
+		   long: access that expires is the product, not a feature of it. The
+		   lock is drawn at the size of the thing it governs, which is the one
+		   change that stopped this mark reading as two unrelated drawings. */
 		n === 2 && (
 			<g>
-				<rect x="2" y="12" width="54" height="36" rx="6" class="stroke-paper/35" />
-				<path d="M24,23 L38,30 L24,37 Z" class="fill-paper/40" />
-				<rect x="2" y="53" width="54" height="3" rx="1.5" class="fill-paper/12" />
-				<rect x="2" y="53" width="32" height="3" rx="1.5" class="fill-paper/35" />
+				<rect x="2" y="10" width="52" height="32" rx="7" class="stroke-paper/35" pathLength="1" />
+				<path d="M24,19 L36,26 L24,33 Z" class="fill-paper/35" />
+				<rect x="2" y="46" width="52" height="3" rx="1.5" class="fill-paper/15" />
+				<rect x="2" y="46" width="30" height="3" rx="1.5" class="fill-paper/35" />
 
-				<path d="M72,30 v-6 a6,6 0 0 1 12,0 v6" class="stroke-paper/45" />
-				<rect x="66" y="30" width="24" height="20" rx="5" class="stroke-teal" />
-				<circle cx="78" cy="38" r="2.2" class="fill-teal" />
-				<path d="M78,40.5 V44" class="stroke-teal" />
+				<path d="M66,31 v-6 a6,6 0 0 1 12,0 v6" class="stroke-teal" pathLength="1" />
+				<rect x="60" y="30" width="24" height="19" rx="6" class="fill-teal" />
+				<circle cx="72" cy="37" r="2.3" class="fill-ink" />
+				<path d="M72,38.6 V42.4" class="stroke-ink" stroke-width="2" pathLength="1" />
 			</g>
 		)
 	}
 	{
 		/* 04 Automation. Two systems and the step between them that used to be
-		   a person moving data by hand. */
+		   a person moving data by hand. The bolt sits inside a node of the same
+		   family as the two systems rather than loose between them: on its own
+		   it was the largest filled shape in the set and pulled the whole row
+		   off balance. */
 		n === 3 && (
 			<g>
-				<rect x="2" y="20" width="26" height="24" rx="6" class="stroke-paper/35" />
-				<circle cx="9" cy="27" r="1.6" class="fill-paper/30" />
-				<circle cx="15" cy="27" r="1.6" class="fill-paper/30" />
-				<rect x="8" y="33" width="14" height="2.5" rx="1.25" class="fill-paper/25" />
-				<rect x="8" y="38" width="9" height="2.5" rx="1.25" class="fill-paper/25" />
+				<rect x="2" y="16" width="28" height="28" rx="7" class="stroke-paper/35" pathLength="1" />
+				<circle cx="8.6" cy="23" r="1.6" class="fill-paper/25" />
+				<circle cx="14.4" cy="23" r="1.6" class="fill-paper/25" />
+				<rect x="8" y="29" width="16" height="3" rx="1.5" class="fill-paper/25" />
+				<rect x="8" y="35" width="10" height="3" rx="1.5" class="fill-paper/25" />
 
-				<path d="M31,32 H41 M55,32 H62" class="stroke-paper/30" stroke-dasharray="3 3" />
-				<path d="M59,29 L62,32 L59,35" class="stroke-paper/45" />
-				<path d="M50,19 L42,33 H47.5 L45,45 L54,30 H48.5 Z" class="fill-teal" />
+				<path d="M33,30 H40" class="stroke-paper/40" stroke-dasharray="3 3" />
+				<path d="M60,30 H63" class="stroke-paper/40" stroke-dasharray="3 3" />
+				<path d="M63,27.2 L66,30 L63,32.8" class="stroke-paper/40" pathLength="1" />
 
-				<rect x="68" y="20" width="26" height="24" rx="6" class="stroke-paper/35" />
-				<rect x="74" y="27" width="14" height="2.5" rx="1.25" class="fill-paper/25" />
-				<rect x="74" y="32" width="14" height="2.5" rx="1.25" class="fill-paper/25" />
-				<rect x="74" y="37" width="8" height="2.5" rx="1.25" class="fill-paper/25" />
+				<rect x="42" y="22" width="16" height="16" rx="5" class="stroke-teal" pathLength="1" />
+				<path d="M51.5,25 L46.5,31 H49.5 L48.5,35 L53.5,29 H50.5 Z" class="fill-teal" />
+
+				<rect x="66" y="16" width="28" height="28" rx="7" class="stroke-paper/35" pathLength="1" />
+				<rect x="72" y="23" width="16" height="3" rx="1.5" class="fill-paper/25" />
+				<rect x="72" y="29" width="16" height="3" rx="1.5" class="fill-paper/25" />
+				<rect x="72" y="35" width="9" height="3" rx="1.5" class="fill-paper/25" />
 			</g>
 		)
 	}
@@ -124,6 +154,6 @@ const titles = [
 
 <style>
 	svg {
-		stroke-width: 1.15;
+		stroke-width: 1.25;
 	}
 </style>
