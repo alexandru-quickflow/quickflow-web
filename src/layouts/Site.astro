@@ -66,12 +66,20 @@ const here = (href: string) => path === href.replace(/\/+$/, '');
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:locale" content={lang === 'ro' ? 'ro_RO' : 'en_US'} />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<!-- Development only. Production self-hosts and subsets these three:
-		     they are the heaviest thing on the site. See the launch checklist. -->
+		<!-- Self-hosted and subset. Google served 540 KB of fonts to a Romanian
+		     page, and the two Newsreader styles were 450 KB of that. These four
+		     files are 160 KB: cut to the characters the site actually uses plus a
+		     margin, with the weight and optical-size axes narrowed to the range
+		     the stylesheet asks for. Regenerate with scripts/fonts.py when the
+		     copy gains a character they do not carry. Nothing third-party is left
+		     in the critical path. -->
+		<link rel="preload" href="/fonts/jakarta.woff2" as="font" type="font/woff2" crossorigin />
 		<link
-			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+			rel="preload"
+			href="/fonts/newsreader-roman.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
 		/>
 	</head>
 

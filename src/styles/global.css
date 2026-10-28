@@ -1,12 +1,52 @@
 @import "tailwindcss";
 
+/* The three families, served from this domain.
+ *
+ * swap, not optional: on a slow connection the reader gets the text in a
+ * fallback immediately and the real face a moment later, rather than a blank
+ * page. The fallback stacks are chosen for width, not for looks, so the
+ * reflow when the real face arrives moves as little as possible.
+ *
+ * Both Newsreader files carry the full weight range the stylesheet uses, so
+ * there is one file per style rather than one per weight. */
+@font-face {
+	font-family: "Newsreader";
+	src: url("/fonts/newsreader-roman.woff2") format("woff2");
+	font-weight: 300 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Newsreader";
+	src: url("/fonts/newsreader-italic.woff2") format("woff2");
+	font-weight: 300 400;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Plus Jakarta Sans";
+	src: url("/fonts/jakarta.woff2") format("woff2");
+	font-weight: 400 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "JetBrains Mono";
+	src: url("/fonts/jetbrains-mono.woff2") format("woff2");
+	font-weight: 400 500;
+	font-style: normal;
+	font-display: swap;
+}
+
 /* The site's one stylesheet.
  *
  * The direction was settled on 2026-10-28 from the questionnaire and a
- * prototype page, deleted once the real pages carried it: a near-black
- * ground, an editorial serif for display,
- * two saturated colours in contrast, generous radii, real screenshots, and
- * motion that costs six kilobytes.
+ * prototype page, deleted once the real pages carried it: a near-black ground,
+ * an editorial serif for display, two saturated colours in contrast, generous
+ * radii, real screenshots, and motion that costs six kilobytes.
  *
  * Token names are unchanged on purpose. Every page already writes bg-ink,
  * text-paper/70, border-teal/35 and so on, so moving the values moves the whole

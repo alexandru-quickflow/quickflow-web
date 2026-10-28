@@ -29,3 +29,4 @@ pnpm-debug.log*
 # cloudflare local secrets
 .dev.vars
 .wrangler/
+.font-cache/
