@@ -31,12 +31,12 @@ export const VERIFIED_ON: Record<Locale, string> = {
 };
 
 /** What this page itself ships, measured on the production build with the same
- *  snippet the reader is handed below. Not measured on the dev server, which
- *  injects its own client script. Re-measure before every release: the day this
- *  page needs a script, the number on it has to change too. The Cloudflare
- *  Web Analytics beacon in the technical annex is exactly such a script, so
- *  this is 0 KB only as long as the beacon stays off. */
-export const SELF_JS = '0 KB';
+ *  snippet the reader is handed below: 422 bytes of our own script plus 5,383
+ *  for the inertial scroller, gzipped, so six kilobytes. It said 0 KB until
+ *  2026-10-28, which was true until the scroller arrived and false for one
+ *  build afterwards. Re-measure before every release. The Cloudflare Web
+ *  Analytics beacon in the technical annex would add to it again. */
+export const SELF_JS = '6 KB';
 
 /** Pasted into the reader's own console, on their own app. Kept under 58
  *  characters a line so it never needs sideways scrolling on a phone. The one
