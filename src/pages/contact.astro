@@ -1,5 +1,5 @@
 ---
-import Sheet from '../layouts/Sheet.astro';
+import Site from '../layouts/Site.astro';
 
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -29,11 +29,11 @@ const flowFields = [
 ];
 
 const field =
-	'mt-2 w-full border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-ink';
+	'mt-2 w-full border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-paper';
 const errorText = 'mt-2 text-sm text-red-700';
 ---
 
-<Sheet
+<Site
 	lang="en"
 	title="Contact, Quick Flow"
 	description="Tell me what you are building. If it is about a payment flow, I will tell you the same working day whether Stripe allows it."
@@ -124,7 +124,7 @@ const errorText = 'mt-2 text-sm text-red-700';
 											name={f.name}
 											type="text"
 											placeholder={f.placeholder}
-											class={`${field} placeholder:text-ink/30`}
+											class={`${field} placeholder:text-paper/30`}
 										/>
 									</div>
 								))
@@ -186,7 +186,7 @@ const errorText = 'mt-2 text-sm text-red-700';
 			</aside>
 		</div>
 	</section>
-</Sheet>
+</Site>
 
 {
 	siteKey && (

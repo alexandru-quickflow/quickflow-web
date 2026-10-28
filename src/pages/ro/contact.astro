@@ -1,5 +1,5 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Site from '../../layouts/Site.astro';
 
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -23,7 +23,8 @@ const flowFields = [
 ];
 ---
 
-<Base
+<Site
+	lang="ro"
 	title="Contact, Quick Flow"
 	description="Scrie-mi ce construiești. Dacă e despre un flux de plăți, îți spun în aceeași zi lucrătoare dacă Stripe îl permite."
 >
@@ -179,7 +180,7 @@ const flowFields = [
 			</aside>
 		</div>
 	</section>
-</Base>
+</Site>
 
 {siteKey && <script is:inline async defer src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>}
 

@@ -28,5 +28,15 @@ export default defineConfig({
 	],
 	vite: {
 		plugins: [tailwindcss()],
+		build: {
+			// CSS minification is off, deliberately. Lightning CSS merges
+			// `animation: x linear both` and the `animation-timeline: view()`
+			// that follows it into a single shorthand, `animation: linear both
+			// x view()`, which no browser accepts. The declaration is then
+			// dropped and every scroll-driven animation on the site silently
+			// stops existing, with no warning anywhere. Measured cost of
+			// leaving it unminified: see the launch checklist.
+			cssMinify: false,
+		},
 	},
 });

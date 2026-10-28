@@ -1,21 +1,23 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Site from '../../layouts/Site.astro';
 
 const projects = [
 	{
 		n: '01',
 		name: 'aeinvitatii.ro',
+		img: '/work/aeinvitatii.jpg',
 		href: 'https://aeinvitatii.ro',
 		kind: 'Produs propriu, în producție',
 		problem:
 			'Un cuplu trimite invitațiile la nuntă și apoi sună oamenii unul câte unul ca să afle cine vine.',
 		built:
-			'Produs cu douăsprezece modele desenate de la zero, link personalizat pentru fiecare familie, confirmare cu meniu, transport și cazare, și o listă de invitați care se actualizează pe loc. Plată o singură dată, 299 de lei. Invitația există în două limbi, iar fiecare limbă în plus se cumpără separat.',
+			'Produs cu douăsprezece modele desenate de la zero, link personalizat pentru fiecare familie, confirmare cu meniu, transport și cazare, și o listă de invitați care se actualizează pe loc. Invitația există în două limbi, iar fiecare limbă în plus se cumpără separat.',
 		detail: 'Plăți, linkuri personalizate, panou de confirmări, multilingv.',
 	},
 	{
 		n: '02',
 		name: 'jemshitmavlyanov.com',
+		img: '/work/jemshitmavlyanov.jpg',
 		href: 'https://jemshitmavlyanov.com',
 		kind: 'Migrare completă de pe Bubble pe cod',
 		problem:
@@ -28,6 +30,7 @@ const projects = [
 	{
 		n: '03',
 		name: 'elenaviscu.com',
+		img: '/work/elenaviscu.jpg',
 		href: 'https://elenaviscu.com',
 		kind: 'Platformă de coaching cu plăți',
 		problem:
@@ -39,6 +42,7 @@ const projects = [
 	{
 		n: '04',
 		name: 'easonline.academy',
+		img: '/work/easonline.jpg',
 		href: 'https://easonline.academy',
 		kind: 'Academie online cu plată și acces',
 		problem: 'Cursuri de coafură ținute până atunci doar față în față, fără livrare online.',
@@ -49,7 +53,8 @@ const projects = [
 ];
 ---
 
-<Base
+<Site
+	lang="ro"
 	title="Portofoliu, Quick Flow"
 	description="Patru proiecte: un produs propriu cu plăți și confirmări, o migrare completă de pe Bubble pe cod, și două platforme de cursuri cu acces controlat."
 >
@@ -69,9 +74,11 @@ const projects = [
 		{
 			projects.map((p) => (
 				<article class="rule grid gap-6 py-12 md:grid-cols-12 md:gap-8 md:py-16">
-					<p class="numeral-ghost md:col-span-1">{p.n}</p>
+					<figure class="shot rise md:col-span-5">
+						<img src={p.img} alt={p.name} width="800" height="500" loading="lazy" />
+					</figure>
 
-					<div class="md:col-span-4">
+					<div class="md:col-span-6 md:col-start-7">
 						<h3 class="display-lg">{p.name}</h3>
 						<p class="mt-4 font-mono text-xs uppercase tracking-widest text-teal">{p.kind}</p>
 						<p class="mt-6 text-[0.95rem] leading-relaxed text-paper/60">{p.detail}</p>
@@ -108,4 +115,4 @@ const projects = [
 			</div>
 		</div>
 	</section>
-</Base>
+</Site>

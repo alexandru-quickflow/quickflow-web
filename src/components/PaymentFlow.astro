@@ -1,0 +1,127 @@
+---
+// The money flow, in both languages.
+//
+// 850 + 120 + 30 = 1000. The bar below lays those out with flex-grow, so the
+// segments keep true proportion without anyone computing a width by hand, and
+// the drawing cannot say something the arithmetic does not. Figures approved
+// 2026-10-27 as representative, not taken from a client.
+//
+// The Romanian version is denominated in lei. The English one carries bare
+// figures: naming a currency there would be a pricing decision this drawing
+// has no business making.
+
+import { DEFAULT_LOCALE, type Locale } from '../i18n/routes';
+
+interface Props {
+	lang?: Locale;
+}
+
+const { lang = DEFAULT_LOCALE } = Astro.props;
+
+const copy = {
+	en: {
+		buyer: 'Buyer',
+		buyerSub: 'pays once, at checkout',
+		platform: 'Platform',
+		platformSub: 'until delivery is confirmed',
+		held: '02 Held',
+		seller: 'Seller',
+		sellerSub: 'gets their share, on confirmation',
+		step1: '01 Charge',
+		step3: '03 Release',
+		split: 'The split, on release',
+		alt: 'Of 1,000 in: 850 to the seller, 120 the platform fee, 30 processing.',
+		legend: [
+			{ cls: 'seller', label: 'Seller', value: '850' },
+			{ cls: 'fee', label: 'Platform fee', value: '120' },
+			{ cls: '', label: 'Processing', value: '30' },
+		],
+		total: '1,000',
+		sellerAmount: '850',
+		inBar: '850',
+	},
+	ro: {
+		buyer: 'Cumpărător',
+		buyerSub: 'plătește o singură dată, la comandă',
+		platform: 'Platformă',
+		platformSub: 'până la confirmarea livrării',
+		held: '02 Reținut',
+		seller: 'Vânzător',
+		sellerSub: 'primește partea lui, la confirmare',
+		step1: '01 Încasare',
+		step3: '03 Eliberare',
+		split: 'Împărțirea, la eliberare',
+		alt: 'Din 1.000 de lei: 850 vânzătorul, 120 comision, 30 procesare.',
+		legend: [
+			{ cls: 'seller', label: 'Vânzător', value: '850 lei' },
+			{ cls: 'fee', label: 'Comision platformă', value: '120 lei' },
+			{ cls: '', label: 'Procesare', value: '30 lei' },
+		],
+		total: '1.000 lei',
+		sellerAmount: '850 lei',
+		inBar: '850 lei',
+	},
+}[lang];
+
+const parts = [850, 120, 30];
+---
+
+<div class="flowmap rise">
+	<div class="node">
+		<p class="spec">{copy.buyer}</p>
+		<p class="amount">{copy.total}</p>
+		<p class="sub">{copy.buyerSub}</p>
+	</div>
+
+	<div class="step">
+		<p class="spec">{copy.step1}</p>
+		<span class="arrow">
+			<i></i>
+			<svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"
+				><path d="M1,1 l6,4 -6,4"></path></svg
+			>
+		</span>
+	</div>
+
+	<div class="node">
+		<p class="spec">{copy.platform}</p>
+		<p class="amount">{copy.total}</p>
+		<p class="chip">{copy.held}</p>
+		<p class="sub">{copy.platformSub}</p>
+	</div>
+
+	<div class="step">
+		<p class="spec">{copy.step3}</p>
+		<span class="arrow">
+			<i></i>
+			<svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"
+				><path d="M1,1 l6,4 -6,4"></path></svg
+			>
+		</span>
+	</div>
+
+	<div class="node">
+		<p class="spec">{copy.seller}</p>
+		<p class="amount">{copy.sellerAmount}</p>
+		<p class="sub">{copy.sellerSub}</p>
+	</div>
+</div>
+
+<div class="rise mt-10 md:mt-14">
+	<p class="spec">{copy.split}</p>
+
+	<div class="bar" role="img" aria-label={copy.alt}>
+		{parts.map((amount) => <span style={`flex:${amount}`}>{amount === 850 ? copy.inBar : ''}</span>)}
+	</div>
+
+	<ul class="legend">
+		{
+			copy.legend.map((l) => (
+				<li>
+					<i class={l.cls} />
+					{l.label} <b>{l.value}</b>
+				</li>
+			))
+		}
+	</ul>
+</div>

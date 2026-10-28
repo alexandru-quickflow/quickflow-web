@@ -1,5 +1,5 @@
 ---
-import Sheet from '../layouts/Sheet.astro';
+import Site from '../layouts/Site.astro';
 import { VERIFIED_ON } from '../content/proof';
 
 const updated = VERIFIED_ON.en;
@@ -63,7 +63,7 @@ const sections = [
 ];
 ---
 
-<Sheet
+<Site
 	lang="en"
 	title="Privacy policy, Quick Flow"
 	description="What the form collects, where it goes, how long it is kept and how it can be deleted. No cookies, no advertising."
@@ -98,4 +98,4 @@ const sections = [
 
 		<p class="spec mt-10">Last updated: {updated}</p>
 	</section>
-</Sheet>
+</Site>

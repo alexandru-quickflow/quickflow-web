@@ -1,5 +1,5 @@
 ---
-import Sheet from '../layouts/Sheet.astro';
+import Site from '../layouts/Site.astro';
 import { paths, localeNames } from '../i18n/routes';
 
 // One 404 serves both trees, and it sits at the root, so it is written in
@@ -14,7 +14,7 @@ const links = [
 ];
 ---
 
-<Sheet
+<Site
 	lang="en"
 	title="Page not found, Quick Flow"
 	description="The address you asked for does not lead anywhere. Below are the pages that exist."
@@ -51,4 +51,4 @@ const links = [
 			<a href={paths.home.ro} hreflang="ro-RO" lang="ro" class="link">{localeNames.ro.full}</a>.
 		</p>
 	</section>
-</Sheet>
+</Site>

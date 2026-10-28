@@ -1,6 +1,6 @@
 ---
-import Sheet from '../layouts/Sheet.astro';
-import FlowSheet from '../components/FlowSheet.astro';
+import Site from '../layouts/Site.astro';
+import PaymentFlow from '../components/PaymentFlow.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../content/proof';
 import { paths } from '../i18n/routes';
 
@@ -97,28 +97,41 @@ const terms = [
 
 const work = [
 	{
-		n: '01',
+		name: 'aeinvitatii.ro',
+		href: 'https://aeinvitatii.ro',
+		kind: 'Digital invitations with RSVP',
+		img: '/work/aeinvitatii.jpg',
+		built:
+			'A personal link for each family, an RSVP with menu and transport, and a guest list that updates live.',
+		figure: '12',
+		unit: 'designs drawn',
+	},
+	{
 		name: 'jemshitmavlyanov.com',
 		href: 'https://jemshitmavlyanov.com',
 		kind: 'Full migration from Bubble to code',
+		img: '/work/jemshitmavlyanov.jpg',
 		built:
-			'Accounts, authentication, cart, payment, access that expires after six months and an admin panel, moved in full. Nine languages.',
+			'Accounts, authentication, cart, payment and access that expires after six months, moved onto code in full.',
+		figure: '09',
+		unit: 'languages',
 	},
 	{
-		n: '02',
-		name: 'aeinvitatii.ro',
-		href: 'https://aeinvitatii.ro',
-		kind: 'My own product, in production',
-		built:
-			'Wedding invitations with a personal link for each family, an RSVP with menu and transport, and a guest list that updates live.',
+		name: 'angelalaur.ro',
+		href: 'https://angelalaur.ro',
+		kind: 'Built on Bubble',
+		img: '/work/angelalaur.jpg',
+		built: 'A course sold online, a product catalogue, a cart and student accounts.',
 	},
 	{
-		n: '03',
 		name: 'elenaviscu.com',
 		href: 'https://elenaviscu.com',
 		kind: 'Coaching platform with payments',
+		img: '/work/elenaviscu.jpg',
 		built:
-			'Three product types, three access rules. Payments in the local currency, access opened automatically after payment.',
+			'Three product types, three access rules. Access opened automatically after payment, with nobody granting rights by hand.',
+		figure: '03',
+		unit: 'access rules',
 	},
 ];
 
@@ -158,7 +171,7 @@ const schema = {
 };
 ---
 
-<Sheet lang="en" title={title} description={description}>
+<Site lang="en" title={title} description={description}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The line
@@ -184,7 +197,7 @@ const schema = {
 		<p class="stamp mt-7">This page ships {SELF_JS} of JavaScript</p>
 
 		<div class="mt-10 md:mt-14">
-			<FlowSheet lang="en" />
+			<PaymentFlow lang="en" />
 		</div>
 	</section>
 
@@ -286,36 +299,36 @@ const schema = {
 								stroke-width="1"
 							>
 								{i === 0 && (
-									<g class="stroke-ink/40">
+									<g class="stroke-paper/40">
 										<rect x="1" y="14" width="26" height="28" />
-										<rect x="45" y="14" width="26" height="28" class="stroke-ink" />
-										<path d="M29,28 H41 M35,24 l6,4 -6,4" class="stroke-ink/70" />
+										<rect x="45" y="14" width="26" height="28" class="stroke-paper" />
+										<path d="M29,28 H41 M35,24 l6,4 -6,4" class="stroke-paper/70" />
 										<rect x="52" y="24" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
 								{i === 1 && (
-									<g class="stroke-ink/40">
-										<rect x="1" y="20" width="20" height="16" class="stroke-ink" />
+									<g class="stroke-paper/40">
+										<rect x="1" y="20" width="20" height="16" class="stroke-paper" />
 										<rect x="51" y="2" width="20" height="14" />
 										<rect x="51" y="21" width="20" height="14" />
 										<rect x="51" y="40" width="20" height="14" />
-										<path d="M23,28 H37 M37,9 V47 M37,9 H49 M37,28 H49 M37,47 H49" class="stroke-ink/70" />
+										<path d="M23,28 H37 M37,9 V47 M37,9 H49 M37,28 H49 M37,47 H49" class="stroke-paper/70" />
 										<rect x="33" y="24" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
 								{i === 2 && (
-									<g class="stroke-ink/40">
+									<g class="stroke-paper/40">
 										<rect x="1" y="34" width="46" height="14" />
 										<rect x="9" y="20" width="46" height="14" />
-										<rect x="17" y="6" width="46" height="14" class="stroke-ink" />
-										<path d="M63,13 H71" class="stroke-ink/70" />
+										<rect x="17" y="6" width="46" height="14" class="stroke-paper" />
+										<path d="M63,13 H71" class="stroke-paper/70" />
 										<rect x="55" y="9" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
 								{i === 3 && (
-									<g class="stroke-ink/40">
-										<path d="M14,10 H58 a10,10 0 0 1 0,36 H14 a10,10 0 0 1 0,-36 Z" class="stroke-ink" />
-										<path d="M24,28 H48 M42,24 l6,4 -6,4" class="stroke-ink/70" />
+									<g class="stroke-paper/40">
+										<path d="M14,10 H58 a10,10 0 0 1 0,36 H14 a10,10 0 0 1 0,-36 Z" class="stroke-paper" />
+										<path d="M24,28 H48 M42,24 l6,4 -6,4" class="stroke-paper/70" />
 										<rect x="10" y="24" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
@@ -400,29 +413,36 @@ const schema = {
 	<section class="bleed mt-24 md:mt-36" aria-labelledby="work">
 		<div class="hair flex items-baseline justify-between gap-6 pt-5">
 			<p class="spec">What I have built</p>
-			<a href={paths.work.en} class="spec transition-colors hover:text-ink">All projects</a>
+			<a href={paths.work.en} class="spec transition-colors hover:text-paper">All projects</a>
 		</div>
 
 		<h2 id="work" class="display-lg mt-8 max-w-[24ch]">
 			Delivered work: a Bubble migration, a product of my own, a coaching platform.
 		</h2>
 
-		<div class="mt-12 grid gap-x-12 gap-y-16 md:mt-16 md:grid-cols-3">
+		<div class="mt-8 md:mt-12">
 			{
 				work.map((w) => (
-					<article class="rise">
-						<div class="plate">
-							<span class="spec absolute bottom-3 left-3">Screenshot, 1600 × 1000</span>
+					<article class="work-row">
+						<figure class="shot rise">
+							<img src={w.img} alt={w.name} width="800" height="500" loading="lazy" />
+						</figure>
+						<div class="meta stagger">
+							<p class="spec">{w.kind}</p>
+							<h3 class="display-md mt-3">{w.name}</h3>
+							<p class="prose-body mt-4 text-[1rem]">{w.built}</p>
+							<p class="mt-6">
+								{w.figure ? (
+									<span class="fig">
+										{w.figure} <span>{w.unit}</span>
+									</span>
+								) : (
+									<a href={w.href} rel="noopener" target="_blank" class="link text-sm">
+										Visit the site
+									</a>
+								)}
+							</p>
 						</div>
-						<div class="mt-5 flex items-baseline justify-between gap-4">
-							<h3 class="display-md">{w.name}</h3>
-							<span class="spec">{w.n}</span>
-						</div>
-						<p class="spec mt-3">{w.kind}</p>
-						<p class="prose-body mt-4 text-[0.95rem]">{w.built}</p>
-						<a href={w.href} rel="noopener" target="_blank" class="link mt-4 inline-block text-sm">
-							Visit the site
-						</a>
 					</article>
 				))
 			}
@@ -524,4 +544,4 @@ const schema = {
 			</div>
 		</div>
 	</section>
-</Sheet>
+</Site>

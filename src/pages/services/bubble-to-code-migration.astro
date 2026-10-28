@@ -1,5 +1,5 @@
 ---
-import Sheet from '../../layouts/Sheet.astro';
+import Site from '../../layouts/Site.astro';
 import { proof, weightSnippet, VERIFIED_ON } from '../../content/proof';
 import { paths } from '../../i18n/routes';
 
@@ -117,7 +117,7 @@ const schema = {
 };
 ---
 
-<Sheet lang="en" title={title} description={description}>
+<Site lang="en" title={title} description={description}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. Recognition. The reader has to see their own situation in the first
@@ -366,4 +366,4 @@ const schema = {
 			</div>
 		</div>
 	</section>
-</Sheet>
+</Site>

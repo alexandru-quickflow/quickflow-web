@@ -17,6 +17,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.2",
     "astro-icon": "^1.2.0",
+    "lenis": "^1.3.27",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

@@ -1,0 +1,268 @@
+---
+// The site's only layout. Replaces Base.astro (the old dark system) and
+// Sheet.astro (the paper one) with the direction settled on 2026-10-28.
+import '../styles/global.css';
+import { VERIFIED_ON } from '../content/proof';
+import {
+	DEFAULT_LOCALE,
+	alternates,
+	hreflang,
+	localeNames,
+	nav,
+	paths,
+	type Locale,
+} from '../i18n/routes';
+import { ui } from '../i18n/ui';
+
+interface Props {
+	title: string;
+	description: string;
+	lang?: Locale;
+	noindex?: boolean;
+}
+
+const { title, description, lang = DEFAULT_LOCALE, noindex = false } = Astro.props;
+const t = ui[lang];
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const items = nav[lang];
+const twins = alternates(Astro.url.pathname);
+const other = twins.find((a) => a.locale !== lang);
+// x-default is the English page, which is the one a reader with no matching
+// language should land on.
+const fallback = twins.find((a) => a.locale === 'en');
+const here = (href: string) => path === href.replace(/\/+$/, '');
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		{noindex && <meta name="robots" content="noindex, follow" />}
+		<link rel="canonical" href={canonical} />
+		{
+			/* One alternate per language, plus x-default on English. Only pages
+			   that exist in both get these: a hreflang pointing at a 404 is
+			   worse than none. */
+			twins.length > 1 && (
+				<>
+					{twins.map((a) => (
+						<link rel="alternate" hreflang={hreflang[a.locale]} href={new URL(a.href, Astro.site)} />
+					))}
+					{fallback && (
+						<link rel="alternate" hreflang="x-default" href={new URL(fallback.href, Astro.site)} />
+					)}
+				</>
+			)
+		}
+		<link rel="icon" href="/brand/icon.svg" />
+		<meta name="theme-color" content="#04080b" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:locale" content={lang === 'ro' ? 'ro_RO' : 'en_US'} />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- Development only. Production self-hosts and subsets these three:
+		     they are the heaviest thing on the site. See the launch checklist. -->
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+		/>
+	</head>
+
+	<body>
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-teal focus:px-4 focus:py-2 focus:text-ink"
+		>
+			{t.skip}
+		</a>
+
+		<header class="relative z-10">
+			<div class="shell flex items-center justify-between gap-6 py-6">
+				<a href={paths.home[lang]} class="shrink-0" aria-label={t.home}>
+					<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-6 w-auto" />
+				</a>
+
+				<nav aria-label={t.navLabel} class="hidden items-center gap-9 md:flex">
+					{
+						items.map((item) => (
+							<a
+								href={paths[item.id][lang]}
+								aria-current={here(paths[item.id][lang]) ? 'page' : undefined}
+								class:list={[
+									'spec transition-colors hover:text-paper',
+									here(paths[item.id][lang]) && 'text-paper',
+								]}
+							>
+								{item.label}
+							</a>
+						))
+					}
+				</nav>
+
+				<!-- The stamp, not coordinates. An instrument states when it was
+				     last checked; a brochure states where it was made. -->
+				<div class="hidden items-center gap-6 lg:flex">
+					<span class="stamp">{t.verified(VERIFIED_ON[lang])}</span>
+					<p class="spec flex items-center gap-2">
+						<span class="text-paper">{localeNames[lang].short}</span>
+						{
+							other && (
+								<>
+									<span aria-hidden="true">/</span>
+									<a
+										href={other.href}
+										hreflang={hreflang[other.locale]}
+										lang={other.locale}
+										class="transition-colors hover:text-paper"
+										aria-label={t.switchTo(localeNames[other.locale].full)}
+									>
+										{localeNames[other.locale].short}
+									</a>
+								</>
+							)
+						}
+					</p>
+				</div>
+
+				<!-- No JavaScript. A details element is the whole mobile menu. -->
+				<details class="relative md:hidden">
+					<summary
+						class="spec cursor-pointer list-none rounded-full border border-[var(--line-strong)] px-4 py-2"
+					>
+						{t.menu}
+					</summary>
+					<nav
+						aria-label={t.navLabelMobile}
+						class="absolute right-0 top-full z-20 mt-2 w-60 rounded-2xl border border-[var(--line-strong)] bg-ink-700 p-2"
+					>
+						{
+							items.map((item) => (
+								<a href={paths[item.id][lang]} class="block px-4 py-2.5 text-sm">
+									{item.label}
+								</a>
+							))
+						}
+						{
+							other && (
+								<a
+									href={other.href}
+									hreflang={hreflang[other.locale]}
+									lang={other.locale}
+									class="hair mt-2 block px-4 py-2.5 text-sm"
+								>
+									{localeNames[other.locale].full}
+								</a>
+							)
+						}
+					</nav>
+				</details>
+			</div>
+		</header>
+
+		<main id="main">
+			<slot />
+		</main>
+
+		<footer class="relative z-10">
+			<div class="shell pb-16 pt-20 md:pb-20">
+				<div class="grid gap-10 md:grid-cols-12">
+					<div class="md:col-span-4">
+						<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-6 w-auto" />
+						<p class="prose-body mt-6 text-sm">{t.footerWho}</p>
+						<p class="prose-body text-sm">{t.footerLanguages}</p>
+					</div>
+
+					<div class="md:col-span-3 md:col-start-7">
+						<p class="spec">{t.footerContact}</p>
+						<a href="mailto:alexandru@quickflow.dev" class="link mt-4 inline-block text-sm">
+							alexandru@quickflow.dev
+						</a>
+					</div>
+
+					<div class="md:col-span-2 md:col-start-11">
+						<p class="spec">{t.footerPages}</p>
+						<ul class="mt-4 flex flex-col gap-2.5 text-sm">
+							{
+								items.map((item) => (
+									<li>
+										<a
+											href={paths[item.id][lang]}
+											class="text-[var(--mute)] transition-colors hover:text-paper"
+										>
+											{item.label}
+										</a>
+									</li>
+								))
+							}
+							<li>
+								<a
+									href={paths.privacy[lang]}
+									class="text-[var(--mute)] transition-colors hover:text-paper"
+								>
+									{t.footerPrivacy}
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="mt-16 flex flex-wrap items-center justify-between gap-4">
+					<span class="spec">Quick Flow, {new Date().getFullYear()}</span>
+					<span class="spec">{t.footerBuilt}</span>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>
+
+<style>
+	summary::-webkit-details-marker {
+		display: none;
+	}
+</style>
+
+<script>
+	import Lenis from 'lenis';
+
+	const calm = matchMedia('(prefers-reduced-motion: reduce)');
+
+	// Inertial scrolling. Skipped for anyone whose system asks for less motion,
+	// and on coarse pointers, where the native momentum of a touchscreen is
+	// already better than anything interpolated here.
+	if (!calm.matches && matchMedia('(pointer: fine)').matches) {
+		const lenis = new Lenis({ duration: 1.05 });
+		const frame = (time: number) => {
+			lenis.raf(time);
+			requestAnimationFrame(frame);
+		};
+		requestAnimationFrame(frame);
+	}
+
+	// The reveals, for browsers without scroll-driven animations. The class on
+	// <html> is what turns the hidden state on, and it is added here, so a
+	// script that never runs leaves every section visible.
+	if (!calm.matches && !CSS.supports('animation-timeline: view()')) {
+		const targets = document.querySelectorAll('.rise, .stagger > *');
+		document.documentElement.classList.add('reveal-js');
+
+		const seen = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					entry.target.classList.add('in');
+					seen.unobserve(entry.target);
+				}
+			},
+			{ rootMargin: '0px 0px -12% 0px' },
+		);
+
+		for (const target of targets) seen.observe(target);
+	}
+</script>

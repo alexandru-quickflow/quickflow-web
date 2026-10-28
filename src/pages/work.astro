@@ -1,22 +1,24 @@
 ---
-import Sheet from '../layouts/Sheet.astro';
+import Site from '../layouts/Site.astro';
 import { paths } from '../i18n/routes';
 
 const projects = [
 	{
 		n: '01',
 		name: 'aeinvitatii.ro',
+		img: '/work/aeinvitatii.jpg',
 		href: 'https://aeinvitatii.ro',
 		kind: 'My own product, in production',
 		problem:
 			'A couple sends out their wedding invitations and then calls people one by one to find out who is coming.',
 		built:
-			'A product with twelve designs drawn from scratch, a personal link for each family, an RSVP with menu, transport and accommodation, and a guest list that updates live. Paid once, 299 lei. The invitation exists in two languages, and each further language is bought separately.',
+			'A product with twelve designs drawn from scratch, a personal link for each family, an RSVP with menu, transport and accommodation, and a guest list that updates live. The invitation exists in two languages, and each further language is bought separately.',
 		detail: 'Payments, personal links, an RSVP dashboard, multilingual.',
 	},
 	{
 		n: '02',
 		name: 'jemshitmavlyanov.com',
+		img: '/work/jemshitmavlyanov.jpg',
 		href: 'https://jemshitmavlyanov.com',
 		kind: 'Full migration from Bubble to code',
 		problem:
@@ -29,6 +31,7 @@ const projects = [
 	{
 		n: '03',
 		name: 'elenaviscu.com',
+		img: '/work/elenaviscu.jpg',
 		href: 'https://elenaviscu.com',
 		kind: 'Coaching platform with payments',
 		problem:
@@ -40,6 +43,7 @@ const projects = [
 	{
 		n: '04',
 		name: 'easonline.academy',
+		img: '/work/easonline.jpg',
 		href: 'https://easonline.academy',
 		kind: 'Online academy with payment and access',
 		problem: 'Hairdressing courses taught face to face until then, with no way to deliver online.',
@@ -54,7 +58,7 @@ const description =
 	'Four projects, all still live: my own product with payments and RSVPs, a full migration from Bubble to code, and two course platforms with controlled access.';
 ---
 
-<Sheet lang="en" title={title} description={description}>
+<Site lang="en" title={title} description={description}>
 	<section class="bleed pt-12 md:pt-16">
 		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
 			<p class="spec">Work</p>
@@ -75,9 +79,11 @@ const description =
 		{
 			projects.map((p) => (
 				<article class="hair rise grid gap-6 py-12 md:grid-cols-12 md:gap-8 md:py-16">
-					<p class="spec md:col-span-1 md:pt-3">{p.n}</p>
+					<figure class="shot rise md:col-span-5">
+						<img src={p.img} alt={p.name} width="800" height="500" loading="lazy" />
+					</figure>
 
-					<div class="md:col-span-4">
+					<div class="md:col-span-6 md:col-start-7">
 						<h3 class="display-lg">{p.name}</h3>
 						<p class="spec mt-5">{p.kind}</p>
 						<p class="prose-body mt-6 text-[0.95rem]">{p.detail}</p>
@@ -157,4 +163,4 @@ const description =
 			</div>
 		</div>
 	</section>
-</Sheet>
+</Site>

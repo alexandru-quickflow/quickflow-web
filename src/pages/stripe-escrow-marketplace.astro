@@ -1,6 +1,6 @@
 ---
-import Sheet from '../layouts/Sheet.astro';
-import FlowSheet from '../components/FlowSheet.astro';
+import Site from '../layouts/Site.astro';
+import PaymentFlow from '../components/PaymentFlow.astro';
 import { VERIFIED_ON } from '../content/proof';
 import { paths } from '../i18n/routes';
 
@@ -45,7 +45,7 @@ const schema = {
 };
 ---
 
-<Sheet lang="en" title={title} description={description}>
+<Site lang="en" title={title} description={description}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. Recognition. The reader arrived here from a rejection email. -->
@@ -117,7 +117,7 @@ const schema = {
 				</p>
 			</div>
 			<div class="min-w-0 lg:col-span-6 lg:col-start-7">
-				<FlowSheet lang="en" />
+				<PaymentFlow lang="en" />
 			</div>
 		</div>
 	</section>
@@ -256,4 +256,4 @@ const schema = {
 			</div>
 		</div>
 	</section>
-</Sheet>
+</Site>

@@ -1,6 +1,6 @@
 ---
-import Sheet from '../../layouts/Sheet.astro';
-import FlowSheet from '../../components/FlowSheet.astro';
+import Site from '../../layouts/Site.astro';
+import PaymentFlow from '../../components/PaymentFlow.astro';
 import { proof } from '../../content/proof';
 import { paths } from '../../i18n/routes';
 
@@ -71,7 +71,7 @@ const schema = {
 };
 ---
 
-<Sheet lang="en" title={title} description={description}>
+<Site lang="en" title={title} description={description}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. Recognition, then the drawing. The flow of money is the subject of
@@ -93,7 +93,7 @@ const schema = {
 		</p>
 
 		<div class="mt-10 md:mt-14">
-			<FlowSheet lang="en" />
+			<PaymentFlow lang="en" />
 		</div>
 	</section>
 
@@ -265,4 +265,4 @@ const schema = {
 			</div>
 		</div>
 	</section>
-</Sheet>
+</Site>

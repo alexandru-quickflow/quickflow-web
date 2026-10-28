@@ -1,6 +1,6 @@
 ---
-import Sheet from '../../layouts/Sheet.astro';
-import FlowSheet from '../../components/FlowSheet.astro';
+import Site from '../../layouts/Site.astro';
+import PaymentFlow from '../../components/PaymentFlow.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../../content/proof';
 
 const weight = proof('ro', 'bubble-weight');
@@ -101,33 +101,46 @@ const method = [
 // line about jemshitmavlyanov.com for three revisions.
 const work = [
 	{
-		n: '01',
-		name: 'jemshitmavlyanov.com',
-		href: 'https://jemshitmavlyanov.com',
-		kind: 'Migrare completă de pe Bubble pe cod',
-		built:
-			'Conturi, autentificare, coș, plată, acces care expiră după șase luni și panou de administrare, mutate integral. Nouă limbi.',
-	},
-	{
-		n: '02',
 		name: 'aeinvitatii.ro',
 		href: 'https://aeinvitatii.ro',
-		kind: 'Produs propriu, în producție',
+		kind: 'Invitații digitale cu confirmare',
+		img: '/work/aeinvitatii.jpg',
 		built:
-			'Invitații de nuntă cu link personalizat pentru fiecare familie, confirmare cu meniu și transport, listă de invitați care se actualizează pe loc.',
+			'Link personalizat pentru fiecare familie, confirmare cu meniu și transport, listă de invitați care se actualizează pe loc.',
+		figure: '12',
+		unit: 'modele desenate',
 	},
 	{
-		n: '03',
+		name: 'jemshitmavlyanov.com',
+		href: 'https://jemshitmavlyanov.com',
+		kind: 'Migrare completă de pe Bubble',
+		img: '/work/jemshitmavlyanov.jpg',
+		built:
+			'Conturi, autentificare, coș, plată și acces care expiră după șase luni, mutate integral pe cod.',
+		figure: '09',
+		unit: 'limbi',
+	},
+	{
+		name: 'angelalaur.ro',
+		href: 'https://angelalaur.ro',
+		kind: 'Construit pe Bubble',
+		img: '/work/angelalaur.jpg',
+		built: 'Curs vândut online, catalog de produse, coș și conturi de cursant.',
+	},
+	{
 		name: 'elenaviscu.com',
 		href: 'https://elenaviscu.com',
 		kind: 'Platformă de coaching cu plăți',
+		img: '/work/elenaviscu.jpg',
 		built:
-			'Trei tipuri de produs, trei reguli de acces. Plăți în lei, acces deschis automat după plată.',
+			'Trei tipuri de produs, trei reguli de acces. Acces deschis automat după plată, fără ca cineva să dea drepturi de mână.',
+		figure: '03',
+		unit: 'reguli de acces',
 	},
 ];
 ---
 
-<Sheet
+<Site
 	lang="ro"
 	title="Quick Flow, aplicații cu plăți și ieșire din no-code"
 	description="Construiesc marketplace-uri cu plăți împărțite, platforme de cursuri și mut aplicațiile care au depășit no-code-ul. Opt ani în Bubble, din 2025 în cod, singur de la modelul de date până la payout."
@@ -148,7 +161,7 @@ const work = [
 		<p class="stamp mt-8">Pagina asta trimite {SELF_JS} de JavaScript</p>
 
 		<div class="mt-10 md:mt-14">
-			<FlowSheet lang="ro" />
+			<PaymentFlow lang="ro" />
 		</div>
 	</section>
 
@@ -242,36 +255,36 @@ const work = [
 								stroke-width="1"
 							>
 								{i === 0 && (
-									<g class="stroke-ink/40">
+									<g class="stroke-paper/40">
 										<rect x="1" y="14" width="26" height="28" />
-										<rect x="45" y="14" width="26" height="28" class="stroke-ink" />
-										<path d="M29,28 H41 M35,24 l6,4 -6,4" class="stroke-ink/70" />
+										<rect x="45" y="14" width="26" height="28" class="stroke-paper" />
+										<path d="M29,28 H41 M35,24 l6,4 -6,4" class="stroke-paper/70" />
 										<rect x="52" y="24" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
 								{i === 1 && (
-									<g class="stroke-ink/40">
-										<rect x="1" y="20" width="20" height="16" class="stroke-ink" />
+									<g class="stroke-paper/40">
+										<rect x="1" y="20" width="20" height="16" class="stroke-paper" />
 										<rect x="51" y="2" width="20" height="14" />
 										<rect x="51" y="21" width="20" height="14" />
 										<rect x="51" y="40" width="20" height="14" />
-										<path d="M23,28 H37 M37,9 V47 M37,9 H49 M37,28 H49 M37,47 H49" class="stroke-ink/70" />
+										<path d="M23,28 H37 M37,9 V47 M37,9 H49 M37,28 H49 M37,47 H49" class="stroke-paper/70" />
 										<rect x="33" y="24" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
 								{i === 2 && (
-									<g class="stroke-ink/40">
+									<g class="stroke-paper/40">
 										<rect x="1" y="34" width="46" height="14" />
 										<rect x="9" y="20" width="46" height="14" />
-										<rect x="17" y="6" width="46" height="14" class="stroke-ink" />
-										<path d="M63,13 H71" class="stroke-ink/70" />
+										<rect x="17" y="6" width="46" height="14" class="stroke-paper" />
+										<path d="M63,13 H71" class="stroke-paper/70" />
 										<rect x="55" y="9" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
 								{i === 3 && (
-									<g class="stroke-ink/40">
-										<path d="M14,10 H58 a10,10 0 0 1 0,36 H14 a10,10 0 0 1 0,-36 Z" class="stroke-ink" />
-										<path d="M24,28 H48 M42,24 l6,4 -6,4" class="stroke-ink/70" />
+									<g class="stroke-paper/40">
+										<path d="M14,10 H58 a10,10 0 0 1 0,36 H14 a10,10 0 0 1 0,-36 Z" class="stroke-paper" />
+										<path d="M24,28 H48 M42,24 l6,4 -6,4" class="stroke-paper/70" />
 										<rect x="10" y="24" width="8" height="8" class="fill-teal stroke-none" />
 									</g>
 								)}
@@ -356,25 +369,32 @@ const work = [
 	<section class="bleed mt-24 md:mt-36" aria-labelledby="portofoliu">
 		<div class="hair flex items-baseline justify-between gap-6 pt-5">
 			<h2 id="portofoliu" class="spec">Ce am construit</h2>
-			<a href="/ro/portofoliu" class="spec transition-colors hover:text-ink">Toate proiectele</a>
+			<a href="/ro/portofoliu" class="spec transition-colors hover:text-paper">Toate proiectele</a>
 		</div>
 
-		<div class="mt-10 grid gap-x-12 gap-y-16 md:mt-16 md:grid-cols-3">
+		<div class="mt-8 md:mt-12">
 			{
 				work.map((w) => (
-					<article class="rise">
-						<div class="plate">
-							<span class="spec absolute bottom-3 left-3">Captură, 1600 × 1000</span>
+					<article class="work-row">
+						<figure class="shot rise">
+							<img src={w.img} alt={w.name} width="800" height="500" loading="lazy" />
+						</figure>
+						<div class="meta stagger">
+							<p class="spec">{w.kind}</p>
+							<h3 class="display-md mt-3">{w.name}</h3>
+							<p class="prose-body mt-4 text-[1rem]">{w.built}</p>
+							<p class="mt-6">
+								{w.figure ? (
+									<span class="fig">
+										{w.figure} <span>{w.unit}</span>
+									</span>
+								) : (
+									<a href={w.href} rel="noopener" target="_blank" class="link text-sm">
+										Vezi site-ul
+									</a>
+								)}
+							</p>
 						</div>
-						<div class="mt-5 flex items-baseline justify-between gap-4">
-							<h3 class="display-md">{w.name}</h3>
-							<span class="spec">{w.n}</span>
-						</div>
-						<p class="spec mt-3">{w.kind}</p>
-						<p class="prose-body mt-4 text-[0.95rem]">{w.built}</p>
-						<a href={w.href} rel="noopener" target="_blank" class="link mt-4 inline-block text-sm">
-							Vezi site-ul
-						</a>
 					</article>
 				))
 			}
@@ -383,7 +403,10 @@ const work = [
 		<article class="hair rise mt-16 grid gap-8 pt-8 md:mt-20 md:grid-cols-12 md:gap-12">
 			<div class="md:col-span-5">
 				<div class="flex items-baseline justify-between gap-4">
-					<h3 class="display-md"><span class="redact w-[9ch]"></span></h3>
+					<h3 class="display-md">
+						<span class="sr-only">Un marketplace care nu poate fi numit</span>
+						<span class="redact" aria-hidden="true" />
+					</h3>
 					<span class="spec">04</span>
 				</div>
 				<p class="stamp mt-6">Nu poate fi arătat</p>
@@ -470,4 +493,4 @@ const work = [
 			</div>
 		</div>
 	</section>
-</Sheet>
+</Site>

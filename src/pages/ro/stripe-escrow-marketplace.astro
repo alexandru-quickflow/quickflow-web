@@ -1,6 +1,6 @@
 ---
-import Base from '../../layouts/Base.astro';
-import MoneyFlow from '../../components/MoneyFlow.astro';
+import Site from '../../layouts/Site.astro';
+import PaymentFlow from '../../components/PaymentFlow.astro';
 
 // Every claim on this page is re-checked at the source before each release, and
 // the date below changes with it. Spec v5, section 7.
@@ -14,7 +14,8 @@ const wording = [
 ];
 ---
 
-<Base
+<Site
+	lang="ro"
 	title="Stripe nu are escrow. Ce folosești în loc"
 	description="Escrow are definiție juridică, iar Stripe trece serviciile de escrow pe lista de activități restricționate. Fluxul care se aprobă e altul: încasare separată de transfer, cu transferul eliberat la confirmare."
 >
@@ -80,7 +81,7 @@ const wording = [
 				</p>
 			</div>
 			<div class="lg:col-span-6 lg:col-start-7">
-				<MoneyFlow />
+				<PaymentFlow />
 			</div>
 		</div>
 	</section>
@@ -118,7 +119,7 @@ const wording = [
 			<h2 id="aplicatie" class="display-lg mt-5 max-w-[22ch]">
 				Ce scrii în aplicația de cont, ca să nu fie respinsă.
 			</h2>
-			<p class="mt-7 max-w-[62ch] text-lg leading-snug text-ink/85">
+			<p class="mt-7 max-w-[62ch] text-lg leading-snug text-paper/85">
 				Descrie mișcarea banilor, nu construcția juridică. Cine plătește, cui, când pleacă partea
 				fiecăruia, și cine suportă refund-ul. Fără termeni care sună a serviciu financiar.
 			</p>
@@ -127,10 +128,10 @@ const wording = [
 				<table class="w-full border-collapse text-left">
 					<thead>
 						<tr>
-							<th class="border-b border-ink/15 pb-3 pr-6 font-mono text-xs uppercase tracking-widest text-ink-600">
+							<th class="border-b border-paper/15 pb-3 pr-6 font-mono text-xs uppercase tracking-widest text-paper/50">
 								În loc de
 							</th>
-							<th class="border-b border-ink/15 pb-3 font-mono text-xs uppercase tracking-widest text-ink-600">
+							<th class="border-b border-paper/15 pb-3 font-mono text-xs uppercase tracking-widest text-paper/50">
 								Scrie
 							</th>
 						</tr>
@@ -139,10 +140,10 @@ const wording = [
 						{
 							wording.map((c) => (
 								<tr>
-									<td class="border-b border-ink/10 py-4 pr-6 align-top text-ink/55 line-through">
+									<td class="border-b border-paper/10 py-4 pr-6 align-top text-paper/55 line-through">
 										{c.avoid}
 									</td>
-									<td class="border-b border-ink/10 py-4 align-top text-ink">{c.use}</td>
+									<td class="border-b border-paper/10 py-4 align-top text-paper">{c.use}</td>
 								</tr>
 							))
 						}
@@ -150,7 +151,7 @@ const wording = [
 				</table>
 			</div>
 
-			<p class="mt-10 max-w-[62ch] text-[0.95rem] leading-relaxed text-ink/70">
+			<p class="mt-10 max-w-[62ch] text-[0.95rem] leading-relaxed text-paper/70">
 				Adaugă și lucrurile concrete pe care echipa de risc le caută oricum: ce se vinde, cine
 				vinde, cât e o comandă medie, în cât timp se livrează, și ce se întâmplă când nu se
 				livrează. O descriere scurtă și precisă trece mai ușor decât una lungă și prudentă.
@@ -202,4 +203,4 @@ const wording = [
 			</div>
 		</div>
 	</section>
-</Base>
+</Site>

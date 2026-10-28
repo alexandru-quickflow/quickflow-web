@@ -1,157 +1,475 @@
 @import "tailwindcss";
 
-/* Brand tokens. Taken from logo/quickflow_logo.svg, the November 2023 revision,
-   which supersedes the earlier indigo set. */
-@theme {
-	--color-ink: #04232f;
-	--color-ink-800: #062c3a;
-	--color-ink-700: #0a3545;
-	--color-ink-600: #12495c;
-	--color-teal: #2bd4bd;
-	--color-mint: #5deace;
-	--color-paper: #fbfbf9;
-	--color-paper-200: #eceae4;
+/* The site's one stylesheet.
+ *
+ * The direction was settled on 2026-10-28 from the questionnaire and the
+ * prototype at /lab/dark: a near-black ground, an editorial serif for display,
+ * two saturated colours in contrast, generous radii, real screenshots, and
+ * motion that costs six kilobytes.
+ *
+ * Token names are unchanged on purpose. Every page already writes bg-ink,
+ * text-paper/70, border-teal/35 and so on, so moving the values moves the whole
+ * site at once instead of asking seventeen pages to be rewritten first.
+ */
 
-	/* Loaded from a CDN in development. Production self-hosts all three with
-	   font-display: swap, see the launch checklist. */
-	--font-display: "Cabinet Grotesk", "Satoshi", system-ui, sans-serif;
-	--font-sans: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+@theme {
+	/* Ground. ink is the page, the 800/700/600 steps are the raised surfaces. */
+	--color-ink: #04080b;
+	--color-ink-800: #08131a;
+	--color-ink-700: #0c1a22;
+	--color-ink-600: #12242e;
+
+	/* Ink's opposite, and the two saturated colours. teal is the accent, hot
+	   is the counterweight: numbers that matter, the word that gets an
+	   application rejected, the one phase with real risk. */
+	--color-paper: #e9f2f0;
+	--color-paper-200: #cfdedb;
+	--color-teal: #2bd4bd;
+	--color-mint: #5fe6d3;
+	--color-hot: #ff5f45;
+
+	/* The three shares of a payment, so a swatch in a legend renders the same
+	   colour as the segment it names. */
+	--color-seg-seller: #2bd4bd;
+	--color-seg-fee: #c9472f;
+	--color-seg-cost: #353e41;
+
+	/* Loaded from Google Fonts in development. Production self-hosts and
+	   subsets all three, see the launch checklist: they are the heaviest thing
+	   on the site by a wide margin. */
+	--font-display: "Newsreader", Georgia, "Times New Roman", serif;
+	--font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 	--font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+	--ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @layer base {
 	:root {
 		color-scheme: dark;
+		--line: rgba(224, 240, 238, 0.1);
+		--line-strong: rgba(224, 240, 238, 0.22);
+		--mute: rgba(233, 242, 240, 0.68);
+		--faint: rgba(233, 242, 240, 0.46);
+		--radius: 16px;
+		--radius-sm: 10px;
 	}
 
 	body {
 		background-color: var(--color-ink);
 		color: var(--color-paper);
 		font-family: var(--font-sans);
+		font-size: 17px;
+		line-height: 1.72;
+		letter-spacing: 0.004em;
 		-webkit-font-smoothing: antialiased;
 		text-rendering: optimizeLegibility;
+		/* clip, not hidden. overflow-x: hidden turns body into a scroll
+		   container, which makes every view() timeline resolve against body
+		   instead of the viewport; body never scrolls, so the timelines go
+		   inactive and no reveal ever runs. clip hides the overflow without
+		   creating a scroller. */
+		overflow-x: clip;
 	}
 
-	/* The grain keeps large flat areas of ink from reading as a flat fill.
-	   Low enough that it never shows as texture, only as depth. */
-	body::before {
+	/* Two fixed layers behind everything: one slow light source, and a grain
+	   that keeps the large flat areas from banding. */
+	body::before,
+	body::after {
 		content: "";
 		position: fixed;
-		inset: 0;
-		z-index: 0;
 		pointer-events: none;
-		opacity: 0.035;
+		z-index: 0;
+	}
+
+	body::before {
+		inset: -34vmax 0 auto -22vmax;
+		height: 92vmax;
+		background:
+			radial-gradient(40% 40% at 28% 34%, rgba(43, 212, 189, 0.16), transparent 70%),
+			radial-gradient(34% 34% at 74% 26%, rgba(255, 95, 69, 0.11), transparent 70%);
+		filter: blur(34px);
+	}
+
+	body::after {
+		inset: 0;
+		opacity: 0.2;
+		mix-blend-mode: soft-light;
 		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		body::before {
+			animation: drift 30s ease-in-out infinite alternate;
+		}
 	}
 
 	::selection {
 		background-color: var(--color-teal);
-		color: var(--color-ink);
+		color: #04171a;
 	}
 
-	:focus-visible {
+	/* Without this, everything the keyboard reaches is invisible while it is
+	   reached. */
+	:where(a, button, summary, input, select, textarea):focus-visible {
 		outline: 2px solid var(--color-teal);
 		outline-offset: 3px;
+		border-radius: 4px;
 	}
 
-	h1,
-	h2,
-	h3 {
-		font-family: var(--font-display);
-		font-weight: 700;
-		text-wrap: balance;
+	main {
+		position: relative;
+		z-index: 1;
 	}
+}
 
-	p {
-		text-wrap: pretty;
+@keyframes drift {
+	from {
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+	to {
+		transform: translate3d(7vw, 4vh, 0) scale(1.14);
 	}
 }
 
 @layer components {
-	/* Horizontal rhythm. One container, one gutter, everywhere. */
-	.shell {
+	/* Measure ------------------------------------------------------------ */
+
+	.shell,
+	.bleed {
+		position: relative;
+		z-index: 1;
 		width: 100%;
-		max-width: 78rem;
+		max-width: 80rem;
 		margin-inline: auto;
 		padding-inline: 1.25rem;
 	}
 
 	@media (min-width: 768px) {
-		.shell {
+		.shell,
+		.bleed {
 			padding-inline: 2.5rem;
 		}
 	}
 
-	/* Type scale. Three display sizes, one lead, one body. Nothing else. */
-	.display-xl {
+	/* Type --------------------------------------------------------------- */
+
+	.display-xl,
+	.display-lg,
+	.display-md,
+	.statement {
 		font-family: var(--font-display);
-		font-size: clamp(2.75rem, 7.4vw, 5.75rem);
+		font-weight: 400;
+		font-variation-settings: "opsz" 60;
+		line-height: 1;
+		letter-spacing: -0.018em;
+		text-wrap: balance;
+	}
+
+	.display-xl {
+		/* The minimum is set by the longest word in the headline, not by taste:
+		   below this, "Construiesc" is wider than a 390px phone. */
+		font-size: clamp(2.4rem, 8.6vw, 7.2rem);
+		font-weight: 300;
 		line-height: 0.95;
-		letter-spacing: -0.035em;
-		font-weight: 800;
 	}
 
 	.display-lg {
-		font-family: var(--font-display);
-		font-size: clamp(2rem, 4.4vw, 3.25rem);
+		font-size: clamp(2.1rem, 4.8vw, 3.9rem);
 		line-height: 1.02;
-		letter-spacing: -0.03em;
-		font-weight: 700;
 	}
 
 	.display-md {
-		font-family: var(--font-display);
-		font-size: clamp(1.4rem, 2.5vw, 1.95rem);
-		line-height: 1.1;
-		letter-spacing: -0.02em;
-		font-weight: 700;
+		font-size: clamp(1.4rem, 2.2vw, 2rem);
+		line-height: 1.14;
+		font-variation-settings: "opsz" 28;
+	}
+
+	.statement {
+		font-size: clamp(1.75rem, 4.4vw, 3.4rem);
+		line-height: 1.12;
+	}
+
+	/* One word per section, no more. */
+	.display-xl em,
+	.display-lg em,
+	.display-md em,
+	.statement em {
+		font-style: italic;
+		color: var(--color-teal);
 	}
 
 	.lead {
-		font-size: clamp(1.0625rem, 1.45vw, 1.3rem);
-		line-height: 1.55;
-		color: color-mix(in oklab, var(--color-paper) 78%, transparent);
+		font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+		line-height: 1.62;
+		color: var(--mute);
+		max-width: 50ch;
 	}
 
 	.prose-body {
 		font-size: 1.0625rem;
-		line-height: 1.65;
-		color: color-mix(in oklab, var(--color-paper) 72%, transparent);
-		max-width: 62ch;
+		line-height: 1.75;
+		color: var(--mute);
+		max-width: 44ch;
 	}
 
-	/* Small mono label. Carries section numbers, dates and units. */
-	.eyebrow {
+	/* Mono datum. Carries labels, units, dates and section numbers. */
+	.eyebrow,
+	.spec {
 		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		letter-spacing: 0.12em;
+		font-size: 0.6875rem;
+		font-weight: 500;
+		letter-spacing: 0.16em;
 		text-transform: uppercase;
+		color: var(--faint);
+	}
+
+	.stamp {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
+		font-weight: 500;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--faint);
+	}
+
+	.stamp::before {
+		content: "";
+		width: 0.4rem;
+		height: 0.4rem;
+		border-radius: 999px;
+		background-color: var(--color-teal);
+		flex: none;
+	}
+
+	.numeral-ghost {
+		font-family: var(--font-mono);
+		font-size: clamp(2.5rem, 4.5vw, 4rem);
+		font-weight: 500;
+		line-height: 1;
+		letter-spacing: -0.04em;
+		color: rgba(233, 242, 240, 0.18);
+	}
+
+	/* A number set at the size of its importance, unit attached. */
+	.figure {
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: clamp(2.6rem, 6vw, 4.6rem);
+		font-weight: 500;
+		line-height: 0.92;
+		letter-spacing: -0.05em;
+		color: var(--color-hot);
+	}
+
+	.figure span {
+		font-size: 0.22em;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--faint);
+	}
+
+	.strike {
+		text-decoration: line-through;
+		text-decoration-thickness: 0.055em;
+		text-decoration-skip-ink: none;
+		text-decoration-color: var(--color-hot);
+	}
+
+	/* A withheld field. Half the work was delivered through another agency and
+	   cannot be shown; a record states the shape of what is missing. */
+	.redact {
+		display: inline-block;
+		width: 9ch;
+		height: 0.72em;
+		border-radius: 3px;
+		background-color: currentColor;
+		opacity: 0.4;
+	}
+
+	/* Surfaces ----------------------------------------------------------- */
+
+	.rule,
+	.hair {
+		border-top: 1px solid var(--line);
+	}
+
+	.hair-soft {
+		border-top: 1px solid rgba(224, 240, 238, 0.06);
+	}
+
+	/* On a dark page there is nothing to invert to, so the two old surface
+	   classes both mean the same thing now: a band lifted off the ground. */
+	.invert,
+	.surface-paper {
+		position: relative;
+		z-index: 1;
+		background: linear-gradient(180deg, var(--color-ink-800), transparent 72%);
+		border-block: 1px solid var(--line);
+	}
+
+	.card {
+		background: linear-gradient(180deg, var(--color-ink-700), rgba(12, 26, 34, 0.4));
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		padding: clamp(1.6rem, 3vw, 2.4rem);
+		min-width: 0;
+		transition: border-color 0.3s;
+	}
+
+	.card:hover {
+		border-color: var(--line-strong);
+	}
+
+	/* A screenshot in a frame. The picture breathes, the frame stays put. */
+	.shot {
+		position: relative;
+		margin: 0;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		background: var(--color-ink-700);
+		box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.95);
+		overflow: hidden;
+		transition: transform 0.45s var(--ease);
+	}
+
+	.shot img {
+		display: block;
+		width: 100%;
+		height: auto;
+		transition: transform 0.7s var(--ease);
+	}
+
+	.shot:hover {
+		transform: translateY(-4px);
+	}
+
+	.shot:hover img {
+		transform: scale(1.035);
+	}
+
+	/* A row of work: a screenshot and what it is. The rows alternate, but the
+	   screenshot always sits in the wide track, because the tracks swap along
+	   with the order. Alternating the order alone moves the image into the
+	   narrow track every other row and the captures come out different sizes. */
+	.work-row {
+		display: grid;
+		gap: 1.75rem 3.5rem;
+		align-items: center;
+		padding-block: clamp(3rem, 7vw, 6rem);
+	}
+
+	@media (min-width: 880px) {
+		.work-row {
+			grid-template-columns: 1.3fr 1fr;
+		}
+
+		.work-row:nth-of-type(even) {
+			grid-template-columns: 1fr 1.3fr;
+		}
+
+		.work-row:nth-of-type(even) .shot {
+			order: 2;
+		}
+
+		.work-row:nth-of-type(even) .meta {
+			order: 1;
+		}
+	}
+
+	.fig {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 2.1rem;
+		font-weight: 500;
+		letter-spacing: -0.04em;
 		color: var(--color-teal);
 	}
 
-	.rule {
-		border-top: 1px solid color-mix(in oklab, var(--color-paper) 14%, transparent);
+	.fig span {
+		font-size: 0.33em;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--faint);
 	}
+
+	/* A frame with nothing in it, and a reason. */
+	.plate,
+	.blank {
+		display: grid;
+		place-items: center;
+		aspect-ratio: 8 / 5;
+		border-radius: var(--radius);
+		border: 1px solid var(--line-strong);
+		background:
+			repeating-linear-gradient(
+				135deg,
+				transparent,
+				transparent 9px,
+				rgba(255, 95, 69, 0.07) 9px,
+				rgba(255, 95, 69, 0.07) 10px
+			),
+			linear-gradient(140deg, var(--color-ink-700), var(--color-ink));
+	}
+
+	.code {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		line-height: 1.75;
+		tab-size: 2;
+		/* Both are needed. Without min-width the grid track is sized by the
+		   block's min-content, which for white-space: pre is the longest line,
+		   and the whole page gains a horizontal scrollbar on a phone. */
+		min-width: 0;
+		max-width: 100%;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-sm);
+		background-color: rgba(0, 0, 0, 0.4);
+		color: rgba(233, 242, 240, 0.72);
+		padding: 1rem 1.1rem;
+		white-space: pre;
+	}
+
+	/* Controls ----------------------------------------------------------- */
 
 	.btn {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.6rem;
+		gap: 0.55rem;
 		padding: 0.95rem 1.6rem;
-		border-radius: 0;
-		font-weight: 700;
-		font-size: 1rem;
+		border-radius: var(--radius-sm);
+		border: 1px solid transparent;
+		font-family: var(--font-sans);
+		font-weight: 500;
+		font-size: 0.95rem;
 		line-height: 1;
-		transition: transform 120ms ease, background-color 120ms ease, color 120ms ease;
+		text-decoration: none;
+		transition:
+			transform 0.25s var(--ease),
+			background-color 0.25s,
+			border-color 0.25s;
+	}
+
+	.btn:hover {
+		transform: translateY(-2px);
 	}
 
 	.btn:active {
-		transform: translateY(1px);
+		transform: translateY(0);
 	}
 
 	.btn-primary {
 		background-color: var(--color-teal);
-		color: var(--color-ink);
+		color: #04171a;
 	}
 
 	.btn-primary:hover {
@@ -159,66 +477,459 @@
 	}
 
 	.btn-ghost {
-		border: 1px solid color-mix(in oklab, var(--color-paper) 28%, transparent);
+		border-color: var(--line-strong);
 		color: var(--color-paper);
 	}
 
 	.btn-ghost:hover {
-		border-color: var(--color-teal);
-		color: var(--color-teal);
+		border-color: var(--color-paper);
 	}
 
-	/* Inline link inside running text. */
 	.link {
-		color: var(--color-teal);
-		text-underline-offset: 0.25em;
-		text-decoration-line: underline;
-		text-decoration-thickness: 1px;
-		text-decoration-color: color-mix(in oklab, var(--color-teal) 45%, transparent);
+		color: var(--color-paper);
+		text-decoration: none;
+		background-image: linear-gradient(currentColor, currentColor);
+		background-repeat: no-repeat;
+		background-position: 0 100%;
+		background-size: 100% 1px;
+		padding-bottom: 2px;
+		transition: background-size 0.35s var(--ease);
 	}
 
 	.link:hover {
-		text-decoration-color: var(--color-teal);
+		background-size: 0% 1px;
 	}
 
-	/* Oversized mono numeral. One per section, never two. */
-	.numeral-ghost {
+	.tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.4rem 0.9rem 0.4rem 0.6rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
 		font-family: var(--font-mono);
-		font-size: clamp(2.5rem, 4.5vw, 4rem);
-		line-height: 0.9;
-		color: color-mix(in oklab, var(--color-paper) 20%, transparent);
+		font-size: 0.6875rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--mute);
 	}
 
-	/* The page is mostly ink. Two blocks on paper give it rhythm instead of
-	   one continuous dark field. Everything inside flips tone. */
-	.surface-paper {
-		background-color: var(--color-paper);
-		color: var(--color-ink);
+	.tag i {
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 999px;
+		background: var(--color-teal);
+		flex: none;
+		box-shadow: 0 0 0 4px rgba(43, 212, 189, 0.16);
 	}
 
-	.surface-paper .eyebrow {
-		color: var(--color-ink-600);
+	/* A state, not a label. Hollow is untouched, filled is running, hot is the
+	   one phase with real risk. */
+	.state {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--faint);
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		padding: 0.3rem 0.75rem;
+		white-space: nowrap;
 	}
 
-	.surface-paper .lead,
-	.surface-paper .prose-body {
-		color: color-mix(in oklab, var(--color-ink) 72%, transparent);
+	.state::before {
+		content: "";
+		width: 0.4rem;
+		height: 0.4rem;
+		border-radius: 999px;
+		border: 1px solid currentColor;
+		flex: none;
 	}
 
-	.surface-paper .rule {
-		border-top-color: color-mix(in oklab, var(--color-ink) 15%, transparent);
+	.state-ok {
+		color: var(--color-teal);
+		border-color: rgba(43, 212, 189, 0.3);
 	}
 
-	.surface-paper .numeral-ghost {
-		color: color-mix(in oklab, var(--color-ink) 18%, transparent);
+	.state-ok::before {
+		background: var(--color-teal);
+		border-color: var(--color-teal);
 	}
 
-	.surface-paper .link {
-		color: var(--color-ink-600);
-		text-decoration-color: color-mix(in oklab, var(--color-ink-600) 40%, transparent);
+	.state-risk {
+		color: var(--color-hot);
+		border-color: rgba(255, 95, 69, 0.4);
 	}
 
-	.surface-paper .link:hover {
-		text-decoration-color: var(--color-ink-600);
+	.state-risk::before {
+		background: var(--color-hot);
+		border-color: var(--color-hot);
 	}
+
+	/* The source line under a claim. */
+	.src {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0.75rem;
+		margin-top: 2.25rem;
+	}
+
+	/* The payment flow ---------------------------------------------------
+	 * Laid out by the browser, not by hand-written SVG coordinates. Three
+	 * attempts at spacing text inside a fixed viewBox all failed the same way:
+	 * a label would grow, or a band would sit where a word needed to be. Here
+	 * padding is padding and nothing can overlap anything. */
+
+	.flowmap {
+		display: grid;
+		gap: 1rem;
+		align-items: stretch;
+	}
+
+	@media (min-width: 900px) {
+		.flowmap {
+			grid-template-columns: 1fr auto 1fr auto 1fr;
+			gap: 0;
+		}
+	}
+
+	.node {
+		display: flex;
+		flex-direction: column;
+		gap: 0.9rem;
+		min-width: 0;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		background: rgba(233, 242, 240, 0.035);
+		padding: 1.75rem 1.75rem 1.5rem;
+	}
+
+	.node .amount {
+		font-family: var(--font-display);
+		font-size: clamp(2rem, 3.2vw, 2.6rem);
+		font-weight: 400;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+
+	.node .sub {
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--faint);
+	}
+
+	.node .chip {
+		align-self: flex-start;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-mono);
+		font-size: 0.625rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-teal);
+		border: 1px solid rgba(43, 212, 189, 0.32);
+		background: rgba(43, 212, 189, 0.08);
+		border-radius: 999px;
+		padding: 0.4rem 0.8rem;
+	}
+
+	.node .chip::before {
+		content: "";
+		width: 0.4rem;
+		height: 0.4rem;
+		border-radius: 999px;
+		background: var(--color-teal);
+		flex: none;
+	}
+
+	/* The connector. Its label sits above the line, with the whole column
+	   reserved for it, so it cannot land on a neighbour. */
+	.step {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		padding-inline: 1.5rem;
+	}
+
+	/* Line plus arrowhead, assembled rather than drawn: the line stretches,
+	   the head keeps its shape. */
+	.arrow {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		min-width: 3.5rem;
+		color: rgba(233, 242, 240, 0.38);
+	}
+
+	.arrow i {
+		flex: 1;
+		height: 1px;
+		background: currentColor;
+	}
+
+	.arrow svg {
+		flex: none;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.25;
+	}
+
+	@media (max-width: 899px) {
+		.step {
+			padding-block: 0.25rem;
+		}
+
+		.arrow {
+			flex-direction: column;
+			width: auto;
+			min-width: 0;
+			height: 2.75rem;
+		}
+
+		.arrow i {
+			width: 1px;
+			height: auto;
+		}
+
+		.arrow svg {
+			rotate: 90deg;
+		}
+	}
+
+	/* The split. A legend instead of leader lines: the two narrow segments
+	   were never going to carry a label of their own. */
+	.bar {
+		display: flex;
+		gap: 3px;
+		height: 46px;
+		margin-top: 1.25rem;
+	}
+
+	.bar span {
+		display: flex;
+		align-items: center;
+		/* No padding: a flex item with flex-basis 0 still reserves its padding
+		   before the grow factors are applied, which inflates the two narrow
+		   segments and makes the bar lie. The label is inset with text-indent,
+		   which costs no width. */
+		padding: 0;
+		text-indent: 1.25rem;
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		overflow: hidden;
+		border: 0;
+		border-radius: 4px;
+	}
+
+	.bar span:nth-child(1) {
+		background: var(--color-seg-seller);
+		color: #04171a;
+		border-radius: 10px 4px 4px 10px;
+	}
+
+	.bar span:nth-child(2) {
+		background: var(--color-seg-fee);
+	}
+
+	.bar span:nth-child(3) {
+		background: var(--color-seg-cost);
+		border-radius: 4px 10px 10px 4px;
+	}
+
+	.legend {
+		list-style: none;
+		margin: 1.75rem 0 0;
+		padding: 0;
+		display: grid;
+		gap: 0.9rem 3rem;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+	}
+
+	.legend li {
+		display: flex;
+		align-items: baseline;
+		gap: 0.7rem;
+		font-size: 0.9375rem;
+		color: var(--mute);
+	}
+
+	.legend i {
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 3px;
+		flex: none;
+		background: var(--color-seg-cost);
+		translate: 0 0.1em;
+	}
+
+	.legend i.seller {
+		background: var(--color-seg-seller);
+	}
+
+	.legend i.fee {
+		background: var(--color-seg-fee);
+	}
+
+	.legend b {
+		margin-left: auto;
+		font-family: var(--font-mono);
+		font-weight: 500;
+		color: var(--color-paper);
+		white-space: nowrap;
+	}
+
+	/* Marquee ------------------------------------------------------------ */
+
+	.strip {
+		position: relative;
+		z-index: 1;
+		border-block: 1px solid var(--line);
+		padding-block: 1.15rem;
+		overflow: hidden;
+	}
+
+	.track {
+		display: flex;
+		width: max-content;
+		gap: 2.5rem;
+		padding-left: 2.5rem;
+	}
+
+	.track span {
+		display: inline-flex;
+		align-items: center;
+		gap: 2.5rem;
+		font-family: var(--font-display);
+		font-size: 1.35rem;
+		font-style: italic;
+		color: var(--faint);
+		white-space: nowrap;
+	}
+
+	.track span::after {
+		content: "";
+		width: 0.3rem;
+		height: 0.3rem;
+		border-radius: 999px;
+		background: var(--color-hot);
+		opacity: 0.8;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.track {
+			animation: slide 38s linear infinite;
+		}
+	}
+
+	/* A line that moves on its own stops when you try to read it. */
+	.strip:hover .track {
+		animation-play-state: paused;
+	}
+}
+
+@keyframes slide {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+/* Motion ----------------------------------------------------------------
+ * Do not fold the animation shorthand and animation-timeline into one
+ * declaration, and do not let a CSS minifier do it either: Lightning CSS
+ * merges them into `animation: linear both rise view()`, which no browser
+ * accepts, and every scroll-driven animation on the site silently stops
+ * existing. CSS minification is off in astro.config.mjs for that reason.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+	@supports (animation-timeline: view()) {
+		.rise {
+			animation: rise linear both;
+			animation-timeline: view();
+			animation-range: entry 4% entry 52%;
+		}
+
+		/* Stagger inside a block: the same reveal on each child, offset along
+		   the entry range, so lines arrive in reading order. */
+		.stagger > * {
+			animation: rise linear both;
+			animation-timeline: view();
+			animation-range: entry 6% entry 46%;
+		}
+
+		.stagger > :nth-child(2) {
+			animation-range: entry 14% entry 54%;
+		}
+
+		.stagger > :nth-child(3) {
+			animation-range: entry 22% entry 62%;
+		}
+
+		.stagger > :nth-child(n + 4) {
+			animation-range: entry 30% entry 70%;
+		}
+	}
+}
+
+@keyframes rise {
+	from {
+		opacity: 0;
+		transform: translateY(28px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* Firefox has no scroll-driven animations yet, so there the reveals run off an
+   observer instead. The hidden state is gated on a class the script adds, never
+   on the stylesheet alone: if the script fails, nothing is hidden. */
+@supports not (animation-timeline: view()) {
+	@media (prefers-reduced-motion: no-preference) {
+		html.reveal-js .rise,
+		html.reveal-js .stagger > * {
+			opacity: 0;
+			transform: translateY(28px);
+			transition:
+				opacity 0.75s var(--ease),
+				transform 0.75s var(--ease);
+		}
+
+		html.reveal-js .rise.in,
+		html.reveal-js .stagger > .in {
+			opacity: 1;
+			transform: none;
+		}
+	}
+}
+
+/* Lenis, the inertial scroller. It scrolls the document for real rather than
+   transforming a wrapper, so sticky positioning and the timelines above keep
+   working under it. */
+html.lenis,
+html.lenis body {
+	height: auto;
+}
+
+.lenis.lenis-smooth {
+	scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+	overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+	overflow: hidden;
 }

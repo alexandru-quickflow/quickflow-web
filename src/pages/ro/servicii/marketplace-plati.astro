@@ -1,5 +1,5 @@
 ---
-import Base from '../../../layouts/Base.astro';
+import Site from '../../../layouts/Site.astro';
 
 const signs = [
 	{
@@ -45,7 +45,8 @@ const steps = [
 ];
 ---
 
-<Base
+<Site
+	lang="ro"
 	title="Marketplace cu plăți împărțite, construit de la zero"
 	description="Onboarding de vânzători care trece verificarea, bani reținuți până la livrare, împărțiri care rezistă la refund și dispută. Trimite-mi fluxul tău de plăți și îți spun dacă Stripe îl permite."
 >
@@ -159,7 +160,7 @@ const steps = [
 
 			<div class="mt-12 grid gap-10 md:grid-cols-12 md:gap-12">
 				<div class="md:col-span-6">
-					<p class="text-lg leading-snug text-ink/85">
+					<p class="text-lg leading-snug text-paper/85">
 						Scrie-mi în cuvintele tale patru lucruri. Atât îmi trebuie ca să îți dau un răspuns
 						util din prima, fără să ne programăm nimic.
 					</p>
@@ -172,10 +173,10 @@ const steps = [
 								'Când se consideră livrată munca',
 							].map((q, i) => (
 								<li class="flex gap-4">
-									<span class="font-mono text-xs text-ink-600">
+									<span class="font-mono text-xs text-paper/50">
 										{String(i + 1).padStart(2, '0')}
 									</span>
-									<span class="text-lg leading-snug text-ink">{q}</span>
+									<span class="text-lg leading-snug text-paper">{q}</span>
 								</li>
 							))
 						}
@@ -222,4 +223,4 @@ const steps = [
 			<a href="/ro/contact" class="btn btn-primary">Trimite-mi fluxul de plăți</a>
 		</div>
 	</section>
-</Base>
+</Site>
