@@ -468,63 +468,42 @@
 		scroll-margin-top: 6.5rem;
 	}
 
-	/* The light band -----------------------------------------------------
-	 * Named .band, not .invert, and that rename is the whole fix. Tailwind
-	 * ships an `invert` utility, the utilities layer is emitted after the
-	 * components layer, so `class="invert"` was resolving to
-	 * `filter: invert(100%)` and the component rule underneath it was only
-	 * deciding what got inverted. Eighteen sections were rendering as a
-	 * photographic negative of themselves.
+	/* The band, which used to be a light stripe across the page ------------
 	 *
-	 * That produced a light band, which is what everyone had been reviewing,
-	 * so the surface values below are the exact colours the filter produced
-	 * and the band looks the same. What it also produced, and what nobody
-	 * could see by looking, is that a filter inverts every colour inside it.
-	 * teal came out red and coral came out cyan, so on the migration page the
-	 * three phases that leave the app running were marked in the alarm colour
-	 * and the single phase with real risk was marked in the safe one. The one
-	 * italic teal word per section came out red as well.
+	 * It was paper on ink, full bleed, and on a phone the jump from near-black
+	 * to #f7ece5 is a flash in the eye. No check here ever saw it: every colour
+	 * inside passed contrast, nothing overflowed, both languages matched. It
+	 * took somebody reading the site on a phone to say the obvious thing.
 	 *
-	 * So the band is a surface now, not a filter, and it flips the tokens
-	 * instead of the pixels. Inside here the two ground tokens are roles
-	 * rather than colours: paper is whatever reads against this surface and
-	 * ink is the surface. Tailwind v4 compiles `text-paper/80` to a
-	 * color-mix over var(--color-paper) rather than to a literal, so every
-	 * utility in the markup follows without a single page being edited.
+	 * So the band stops changing brightness and changes shape instead. It is a
+	 * plate now: an edge, a radius, the raised surface the cards and the footer
+	 * already use, drawn inside the measure with the page showing around it.
+	 * The section still says "this is a different kind of thing", which was its
+	 * only job, and it says it the way this site says everything else, with a
+	 * line rather than with a floodlight.
 	 *
-	 * The accents are darkened here rather than carried across. #2bd4bd on
-	 * #f7ece5 measures 1.5:1, which is not a colour, it is a rumour. The hue
-	 * stays, the lightness moves, the meaning survives. */
+	 * Everything the light version needed went with it: eleven token overrides
+	 * that swapped paper for ink and darkened both accents, and a button rule
+	 * that existed only because teal on paper needs a dark label. That
+	 * machinery once rendered the migration page's four safe phases in the
+	 * alarm colour and its one risky phase in the safe one, and nothing but a
+	 * person looking at it would have caught that either. */
 	.band {
 		position: relative;
 		z-index: 1;
-
-		--color-ink: #f7ece5;
-		--color-paper: #160d0f;
-		--color-teal: #0b6d60;
-		--color-mint: #0e8475;
-		--color-hot: #ad3419;
-
-		--mute: rgba(22, 13, 15, 0.74);
-		--faint: rgba(22, 13, 15, 0.62);
-		--line: rgba(22, 13, 15, 0.16);
-		--line-strong: rgba(22, 13, 15, 0.3);
-		--line-soft: rgba(22, 13, 15, 0.09);
-		--ghost: rgba(22, 13, 15, 0.56);
-
-		/* A solid band, not a gradient. The gradient faded out at 72% of the
-		   section's height, which on a tall section (the escrow table) leaves
-		   the top lifted and the bottom not, and reads as a rendering fault
-		   rather than a surface. */
-		background: var(--color-ink);
-		color: var(--color-paper);
-		border-block: 1px solid var(--line);
 	}
 
-	/* The primary button keeps a teal ground, and on this band that ground is
-	   dark, so its label has to come back the other way. */
-	.band .btn-primary {
-		color: var(--color-ink);
+	.band > .bleed {
+		background: var(--surface);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		padding-inline: 1.5rem;
+	}
+
+	@media (min-width: 768px) {
+		.band > .bleed {
+			padding-inline: 3rem;
+		}
 	}
 
 	.card {
