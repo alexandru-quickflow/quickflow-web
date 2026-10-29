@@ -128,7 +128,7 @@ const work = [
 <Site
 	lang="ro"
 	title="Quick Flow, aplicații cu plăți și ieșire din no-code"
-	description="Construiesc marketplace-uri cu plăți împărțite, platforme de cursuri și mut aplicațiile care au depășit no-code-ul. Opt ani în Bubble, din 2025 livrez pe cod, singur de la modelul de date până la payout."
+	description="Migrare de pe Bubble, marketplace-uri cu plăți împărțite, platforme de cursuri și aplicații interne. Opt ani în Bubble, singur de la modelul de date până la payout."
 >
 	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The datum
 	     under the headline is this page measuring itself: the one claim where
@@ -136,18 +136,29 @@ const work = [
 	<section class="bleed pt-12 md:pt-16">
 		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
 			<p class="spec">Quick Flow, București</p>
-			<p class="spec">Marketplace, migrare, cursuri, automatizări</p>
+			<p class="spec">Un singur om, de la modelul de date până la payout</p>
 		</div>
 
-		<h1 class="display-xl mt-8 max-w-[15ch]">
-			Construiesc aplicații în care banii trec prin <em>mai multe mâini</em>.
+		<h1 class="display-xl mt-8 max-w-[20ch]">
+			Banii, accesul, și procesul dintre ele. Asta e <em>partea pe care o construiesc</em>.
 		</h1>
 
-		<p class="stamp mt-8">Pagina asta trimite {SELF_JS} de JavaScript</p>
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Migrare de pe Bubble, marketplace-uri care împart plățile, platforme de cursuri, și aplicația
+			internă pe care merge firma ta. Pentru firme destul de mici cât să vorbești cu omul care
+			construiește.
+		</p>
 
-		<div class="mt-10 md:mt-14">
+		<div class="mt-10 flex flex-wrap gap-4">
+			<a href={paths.contact.ro} class="btn btn-primary">Spune-mi ce construiești</a>
+			<a href={paths.migration.ro} class="btn btn-ghost">Vezi cum arată traseul</a>
+		</div>
+
+		<div class="mt-12 md:mt-16">
 			<PaymentFlow lang="ro" />
 		</div>
+
+		<p class="stamp mt-7">Pagina asta trimite {SELF_JS} de JavaScript</p>
 	</section>
 
 	<!-- 2. Proof. The content inventory says this site has one asset in
@@ -213,9 +224,10 @@ const work = [
 	<section class="bleed mt-24 md:mt-36">
 		<div class="hair pt-10 md:pt-14">
 			<p class="statement max-w-[30ch] md:max-w-none">
-				<strong>Marketplace-uri cu plăți împărțite</strong>, platforme de cursuri, și mutarea
-				aplicațiilor care au <strong>depășit no-code-ul</strong>. Din 2017 în Bubble, din 2025 în cod,
-				singur de la modelul de date până la <strong>payout</strong>.
+				<strong>Opt ani petrecuți în Bubble</strong>, de aia îți pot spune ce nu supraviețuiește
+				mutării. <strong>Un singur om</strong>, deci nu se pierde nimic între cel care a desenat și
+				cel care a construit. <strong>Construit cu AI</strong>, de aia cinci zile e o unitate reală
+				de livrare, nu o cifră de vânzare.
 			</p>
 		</div>
 	</section>
@@ -230,7 +242,7 @@ const work = [
 		</div>
 
 		<h2 id="servicii" class="display-lg mt-8 max-w-[24ch]">
-			Marketplace-uri cu plăți, migrări de pe Bubble, platforme de cursuri.
+			Partea grea nu e niciodată cea la care te aștepți.
 		</h2>
 
 		<div class="mt-12 grid gap-x-16 gap-y-14 md:mt-16 md:grid-cols-2 md:gap-y-20">
@@ -470,8 +482,8 @@ const work = [
 		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
 			<div class="grid gap-10 md:grid-cols-12">
 				<h2 class="display-lg md:col-span-8">
-					Dacă ai un produs care încasează bani, sau care ar trebui să încaseze, scrie-mi ce te
-					blochează.
+					Dacă ceva pe care merge firma ta e blocat, sau ar trebui să existe și nu există, scrie-mi
+					ce.
 				</h2>
 				<div class="md:col-span-3 md:col-start-10 md:self-end md:justify-self-end">
 					<a href="/ro/contact" class="btn btn-primary">Spune-mi ce construiești</a>
