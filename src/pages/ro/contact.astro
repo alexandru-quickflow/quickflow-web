@@ -175,11 +175,13 @@ const flowFields = [
 						</select>
 					</div>
 
-					<!-- A box inside a box is one box too many, so the group that used to
-					     carry its own border is separated by a hairline now. -->
-					<fieldset class="hair border-x-0 border-b-0 p-0 pt-7">
-						<legend class="spec">Doar dacă e despre plăți</legend>
-						<p class="prose-body mt-3 text-sm">
+					<!-- Closed by default. Most people writing in are not asking about a
+					     payment flow, and four more inputs on a form that already has
+					     nine is a wall. A details element costs no JavaScript, and the
+					     inputs inside a closed one are still submitted. -->
+					<details class="accordion hair pt-7">
+						<summary class="spec">Doar dacă e despre plăți</summary>
+						<p class="prose-body mt-5 text-sm">
 							Patru răspunsuri scurte îmi ajung ca să îți spun din prima dacă fluxul se aprobă.
 						</p>
 						<div class="mt-5 flex flex-col gap-5">
@@ -200,7 +202,7 @@ const flowFields = [
 								))
 							}
 						</div>
-					</fieldset>
+					</details>
 
 					<!-- The only attribution there is. The analytics are cookieless,
 					     so they count visitors without ever saying where one came from. -->
@@ -254,7 +256,7 @@ const flowFields = [
 				</div>
 			</div>
 
-			<aside class="md:col-span-4 md:col-start-9">
+			<aside class="md:col-span-4 md:col-start-9 md:sticky md:top-28 md:self-start">
 				<p class="spec">Sau, dacă preferi</p>
 				<h2 class="display-md mt-4">Treizeci de minute de vorbit.</h2>
 				<p class="prose-body mt-5">

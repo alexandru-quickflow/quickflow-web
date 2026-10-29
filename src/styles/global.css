@@ -109,6 +109,18 @@
 		--ghost: rgba(233, 242, 240, 0.38);
 		--radius: 16px;
 		--radius-sm: 10px;
+
+		/* Two surfaces that are the page plus light, rather than a different
+		   colour. The card used to be ink-700, which is a blue, and on a page
+		   this close to black a blue panel reads as another material instead of
+		   as the same page lifted. These are the page with roughly 3.5% and 7.5%
+		   of paper mixed in, which comes out neutral.
+
+		   Opaque, not an rgba wash, because a select renders its option list
+		   from its own background-color and a translucent one sends the browser
+		   back to white. See .field. */
+		--surface: #0c1013;
+		--surface-raised: #151a1c;
 	}
 
 	body {
@@ -460,7 +472,7 @@
 	}
 
 	.card {
-		background: linear-gradient(180deg, var(--color-ink-700), rgba(12, 26, 34, 0.4));
+		background: var(--surface);
 		border: 1px solid var(--line);
 		border-radius: var(--radius);
 		padding: clamp(1.6rem, 3vw, 2.4rem);
@@ -494,7 +506,7 @@
 		padding: 0.85rem 1rem;
 		border: 1px solid var(--line);
 		border-radius: var(--radius-sm);
-		background-color: var(--color-ink);
+		background-color: var(--surface-raised);
 		color: var(--color-paper);
 		font-family: var(--font-sans);
 		font-size: 1rem;
@@ -511,7 +523,6 @@
 
 	.field:focus {
 		border-color: var(--color-teal);
-		background-color: var(--color-ink-800);
 	}
 
 	.field::placeholder {
@@ -535,8 +546,39 @@
 	}
 
 	select.field option {
-		background-color: var(--color-ink);
+		background-color: var(--surface-raised);
 		color: var(--color-paper);
+	}
+
+	/* A group that folds away. Used for the payment questions, which most
+	   people writing in do not need and which turn a form of nine fields into
+	   one of thirteen. No JavaScript, and a browser submits the inputs inside
+	   a closed details element like any other. */
+	.accordion > summary {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.accordion > summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.accordion > summary::after {
+		content: "";
+		width: 0.5rem;
+		height: 0.5rem;
+		margin-left: auto;
+		border-right: 1.5px solid var(--mute);
+		border-bottom: 1.5px solid var(--mute);
+		transform: translateY(-2px) rotate(45deg);
+		transition: transform 0.25s var(--ease);
+	}
+
+	.accordion[open] > summary::after {
+		transform: translateY(2px) rotate(-135deg);
 	}
 
 	/* A screenshot in a frame. The picture breathes, the frame stays put. */

@@ -167,11 +167,13 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 						</select>
 					</div>
 
-					<!-- A box inside a box is one box too many, so the group that used to
-					     carry its own border is separated by a hairline now. -->
-					<fieldset class="hair border-x-0 border-b-0 p-0 pt-7">
-						<legend class="spec">Only if it is about payments</legend>
-						<p class="prose-body mt-3 text-sm">
+					<!-- Closed by default. Most people writing in are not asking about a
+					     payment flow, and four more inputs on a form that already has
+					     nine is a wall. A details element costs no JavaScript, and the
+					     inputs inside a closed one are still submitted. -->
+					<details class="accordion hair pt-7">
+						<summary class="spec">Only if it is about payments</summary>
+						<p class="prose-body mt-5 text-sm">
 							Four short answers are enough for me to tell you first time whether the flow gets
 							approved.
 						</p>
@@ -193,7 +195,7 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 								))
 							}
 						</div>
-					</fieldset>
+					</details>
 
 					<!-- The only attribution there is. The analytics are cookieless,
 					     so they count visitors without ever saying where one came from. -->
@@ -245,7 +247,7 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 				</div>
 			</div>
 
-			<aside class="md:col-span-4 md:col-start-9">
+			<aside class="md:col-span-4 md:col-start-9 md:sticky md:top-28 md:self-start">
 				<p class="spec">Or, if you prefer</p>
 				<h2 class="display-md mt-4">Thirty minutes of talking.</h2>
 				<p class="prose-body mt-5">
