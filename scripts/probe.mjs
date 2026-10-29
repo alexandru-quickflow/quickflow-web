@@ -1,7 +1,8 @@
 /**
  * Loads every built page in a real browser and measures what looking cannot see:
- * text contrast, horizontal overflow, and whether the two languages still carry
- * the same number of elements.
+ * text contrast, horizontal overflow, rules drawn wider than the text they
+ * underline, and whether the two languages still carry the same number of
+ * elements.
  *
  * Why this exists. Every design defect on this project was found by measuring,
  * never by looking. The bar chart carrying the migration page's central claim
@@ -330,12 +331,40 @@ function audit() {
 		}
 	}
 
+	/* A rule wider than the text it underlines. `.link` paints its underline
+	   with a background image sized to 100% of the box, so an anchor that a
+	   flex or grid parent has blockified draws that line across the whole
+	   track. Both portfolio pages carried six each: an 80px label with a 584px
+	   rule under it. Nothing already here could see it. The box is painted, it
+	   is inside the viewport, its text passes contrast, and it does not
+	   overflow anything. It took a person looking at the page. */
+	const stretched = [];
+	for (const el of document.querySelectorAll('.link')) {
+		if (!painted(el)) continue;
+		const box = el.getBoundingClientRect();
+		if (box.width < 1) continue;
+		const range = document.createRange();
+		range.selectNodeContents(el);
+		const text = range.getBoundingClientRect();
+		// A wrapped link is legitimately wider than its last line, so the
+		// comparison is against the range, which measures every line.
+		if (text.width > 0 && box.width - text.width > 24) {
+			stretched.push({
+				where: describe(el),
+				box: Math.round(box.width),
+				text: Math.round(text.width),
+			});
+		}
+	}
+
 	return {
 		elements: carriers.length,
 		failures,
 		filtered,
 		overflow: over.slice(0, 12),
 		overflowCount: over.length,
+		stretched: stretched.slice(0, 12),
+		stretchedCount: stretched.length,
 		scrollWidth: document.scrollingElement.scrollWidth,
 		viewport: vw,
 	};
@@ -353,7 +382,10 @@ async function selfTest(page, base) {
 		sink.id = 'probe-self-test';
 		sink.innerHTML = `
 			<p id="probe-invisible">A claim nobody can read</p>
-			<div id="probe-wide"></div>`;
+			<div id="probe-wide"></div>
+			<div id="probe-column" style="display:flex;flex-direction:column;width:400px">
+				<a id="probe-stretched" class="link" href="#">short</a>
+			</div>`;
 		document.body.append(sink);
 		const invisible = document.getElementById('probe-invisible');
 		invisible.style.color = ground;
@@ -368,12 +400,14 @@ async function selfTest(page, base) {
 	const result = await page.evaluate(audit);
 	const sawInvisible = result.failures.some((f) => f.where.includes('probe-invisible'));
 	const sawWide = result.overflow.some((o) => o.where.includes('probe-wide'));
+	const sawStretched = result.stretched.some((o) => o.where.includes('probe-stretched'));
 
 	await page.evaluate(() => document.getElementById('probe-self-test')?.remove());
 
 	const missed = [];
 	if (!sawInvisible) missed.push('the invisible paragraph');
 	if (!sawWide) missed.push('the 493px box');
+	if (!sawStretched) missed.push('the stretched link');
 	if (missed.length > 0) {
 		throw new Error(
 			`self-test: the probe did not report ${missed.join(' or ')}. ` +
@@ -494,7 +528,9 @@ async function main() {
 	try {
 		if (SELF_TEST) {
 			const planted = await selfTest(page, BASE);
-			console.log(`self-test  the probe reported the two planted defects (${planted} failures on a page with them)\n`);
+			console.log(
+				`self-test  the probe reported the three planted defects (${planted} failures on a page with them)\n`
+			);
 		}
 
 		for (const width of WIDTHS) {
@@ -530,6 +566,12 @@ async function main() {
 					problems.push(
 						`${width}px ${route.url}  ${f.ratio}:1 needs ${f.need}:1  ` +
 							`${f.where} at ${f.size}px  ${f.colour} on ${f.on}  "${f.text}"`
+					);
+				}
+				for (const f of result.stretched) {
+					problems.push(
+						`${width}px ${route.url}  ${f.where} draws a ${f.box}px rule ` +
+							`under ${f.text}px of text`
 					);
 				}
 				for (const f of result.filtered) {
