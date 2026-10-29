@@ -248,8 +248,14 @@ const ogImage = new URL(
 			<slot />
 		</main>
 
-		<footer class="relative z-10">
-			<div class="shell pb-16 pt-20 md:pb-20">
+		<!-- The footer gets a ground of its own. On eleven pages it arrives under a
+		     light band, where the colour change already separated it; on contact
+		     and privacy it arrived under an ink section in exactly the same ink,
+		     with eighty pixels of padding doing all the work. One surface, a
+		     hairline above it, and it reads as a different place on every page
+		     rather than on most of them. -->
+		<footer class="relative z-10 border-t border-[var(--line)] bg-[var(--surface)]">
+			<div class="shell pb-16 pt-24 md:pb-20 md:pt-32">
 				<!-- Four columns, grouped by what a link is rather than by what fit
 				     in the header. The header stops at six items for a measured
 				     reason and this does not have to. -->
