@@ -11,12 +11,39 @@ const errorText = 'mt-2 text-sm text-hot';
 
 import { BOOKING, BOOKING_URL } from '../../content/booking';
 
+// The bottom rung used to be "under 5,000", which put a 350 EUR audit in the
+// same box as a 4,800 EUR project. Everything the site sells as a way in now
+// costs between 350 and 1,800.
 const budgets = [
 	'Nu știu încă',
-	'Sub 5.000 EUR',
+	'Sub 2.000 EUR',
+	'2.000 la 5.000 EUR',
 	'5.000 la 15.000 EUR',
 	'15.000 la 30.000 EUR',
 	'Peste 30.000 EUR',
+];
+
+// What the message is about, so a reply can start in the right place instead
+// of being inferred from the free text. The first option is a real answer and
+// not an empty placeholder, which is why neither this field nor the one below
+// needs a validation path: a select that cannot be left blank cannot be wrong.
+const subjects = [
+	'Nu sunt sigur care',
+	'Migrare de pe Bubble pe cod',
+	'Marketplace cu plăți',
+	'Platformă de cursuri sau membership',
+	'Aplicație internă sau automatizare',
+	'Prototip în cinci zile',
+	'Un audit, ca să aflu dacă merită',
+	'Altceva',
+];
+
+const whens = [
+	'Încă fără dată',
+	'Cât mai repede',
+	'În următoarele una-trei luni',
+	'Mai târziu anul ăsta',
+	'Deocamdată doar mă uit',
 ];
 
 const flowFields = [
@@ -88,6 +115,15 @@ const flowFields = [
 					</div>
 
 					<div>
+						<label for="subiect" class="block text-sm font-medium text-paper/85">
+							Despre ce e vorba
+						</label>
+						<select id="subiect" name="subiect" class={field}>
+							{subjects.map((s) => <option value={s}>{s}</option>)}
+						</select>
+					</div>
+
+					<div>
 						<label for="proiect" class="block text-sm font-medium text-paper/85">
 							Ce vrei să construiești
 						</label>
@@ -101,6 +137,22 @@ const flowFields = [
 						<p data-error-for="proiect" hidden class={errorText}></p>
 					</div>
 
+					<!-- The most useful field on the form. For a Bubble app this is the
+					     link I need to run the measurement before answering, which is
+					     what the audit on the migration page promises. -->
+					<div>
+						<label for="acum" class="block text-sm font-medium text-paper/85">
+							Ce ai acum, și un link dacă există
+						</label>
+						<input
+							id="acum"
+							name="acum"
+							type="text"
+							placeholder="o aplicație Bubble, app.exemplu.ro"
+							class={`${field} placeholder:text-paper/30`}
+						/>
+					</div>
+
 					<div>
 						<label for="buget" class="block text-sm font-medium text-paper/85">
 							Buget aproximativ
@@ -111,6 +163,13 @@ const flowFields = [
 							class={field}
 						>
 							{budgets.map((b) => <option value={b}>{b}</option>)}
+						</select>
+					</div>
+
+					<div>
+						<label for="cand" class="block text-sm font-medium text-paper/85">Când îl vrei</label>
+						<select id="cand" name="cand" class={field}>
+							{whens.map((w) => <option value={w}>{w}</option>)}
 						</select>
 					</div>
 
@@ -138,6 +197,21 @@ const flowFields = [
 							}
 						</div>
 					</fieldset>
+
+					<!-- The only attribution there is. The analytics are cookieless,
+					     so they count visitors without ever saying where one came from. -->
+					<div>
+						<label for="sursa" class="block text-sm font-medium text-paper/85">
+							Cum ai ajuns aici
+						</label>
+						<input
+							id="sursa"
+							name="sursa"
+							type="text"
+							placeholder="o căutare, mi-a trimis cineva linkul, Upwork"
+							class={`${field} placeholder:text-paper/30`}
+						/>
+					</div>
 
 					<!-- Honeypot. Hidden from people, filled in by most bots. -->
 					<div class="absolute left-[-9999px]" aria-hidden="true">

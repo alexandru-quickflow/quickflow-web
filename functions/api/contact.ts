@@ -59,7 +59,11 @@ interface Copy {
 	labels: {
 		name: string;
 		email: string;
+		subject: string;
 		budget: string;
+		when: string;
+		now: string;
+		source: string;
 		empty: string;
 		wants: string;
 		flow: string;
@@ -96,7 +100,11 @@ const COPY: Record<Locale, Copy> = {
 		labels: {
 			name: 'Name',
 			email: 'Email',
+			subject: 'About',
 			budget: 'Budget',
+			when: 'When',
+			now: 'What exists now',
+			source: 'Arrived via',
 			empty: 'not filled in',
 			wants: 'What they want to build:',
 			flow: 'The payment flow:',
@@ -134,7 +142,11 @@ const COPY: Record<Locale, Copy> = {
 		labels: {
 			name: 'Nume',
 			email: 'Email',
+			subject: 'Despre',
 			budget: 'Buget',
+			when: 'Când',
+			now: 'Ce există acum',
+			source: 'A ajuns prin',
 			empty: 'necompletat',
 			wants: 'Ce vrea să construiască:',
 			flow: 'Fluxul de plăți:',
@@ -192,11 +204,15 @@ function summary(f: Fields, c: Copy): string {
 	const lines = [
 		`${c.labels.name}: ${f.nume}`,
 		`${c.labels.email}: ${f.email}`,
+		`${c.labels.subject}: ${f.subiect || c.labels.empty}`,
 		`${c.labels.budget}: ${f.buget || c.labels.empty}`,
-		'',
-		c.labels.wants,
-		f.proiect,
+		`${c.labels.when}: ${f.cand || c.labels.empty}`,
 	];
+
+	if (f.acum) lines.push(`${c.labels.now}: ${f.acum}`);
+	if (f.sursa) lines.push(`${c.labels.source}: ${f.sursa}`);
+
+	lines.push('', c.labels.wants, f.proiect);
 
 	const flow = [
 		[c.labels.pays, f.plateste],
@@ -307,7 +323,11 @@ export const onRequestPost = async (context: {
 		nume: text(form.get('nume')),
 		email: text(form.get('email')),
 		proiect: text(form.get('proiect')),
+		subiect: text(form.get('subiect')),
 		buget: text(form.get('buget')),
+		cand: text(form.get('cand')),
+		acum: text(form.get('acum')),
+		sursa: text(form.get('sursa')),
 		plateste: text(form.get('plateste')),
 		incaseaza: text(form.get('incaseaza')),
 		comision: text(form.get('comision')),
