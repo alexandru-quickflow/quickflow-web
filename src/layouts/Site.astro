@@ -39,10 +39,13 @@ const columns = footerNav[lang];
 // Written out per column rather than composed with conditions. Two col-span
 // classes on one element is a coin toss over which the stylesheet emits last,
 // and the third column lost it: it wrapped under the first.
+// lg and not md. At 768 a twelve-column grid gives each of these about
+// 142 pixels and the email address alone is 173, so the links ran out of
+// their own columns and the headings wrapped. Two columns until 1024.
 const columnSpans = [
-	'md:col-span-3 md:col-start-5',
-	'md:col-span-3 md:col-start-8',
-	'md:col-span-2 md:col-start-11',
+	'lg:col-span-3 lg:col-start-5',
+	'lg:col-span-3 lg:col-start-8',
+	'lg:col-span-2 lg:col-start-11',
 ];
 const twins = alternates(Astro.url.pathname);
 const other = twins.find((a) => a.locale !== lang);
@@ -250,8 +253,8 @@ const ogImage = new URL(
 				<!-- Four columns, grouped by what a link is rather than by what fit
 				     in the header. The header stops at six items for a measured
 				     reason and this does not have to. -->
-				<div class="grid gap-10 gap-y-12 md:grid-cols-12">
-					<div class="md:col-span-3">
+				<div class="grid gap-10 gap-y-12 md:grid-cols-2 lg:grid-cols-12">
+					<div class="lg:col-span-3">
 						<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-6 w-auto" />
 						<p class="prose-body mt-6 text-sm">{t.footerWho}</p>
 						<p class="prose-body text-sm">{t.footerLanguages}</p>

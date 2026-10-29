@@ -292,6 +292,15 @@
 		color: var(--faint);
 	}
 
+	/* A label that is also a link is a target, and 19px of height is not one.
+	   The eyebrow form of .spec is a paragraph and keeps its own metrics; only
+	   the anchor grows, upward and downward, which moves no baseline it shares
+	   a row with. */
+	a.spec {
+		display: inline-block;
+		padding-block: 3px;
+	}
+
 	.stamp {
 		display: inline-flex;
 		align-items: center;
@@ -558,6 +567,9 @@
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
+		/* The control that opens the payment questions was 19px tall on a
+		   phone, which is the smallest thing on the site anyone has to hit. */
+		padding-block: 0.3rem;
 		cursor: pointer;
 		list-style: none;
 	}
@@ -724,6 +736,10 @@
 		background-repeat: no-repeat;
 		background-position: 0 100%;
 		background-size: 100% 1px;
+		/* The rule is drawn at the bottom of the box, so the top padding grows
+		   the tap target without moving anything that can be seen. A standalone
+		   link was 22px tall on a phone, against the 24 a finger wants. */
+		padding-top: 3px;
 		padding-bottom: 2px;
 		transition: background-size 0.35s var(--ease);
 	}

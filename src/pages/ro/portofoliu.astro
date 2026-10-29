@@ -97,7 +97,7 @@ const projects = [
 					</figure>
 
 					<div class="md:col-span-6 md:col-start-7">
-						<h3 class="display-lg">{p.name}</h3>
+						<h3 class="display-lg [overflow-wrap:anywhere]">{p.name}</h3>
 						<p class="spec mt-5">{p.kind}</p>
 						<p class="prose-body mt-6 text-[0.95rem]">{p.detail}</p>
 						<!-- items-start, or the column stretches each anchor to the width of
@@ -141,7 +141,7 @@ const projects = [
 				<p class="stamp mt-6">Nu poate fi arătat</p>
 			</div>
 
-			<dl class="grid grid-cols-[8.5rem_1fr] gap-x-6 gap-y-4 md:col-span-6 md:col-start-7">
+			<dl class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-[8.5rem_1fr] md:col-span-6 md:col-start-7">
 				<dt class="spec pt-1">Tip</dt>
 				<dd class="text-[0.95rem]">Marketplace cu plăți împărțite</dd>
 
