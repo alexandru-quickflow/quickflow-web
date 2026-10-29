@@ -232,6 +232,69 @@ const schema = {
 		</div>
 	</section>
 
+	<!-- 5b. Which processor. This page is Stripe all the way down and never
+	     says whether it has to be, which leaves a reader with a local
+	     processor assuming the answer is no. The honest answer has two halves
+	     and the second is the useful one: taking a card is available from
+	     nearly everyone, splitting one payment between three parties is not.
+	     Said before the quote rather than discovered during the build. -->
+	<section class="bleed mt-32" aria-labelledby="provider">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">If you are not on Stripe, or cannot be</p>
+			<span class="spec">02 halves</span>
+		</div>
+
+		<h2 id="provider" class="display-lg mt-8 max-w-[24ch]">
+			Any processor with documentation can be <em>connected</em>.
+		</h2>
+
+		<div class="mt-10 grid gap-x-16 gap-y-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="prose-body">
+					Stripe is the default on this page because Connect does the hard half: it splits one
+					payment between several parties, verifies sellers, and pays out to people who are not
+					you. Not because it is the only one that exists.
+				</p>
+				<p class="prose-body mt-5">
+					If your buyers pay in lei and ask for a local processor, or you already have a contract
+					with one, that is a question about its documentation rather than about my preferences.
+					In Romania people usually mean Netopia. In another market they mean something else.
+				</p>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<div class="hair pt-5">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">Taking a card</p>
+						<span class="state state-ok">Common</span>
+					</div>
+					<p class="prose-body mt-4 max-w-[52ch] text-[0.95rem]">
+						One buyer, one seller, one charge, the money arriving in your account. Almost any
+						processor with a public API does this, and connecting one is a known amount of work.
+					</p>
+				</div>
+
+				<div class="hair mt-8 pt-5">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">Splitting it, and paying out</p>
+						<span class="state state-risk">Rare</span>
+					</div>
+					<p class="prose-body mt-4 max-w-[52ch] text-[0.95rem]">
+						One payment divided between a seller, you and the fee, with the seller's identity
+						verified and their share reaching their own account. This is the part people assume
+						every processor has, and it is the part most of them do not.
+					</p>
+				</div>
+
+				<p class="prose-body mt-9 max-w-[52ch] text-[0.95rem]">
+					So I read the documentation before quoting rather than after, and I tell you which of the
+					two you are getting. If a processor does only the first and your product needs the
+					second, that is worth knowing in the first week and not the third month.
+				</p>
+			</div>
+		</div>
+	</section>
+
 	<!-- 6. What can and cannot be shown. Said here rather than left for the
 	     reader to notice, because a portfolio claim is checked in two minutes. -->
 	<section class="bleed mt-40 md:mt-52" aria-labelledby="proof">

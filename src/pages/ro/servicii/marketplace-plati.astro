@@ -236,6 +236,70 @@ const fields = [
 		</div>
 	</section>
 
+	<!-- 5b. Which processor. This page is Stripe all the way down and never
+	     says whether it has to be, which leaves a reader with a local
+	     processor assuming the answer is no. The honest answer has two halves
+	     and the second is the useful one: taking a card is available from
+	     nearly everyone, splitting one payment between three parties is not.
+	     Said before the quote rather than discovered during the build. -->
+	<section class="bleed mt-32" aria-labelledby="procesator">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">Dacă nu ești pe Stripe, sau nu poți fi</p>
+			<span class="spec">02 jumătăți</span>
+		</div>
+
+		<h2 id="procesator" class="display-lg mt-8 max-w-[24ch]">
+			Orice procesator cu documentație se poate <em>conecta</em>.
+		</h2>
+
+		<div class="mt-10 grid gap-x-16 gap-y-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="prose-body">
+					Stripe e varianta implicită pe pagina asta pentru că Connect face jumătatea grea: împarte
+					o plată între mai multe părți, verifică vânzătorii, și trimite banii unor oameni care nu
+					ești tu. Nu pentru că ar fi singurul care există.
+				</p>
+				<p class="prose-body mt-5">
+					Dacă cumpărătorii tăi plătesc în lei și cer un procesator local, sau ai deja contract cu
+					unul, asta e o întrebare despre documentația lui, nu despre preferințele mele. În România
+					oamenii se referă de obicei la Netopia. Pe altă piață se referă la altceva.
+				</p>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<div class="hair pt-5">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">Să ia un card</p>
+						<span class="state state-ok">Obișnuit</span>
+					</div>
+					<p class="prose-body mt-4 max-w-[52ch] text-[0.95rem]">
+						Un cumpărător, un vânzător, o încasare, banii ajunși în contul tău. Aproape orice
+						procesator cu un API public face asta, iar conectarea lui e o cantitate de muncă
+						cunoscută.
+					</p>
+				</div>
+
+				<div class="hair mt-8 pt-5">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">Să o împartă și să plătească mai departe</p>
+						<span class="state state-risk">Rar</span>
+					</div>
+					<p class="prose-body mt-4 max-w-[52ch] text-[0.95rem]">
+						O plată împărțită între vânzător, tine și comision, cu identitatea vânzătorului
+						verificată și cu partea lui ajunsă în contul lui. Asta e partea pe care lumea o
+						presupune la orice procesator, și e partea pe care cei mai mulți nu o au.
+					</p>
+				</div>
+
+				<p class="prose-body mt-9 max-w-[52ch] text-[0.95rem]">
+					Deci citesc documentația înainte să cotez, nu după, și îți spun pe care dintre cele două
+					o primești. Dacă un procesator face doar prima iar produsul tău are nevoie de a doua,
+					merită știut în prima săptămână, nu în luna a treia.
+				</p>
+			</div>
+		</div>
+	</section>
+
 	<!-- 6. Ce se poate arăta și ce nu. Spus aici, nu lăsat să fie descoperit,
 	     pentru că o afirmație de portofoliu se verifică în două minute. -->
 	<section class="bleed mt-40 md:mt-52" aria-labelledby="dovada">
