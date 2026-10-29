@@ -52,6 +52,10 @@ SECTIONS = {
     'ro-servicii-migrare-bubble': 'Migrare de pe Bubble',
     'ro-servicii-marketplace-plati': 'Plăți pentru marketplace',
     'ro-stripe-escrow-marketplace': 'Stripe și escrow',
+    'prototype-in-five-days': 'Prototype in five days',
+    'services-internal-apps': 'Internal apps',
+    'ro-prototip-in-cinci-zile': 'Prototip în cinci zile',
+    'ro-servicii-aplicatii-interne': 'Aplicații interne',
 }
 
 INK = (4, 8, 11)

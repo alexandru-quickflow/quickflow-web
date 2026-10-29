@@ -3,6 +3,7 @@ import Site from '../../layouts/Site.astro';
 import PaymentFlow from '../../components/PaymentFlow.astro';
 import ServiceMark from '../../components/ServiceMark.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../../content/proof';
+import { paths } from '../../i18n/routes';
 
 const weight = proof('ro', 'bubble-weight');
 const escrow = proof('ro', 'stripe-escrow');
@@ -14,7 +15,7 @@ const services = [
 		problem:
 			'Aplicația funcționează și are clienți. Dar factura crește odată cu traficul, paginile publice se încarcă greu, iar la prima discuție serioasă cu un investitor cineva întreabă ce se întâmplă dacă platforma își schimbă prețurile.',
 		cta: 'Vezi cum arată traseul',
-		href: '/ro/servicii/migrare-bubble',
+		href: paths.migration.ro,
 	},
 	{
 		n: '02',
@@ -22,7 +23,7 @@ const services = [
 		problem:
 			'Doi oameni fac o tranzacție, tu iei comision. Partea grea nu e tranzacția, e ce se întâmplă când plata eșuează, când se cere un refund după ce banii au fost împărțiți, sau când un vânzător nu trece verificarea de identitate.',
 		cta: 'Vezi cum lucrez',
-		href: '/ro/servicii/marketplace-plati',
+		href: paths.marketplace.ro,
 	},
 	{
 		n: '03',
@@ -30,15 +31,15 @@ const services = [
 		problem:
 			'Vinzi acces, nu produse. Trebuie să știi în orice moment cine a plătit, până când, și ce vede după ce expiră.',
 		cta: 'Scrie-mi',
-		href: '/ro/contact',
+		href: paths.contact.ro,
 	},
 	{
 		n: '04',
-		title: 'Integrări AI și automatizări',
+		title: 'Aplicații interne și automatizări',
 		problem:
-			'Procesul merge, dar cineva îl ține în viață mutând date dintr-un loc în altul câteva ore pe săptămână.',
-		cta: 'Scrie-mi',
-		href: '/ro/contact',
+			'Procesul merge, dar merge pentru că cineva îl ține minte. Starea unei comenzi stă într-un grup de WhatsApp, aceleași date se tastează de două ori, și un singur om e sistemul.',
+		cta: 'Vezi ce se construiește, și cât costă',
+		href: paths.internal.ro,
 	},
 ];
 
@@ -127,7 +128,7 @@ const work = [
 <Site
 	lang="ro"
 	title="Quick Flow, aplicații cu plăți și ieșire din no-code"
-	description="Construiesc marketplace-uri cu plăți împărțite, platforme de cursuri și mut aplicațiile care au depășit no-code-ul. Opt ani în Bubble, din 2025 în cod, singur de la modelul de date până la payout."
+	description="Construiesc marketplace-uri cu plăți împărțite, platforme de cursuri și mut aplicațiile care au depășit no-code-ul. Opt ani în Bubble, din 2025 livrez pe cod, singur de la modelul de date până la payout."
 >
 	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The datum
 	     under the headline is this page measuring itself: the one claim where
@@ -249,6 +250,31 @@ const work = [
 					</article>
 				))
 			}
+		</div>
+	</section>
+
+	<!-- 4b. Cea mai mică intrare. Toate patru de mai sus sunt proiecte, iar un
+	     cititor care nu e pregătit pentru un proiect nu are unde să meargă de
+	     aici. Asta e singurul lucru de pe site cu preț și cu dată pe el. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="prototip">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<p class="spec">Cea mai mică intrare</p>
+					<h2 id="prototip" class="display-lg mt-6 max-w-[24ch]">
+						Sau începi cu cinci zile și <em>ceva care funcționează</em>.
+					</h2>
+					<p class="prose-body mt-7 max-w-[52ch]">
+						Cele patru de mai sus sunt proiecte. Dacă nu ai ajuns încă acolo, există o variantă mai
+						scurtă: un flux din produsul tău, construit în cinci zile lucrătoare, pus pe un domeniu
+						și predat. Abia apoi decizi dacă merită construit lucrul adevărat.
+					</p>
+					<p class="stamp mt-7">Cinci zile lucrătoare, 1.800 EUR, fix</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
+					<a href={paths.prototype.ro} class="btn btn-primary">Vezi cele cinci zile</a>
+				</div>
+			</div>
 		</div>
 	</section>
 
@@ -407,8 +433,14 @@ const work = [
 			<div class="md:col-span-5 md:col-start-8 md:pt-16">
 				<p class="prose-body">
 					Am intrat în IT în 2014, ca UI designer. Din 2017 construiesc în Bubble, întâi la Zeroqode
-					și Airdev, apoi pe cont propriu. Din 2025 scriu cod. Vând ieșirea din Bubble pentru că am
-					petrecut opt ani înăuntru, nu pentru că am citit despre ea.
+					și Airdev, apoi pe cont propriu. Din 2025 livrez pe cod. Vând ieșirea din Bubble pentru că
+					am petrecut opt ani înăuntru, nu pentru că am citit despre ea.
+				</p>
+				<p class="prose-body mt-5">
+					Nu scriu codul ăla literă cu literă. Îl construiesc cu AI, îl testez și răspund pentru el.
+					Scrierea codului a încetat să fie partea grea. Partea grea e să știi ce trebuie construit,
+					în ce ordine, și ce se rupe la primul refund, iar asta am învățat-o în opt ani petrecuți
+					înăuntrul aplicațiilor pe Bubble.
 				</p>
 				<p class="prose-body mt-5">
 					Fundalul de design înseamnă că nu îți livrez ceva care funcționează dar arată ca un

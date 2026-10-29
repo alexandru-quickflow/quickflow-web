@@ -1,0 +1,331 @@
+---
+import Site from '../../../layouts/Site.astro';
+import { paths } from '../../../i18n/routes';
+
+const signs = [
+	{
+		n: '01',
+		title: 'Aceleași date se tastează de două ori',
+		body: 'O dată în mesaj, o dată în Excel, uneori a treia oară în factură. Cele trei nu sunt mereu la fel, și nimeni nu știe care e corectă.',
+	},
+	{
+		n: '02',
+		title: 'Nimeni nu știe starea fără să întrebe',
+		body: 'Ce s-a întâmplat cu comanda aia, cine a luat-o, s-a încasat. Răspunsul există, în capul cuiva sau într-o conversație de marți după-amiază.',
+	},
+	{
+		n: '03',
+		title: 'Un singur om e sistemul',
+		body: 'El știe care fișier e cel bun și ce înseamnă culorile. Când lipsește, firma merge mai încet. Când pleacă, se oprește.',
+	},
+];
+
+const built = [
+	{
+		title: 'O singură fișă la care se uită toți',
+		body: 'Un loc unde stă comanda, lucrarea sau clientul, cu istoricul lui. Nu două versiuni ale adevărului și nu un fișier numit final_v3.',
+	},
+	{
+		title: 'Roluri, ca fiecare să vadă munca lui',
+		body: 'Ce vede biroul, ce vede omul de pe teren, ce vede patronul. Diferit, și decis o dată, nu de fiecare dată când vine cineva nou.',
+	},
+	{
+		title: 'Formulare care refuză ce e greșit',
+		body: 'O dată care nu poate fi în trecut, o cantitate care nu poate depăși stocul, un câmp care nu poate rămâne gol. Greșelile se opresc la intrare, nu se descoperă la final de lună.',
+	},
+	{
+		title: 'Raportul care nu trebuie asamblat',
+		body: 'Ce a intrat, ce a ieșit, cine a făcut ce, cu export. E acolo pe întâi, fără ca cineva să stea peste program ca să îl construiască.',
+	},
+];
+
+const deliverables = [
+	'Harta procesului așa cum merge acum, nu așa cum spune procedura că merge',
+	'Ce se poate automatiza, și care e câștigul de timp în ore pe lună',
+	'Ce rămâne manual, și de ce ar trebui să rămână manual',
+	'Ce se construiește primul, ce al doilea, și cât costă',
+];
+
+const prices = [
+	{ what: 'Audit de proces', price: '600', when: 'Două zile', note: 'Se scade din proiect' },
+	{
+		what: 'Un flux automatizat',
+		price: 'de la 1.200',
+		when: 'Una sau două săptămâni',
+		note: 'Se vinde pe o măsurătoare',
+	},
+	{
+		what: 'Aplicație internă',
+		price: 'de la 3.500',
+		when: 'Aproximativ patru săptămâni',
+		note: 'Estimat după audit',
+	},
+];
+
+const title = 'Aplicații interne și automatizări pentru firme mici | Quick Flow';
+const description =
+	'Unelte interne pentru firme mici: o singură fișă, roluri, formulare care refuză datele greșite, raportul lunar. De la 3.500 EUR, după un audit de proces de două zile.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Aplicații interne și automatizări',
+	serviceType: 'Aplicații interne de business, automatizare de procese',
+	description,
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'Worldwide',
+	offers: {
+		'@type': 'Offer',
+		name: 'Audit de proces',
+		price: '600',
+		priceCurrency: 'EUR',
+		description: 'Un audit de două zile al procesului, livrat ca document care rămâne al tău.',
+	},
+};
+---
+
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recunoaștere. Cititorul nu se gândește la asta ca la un software
+	     care lipsește. Se gândește la ea ca la felul în care sunt lucrurile,
+	     deci titlul trebuie să numească felul în care sunt lucrurile. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Aplicații interne și automatizări</p>
+			<p class="spec">Începe cu un audit de două zile</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">
+			Procesul merge. Merge pentru că <em>cineva îl ține minte</em>.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Lucrul pe care merge firma ta stă într-un grup de WhatsApp și un Excel. Îl mut într-un singur
+			loc, cu istoric, roluri și raport, ca să nu mai depindă de cine e în birou.
+		</p>
+
+		<p class="stamp mt-7">De la 3.500 EUR, după un audit de două zile de 600</p>
+
+		<div class="mt-10 md:mt-12">
+			<a href={paths.contact.ro} class="btn btn-primary">Spune-mi care e procesul</a>
+		</div>
+	</section>
+
+	<!-- 2. Trei semne. Toate trei sunt aceeași problemă, văzută de la trei
+	     birouri diferite. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="semne">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">De obicei ajungi aici după unul din ele</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="semne" class="display-lg mt-8 max-w-[24ch]">
+			Trei semne că Excelul a ajuns la capătul drumului.
+		</h2>
+
+		<div class="mt-4">
+			{
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 3. Ce se construiește, pe nume. Patru lucruri, nu patru adjective, ca
+	     pe pagina de marketplace: o listă de substantive se poate verifica, una
+	     de adjective nu. -->
+	<section class="band mt-24 md:mt-32" aria-labelledby="construit">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Ce construiesc, pe nume</p>
+			<h2 id="construit" class="display-lg mt-6 max-w-[22ch]">
+				Patru lucruri, și niciunul nu e un dashboard.
+			</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+				{
+					built.map((item, i) => (
+						<article class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<h3 class="display-md mt-4 max-w-[22ch]">{item.title}</h3>
+							<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{item.body}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. Bucata mai mică, cu prețul ei. O firmă care nu e pregătită pentru o
+	     aplicație e adesea pregătită pentru un flux, iar trimisă acasă pierzi
+	     și auditul. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="flux">
+		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">O bucată mai mică, separat</p>
+				<h2 id="flux" class="display-lg mt-6">Un flux, cu orele <em>numărate</em>.</h2>
+				<p class="figure mt-8">1.200 <span>EUR în sus</span></p>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Dacă o aplicație întreagă e mai mult decât îți trebuie, există o bucată mai îngustă. Date
+					scoase din documente sau din emailuri și puse unde trebuie, sau cereri care intră și se
+					repartizează singure, în loc să aștepte până le citește cineva.
+				</p>
+				<p class="prose-body mt-5">
+					Se vinde pe o măsurătoare, nu pe o promisiune: câte bucăți pe lună, câte minute ia fiecare
+					acum, și cât rămâne după. Vezi economia ca număr înainte să o comanzi, și o poți verifica
+					după.
+				</p>
+				<p class="prose-body mt-5">
+					Uneori greșește, deci există un pas în care se uită un om înainte ca ceva să conteze ca
+					făcut. Un furnizor care îți spune altceva îți vinde varianta care cade în liniște.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. Cum se construiește, spus direct. E și pagina care spune ce nu vând,
+	     iar asta e ce face credibil restul. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="cum">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">Cum se construiește</p>
+					<h2 id="cum" class="display-lg mt-6">Cu AI, iar intern e locul potrivit pentru asta.</h2>
+				</div>
+				<div class="md:col-span-6 md:col-start-7">
+					<p class="prose-body">
+						Eu decid ce se construiește și în ce ordine. Implementarea e scrisă cu AI. Eu o testez,
+						și eu sunt cel care răspunde pentru ea.
+					</p>
+					<p class="prose-body mt-5">
+						Intern e locul unde schimbul ăsta e clar cel bun. O greșeală într-o firmă de opt oameni
+						se vede în aceeași zi și se repară. Nu pleacă bani către un străin, niciun client nu
+						vede o stare pe jumătate, și nimic nu e public cât timp se așază.
+					</p>
+					<p class="prose-body mt-5">
+						E și motivul pentru care vând asta și nu un asistent AI pus pe datele clienților tăi.
+						Acela se cere tot timpul, cade în liniște, și nu poate fi garantat de nimeni, nici de
+						mine.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. Dovada, inclusiv partea care lipsește. Serviciul ăsta a fost livrat
+	     zero ori și pagina o spune, pentru că cititorul află oricum, la prima
+	     întrebare. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="dovada">
+		<div class="grid gap-8 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="spec">Dovada</p>
+				<h2 id="dovada" class="display-lg mt-6">Ce pot arăta, și ce nu pot.</h2>
+				<p class="stamp mt-8">Aplicații interne livrate până acum: niciuna</p>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Nu am livrat încă o aplicație internă pentru o firmă. Scriu asta aici, nu te las să afli
+					la a doua întâlnire.
+				</p>
+				<p class="prose-body mt-5">
+					Ce am livrat e aceeași mecanică, îndreptată spre clienți în loc de angajați: conturi,
+					roluri, plăți și acces care se deschide și expiră singur, la
+					<a href="https://jemshitmavlyanov.com" rel="noopener" target="_blank" class="link"
+						>jemshitmavlyanov.com</a
+					> și <a href="https://elenaviscu.com" rel="noopener" target="_blank" class="link"
+						>elenaviscu.com</a
+					>. O fișă cu istoric, roluri și un raport cere mai puțin decât atât, nu mai mult.
+				</p>
+				<p class="prose-body mt-5">
+					Exact de aceea intrarea e un audit de două zile și nu un contract. Plătești două zile,
+					primești un document, și decizi cu el în mână.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. Auditul. Aceeași formă ca pe pagina de migrare, pentru că e același
+	     mecanism: un prim pas mic și plătit, în loc de un salt. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="audit">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">Auditul de proces</p>
+					<p class="figure mt-6">600 <span>EUR</span></p>
+					<p class="spec mt-4">Două zile</p>
+					<a href={paths.contact.ro} class="btn btn-primary mt-9">Cere un audit</a>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="audit" class="display-md">Primești un document cu:</h2>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							deliverables.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+					<p class="prose-body mt-8 text-[0.95rem]">
+						Dacă mergem mai departe, cei 600 EUR se scad din prețul lucrării.
+					</p>
+					<p class="prose-body mt-3 text-[0.95rem]">
+						Dacă nu, documentul rămâne al tău. E al tău și îl poți da oricui altcuiva.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. Cele trei prețuri într-un tabel, pentru că cititorul le compară
+	     între ele, nu cu piața. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="preturi">
+		<div class="hair pt-10 md:pt-14">
+			<p class="spec">Cele trei intrări</p>
+			<h2 id="preturi" class="display-lg mt-6 max-w-[24ch]">
+				Cea mai mică întâi, și fiecare stă singură.
+			</h2>
+
+			<dl class="mt-12 flex flex-col">
+				{
+					prices.map((row) => (
+						<div class="hair grid gap-2 py-6 md:grid-cols-12 md:gap-6">
+							<dt class="display-md md:col-span-4">{row.what}</dt>
+							<dd class="spec md:col-span-3 md:pt-3">{row.price} EUR</dd>
+							<dd class="spec md:col-span-2 md:pt-3">{row.when}</dd>
+							<dd class="prose-body text-[0.95rem] md:col-span-3">{row.note}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+	</section>
+
+	<!-- 9. Închiderea, pe cerneală, curge în footer. -->
+	<section class="band mt-24 md:mt-32">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-8">
+					Scrie-mi care e procesul și cine îl ține în spate, și îți spun dacă merită două zile.
+				</h2>
+				<div class="md:col-span-4 md:self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Scrie-mi</a>
+					<p class="prose-body mt-6 text-[0.95rem]">
+						Răspund în aceeași zi lucrătoare, în scris. Uneori răspunsul e că Excelul rămâne unealta
+						potrivită, și îl primești și pe acela.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

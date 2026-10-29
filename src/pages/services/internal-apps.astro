@@ -1,0 +1,318 @@
+---
+import Site from '../../layouts/Site.astro';
+import { paths } from '../../i18n/routes';
+
+const signs = [
+	{
+		n: '01',
+		title: 'The same data gets typed twice',
+		body: 'Once in the message, once in the spreadsheet, sometimes a third time in the invoice. The three do not always agree, and nobody knows which one is right.',
+	},
+	{
+		n: '02',
+		title: 'Nobody knows the state without asking',
+		body: "What happened with that order, who took it, has it been paid. The answer exists, in someone's head or in a chat from Tuesday afternoon.",
+	},
+	{
+		n: '03',
+		title: 'One person is the system',
+		body: 'They know which file is the current one and what the colours mean. When they are away the company slows down. When they leave, it stops.',
+	},
+];
+
+const built = [
+	{
+		title: 'One record everyone looks at',
+		body: 'One place where the order, the job or the client lives, with its history. Not two versions of the truth and not a file called final_v3.',
+	},
+	{
+		title: 'Roles, so each person sees their own work',
+		body: 'What the office sees, what the person in the field sees, what the owner sees. Different, and decided once instead of every time someone new arrives.',
+	},
+	{
+		title: 'Forms that refuse what is wrong',
+		body: 'A date that cannot be in the past, a quantity that cannot exceed what is in stock, a field that cannot be left empty. Errors stop at the door instead of being found at the end of the month.',
+	},
+	{
+		title: 'The report that does not need assembling',
+		body: 'What came in, what went out, who did what, exportable. There on the first of the month without anyone staying late to build it.',
+	},
+];
+
+const deliverables = [
+	'The map of the process as it runs now, not as the procedure says it runs',
+	'What can be automated, and what the time saving is in hours a month',
+	'What stays manual, and why it should stay manual',
+	'What gets built first, what second, and what it costs',
+];
+
+const prices = [
+	{ what: 'Process audit', price: '600', when: 'Two days', note: 'Deducted from the project' },
+	{ what: 'One automated flow', price: 'from 1,200', when: 'One to two weeks', note: 'Sold against a measurement' },
+	{ what: 'Internal app', price: 'from 3,500', when: 'About four weeks', note: 'Estimated after the audit' },
+];
+
+const title = 'Internal apps and automation for small companies | Quick Flow';
+const description =
+	'Internal tools for small companies: one record, roles, forms that refuse bad data, the monthly report. From 3,500 EUR, after a two-day process audit.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Internal apps and automation',
+	serviceType: 'Internal business applications, process automation',
+	description,
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'Worldwide',
+	offers: {
+		'@type': 'Offer',
+		name: 'Process audit',
+		price: '600',
+		priceCurrency: 'EUR',
+		description: 'A two-day audit of the process, delivered as a document you keep.',
+	},
+};
+---
+
+<Site lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recognition. The reader does not think of this as software missing.
+	     They think of it as the way things are, so the headline has to name the
+	     way things are. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Internal apps and automation</p>
+			<p class="spec">Starts with a two-day audit</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[16ch]">
+			The process works. It works because <em>someone remembers it</em>.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			The thing your company runs on lives in a chat group and a spreadsheet. I turn it into one
+			place with a history, roles and a report, so it stops depending on who is in the office.
+		</p>
+
+		<p class="stamp mt-7">From 3,500 EUR, after a two-day audit at 600</p>
+
+		<div class="mt-10 md:mt-12">
+			<a href={paths.contact.en} class="btn btn-primary">Tell me what the process is</a>
+		</div>
+	</section>
+
+	<!-- 2. Three signs. All three are the same problem seen from three desks. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="signs">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">You usually get here after one of these</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="signs" class="display-lg mt-8 max-w-[24ch]">
+			Three signs the spreadsheet has run out of road.
+		</h2>
+
+		<div class="mt-4">
+			{
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 3. What gets built, named. Four things, not four adjectives, same as
+	     the marketplace page: a list of nouns is checkable, a list of
+	     adjectives is not. -->
+	<section class="band mt-24 md:mt-32" aria-labelledby="built">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">What I build, by name</p>
+			<h2 id="built" class="display-lg mt-6 max-w-[22ch]">Four things, and none of them a dashboard.</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+				{
+					built.map((item, i) => (
+						<article class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<h3 class="display-md mt-4 max-w-[22ch]">{item.title}</h3>
+							<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{item.body}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. The smaller piece, with its own price. A company that is not ready
+	     for an app is often ready for one flow, and sending them away is how
+	     you lose the audit as well. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="flow">
+		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">A smaller piece, on its own</p>
+				<h2 id="flow" class="display-lg mt-6">One flow, with the hours <em>counted</em>.</h2>
+				<p class="figure mt-8">1,200 <span>EUR and up</span></p>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					If a whole app is more than you need, there is a narrower piece. Data pulled out of
+					documents or emails and put where it belongs, or requests that arrive and sort themselves
+					instead of waiting for someone to read them.
+				</p>
+				<p class="prose-body mt-5">
+					It is sold against a measurement rather than a promise: how many items a month, how many
+					minutes each one takes now, and what is left afterwards. You see the saving as a number
+					before you order it, and you can check it afterwards.
+				</p>
+				<p class="prose-body mt-5">
+					It gets things wrong sometimes, so there is a step where a person looks before anything
+					counts as done. A supplier who tells you otherwise is selling you the version that fails
+					quietly.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. How it is built, said plainly. This is also the page that says what
+	     I will not sell, which is what makes the rest of it credible. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="how">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">How it gets built</p>
+					<h2 id="how" class="display-lg mt-6">With AI, and internal is the right place for it.</h2>
+				</div>
+				<div class="md:col-span-6 md:col-start-7">
+					<p class="prose-body">
+						I decide what gets built and in what order. The implementation is written with AI. I
+						test it, and I am the one who answers for it.
+					</p>
+					<p class="prose-body mt-5">
+						Internal is where that trade is clearly the right one. A mistake inside a company of
+						eight people shows up the same day and gets fixed. No money leaves for a stranger, no
+						customer sees a half-finished state, and nothing is public while it settles.
+					</p>
+					<p class="prose-body mt-5">
+						It is also why I sell this and not an AI assistant sitting on your customer data. That
+						one is asked for constantly, fails quietly, and cannot be guaranteed by anybody,
+						including me.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. The proof, including the part there is none of. This service has
+	     been delivered zero times and the page says so, because the reader
+	     finds out in one question anyway. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="proof">
+		<div class="grid gap-8 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="spec">The proof</p>
+				<h2 id="proof" class="display-lg mt-6">What I can show, and what I cannot.</h2>
+				<p class="stamp mt-8">Internal apps delivered so far: none</p>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					I have not yet delivered an internal app for a company. I put that here rather than let
+					you find it out in the second meeting.
+				</p>
+				<p class="prose-body mt-5">
+					What I have delivered is the same machinery pointed at customers instead of staff:
+					accounts, roles, payments and access that opens and expires on its own, at
+					<a href="https://jemshitmavlyanov.com" rel="noopener" target="_blank" class="link"
+						>jemshitmavlyanov.com</a
+					> and <a href="https://elenaviscu.com" rel="noopener" target="_blank" class="link"
+						>elenaviscu.com</a
+					>. A record with a history, roles and a report is less demanding than that, not more.
+				</p>
+				<p class="prose-body mt-5">
+					That is exactly why the entry is a two-day audit and not a contract. You pay for two
+					days, you get a document, and you decide with it in your hand.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. The audit. Same shape as the migration page, because it is the same
+	     mechanism: a small paid first step instead of a leap. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="audit">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">The process audit</p>
+					<p class="figure mt-6">600 <span>EUR</span></p>
+					<p class="spec mt-4">Two days</p>
+					<a href={paths.contact.en} class="btn btn-primary mt-9">Ask for an audit</a>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="audit" class="display-md">You get a document with:</h2>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							deliverables.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+					<p class="prose-body mt-8 text-[0.95rem]">
+						If we go further, the 600 EUR comes off the price of the work.
+					</p>
+					<p class="prose-body mt-3 text-[0.95rem]">
+						If we do not, you keep the document. It is yours, and you can hand it to anyone else.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. The three prices in one table, because the reader is comparing them
+	     against each other, not against the market. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="prices">
+		<div class="hair pt-10 md:pt-14">
+			<p class="spec">The three ways in</p>
+			<h2 id="prices" class="display-lg mt-6 max-w-[22ch]">Smallest first, and each one stands alone.</h2>
+
+			<dl class="mt-12 flex flex-col">
+				{
+					prices.map((row) => (
+						<div class="hair grid gap-2 py-6 md:grid-cols-12 md:gap-6">
+							<dt class="display-md md:col-span-4">{row.what}</dt>
+							<dd class="spec md:col-span-3 md:pt-3">{row.price} EUR</dd>
+							<dd class="spec md:col-span-2 md:pt-3">{row.when}</dd>
+							<dd class="prose-body text-[0.95rem] md:col-span-3">{row.note}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</div>
+	</section>
+
+	<!-- 9. Closing, on ink, flowing into the footer. -->
+	<section class="band mt-24 md:mt-32">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-8">
+					Write me what the process is and who is holding it together, and I will tell you whether
+					it is worth two days.
+				</h2>
+				<div class="md:col-span-4 md:self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Write to me</a>
+					<p class="prose-body mt-6 text-[0.95rem]">
+						Answered the same working day, in writing. Sometimes the answer is that a spreadsheet is
+						still the right tool, and you get that answer too.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

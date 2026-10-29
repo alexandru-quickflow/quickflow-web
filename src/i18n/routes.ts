@@ -15,6 +15,8 @@ export type PageId =
 	| 'home'
 	| 'migration'
 	| 'marketplace'
+	| 'internal'
+	| 'prototype'
 	| 'work'
 	| 'contact'
 	| 'privacy'
@@ -31,6 +33,14 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 		en: '/services/marketplace-payments',
 		ro: '/ro/servicii/marketplace-plati',
 	},
+	internal: {
+		en: '/services/internal-apps',
+		ro: '/ro/servicii/aplicatii-interne',
+	},
+	prototype: {
+		en: '/prototype-in-five-days',
+		ro: '/ro/prototip-in-cinci-zile',
+	},
 	work: { en: '/work', ro: '/ro/portofoliu' },
 	contact: { en: '/contact', ro: '/ro/contact' },
 	privacy: { en: '/privacy', ro: '/ro/confidentialitate' },
@@ -38,17 +48,23 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 	escrow: { en: '/stripe-escrow-marketplace', ro: '/ro/stripe-escrow-marketplace' },
 };
 
-/** The four pages in the header, in order, per language. */
+/** The pages in the header, in order, per language: the three services in
+ *  their own hierarchy, then the one product with a price on the label, then
+ *  the portfolio and the way to write. */
 export const nav: Record<Locale, { id: PageId; label: string }[]> = {
 	en: [
 		{ id: 'migration', label: 'Migration' },
 		{ id: 'marketplace', label: 'Marketplace' },
+		{ id: 'internal', label: 'Internal apps' },
+		{ id: 'prototype', label: 'Prototype' },
 		{ id: 'work', label: 'Work' },
 		{ id: 'contact', label: 'Contact' },
 	],
 	ro: [
 		{ id: 'migration', label: 'Migrare' },
 		{ id: 'marketplace', label: 'Marketplace' },
+		{ id: 'internal', label: 'Aplicații interne' },
+		{ id: 'prototype', label: 'Prototip' },
 		{ id: 'work', label: 'Portofoliu' },
 		{ id: 'contact', label: 'Contact' },
 	],
