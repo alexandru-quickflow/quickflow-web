@@ -5,8 +5,10 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
 // Aceleași clase ca pe pagina engleză. Erau scrise de mână, de cinci ori, cu altă
 // culoare de chenar și alt fundal, deci cele două formulare arătau diferit.
-const field =
-	'mt-2 w-full rounded-xl border border-[var(--line)] bg-transparent px-4 py-3 outline-none transition-colors focus:border-paper';
+// One class, defined once in global.css. It was a hand-written string of
+// utilities in each of the two pages, which is how the two forms came to look
+// different from each other the first time.
+const field = 'field';
 const errorText = 'mt-2 text-sm text-hot';
 
 import { BOOKING, BOOKING_URL } from '../../content/booking';
@@ -84,12 +86,12 @@ const flowFields = [
 
 				<!-- Works as a plain POST without JavaScript. The script below only
 				     upgrades it with inline messages and no page reload. -->
-				<form id="contact-form" action="/api/contact" method="POST" novalidate class="flex flex-col gap-7">
+				<form id="contact-form" action="/api/contact" method="POST" novalidate class="card flex flex-col gap-7">
 					<input type="hidden" name="locale" value="ro" />
 					<p id="form-error" hidden class="rounded-xl border border-hot/40 bg-hot/10 px-4 py-3 text-sm text-hot"></p>
 
 					<div>
-						<label for="nume" class="block text-sm font-medium text-paper/85">Nume</label>
+						<label for="nume" class="spec block">Nume</label>
 						<input
 							id="nume"
 							name="nume"
@@ -102,7 +104,7 @@ const flowFields = [
 					</div>
 
 					<div>
-						<label for="email" class="block text-sm font-medium text-paper/85">Email</label>
+						<label for="email" class="spec block">Email</label>
 						<input
 							id="email"
 							name="email"
@@ -115,7 +117,7 @@ const flowFields = [
 					</div>
 
 					<div>
-						<label for="subiect" class="block text-sm font-medium text-paper/85">
+						<label for="subiect" class="spec block">
 							Despre ce e vorba
 						</label>
 						<select id="subiect" name="subiect" class={field}>
@@ -124,7 +126,7 @@ const flowFields = [
 					</div>
 
 					<div>
-						<label for="proiect" class="block text-sm font-medium text-paper/85">
+						<label for="proiect" class="spec block">
 							Ce vrei să construiești
 						</label>
 						<textarea
@@ -141,7 +143,7 @@ const flowFields = [
 					     link I need to run the measurement before answering, which is
 					     what the audit on the migration page promises. -->
 					<div>
-						<label for="acum" class="block text-sm font-medium text-paper/85">
+						<label for="acum" class="spec block">
 							Ce ai acum, și un link dacă există
 						</label>
 						<input
@@ -149,12 +151,12 @@ const flowFields = [
 							name="acum"
 							type="text"
 							placeholder="o aplicație Bubble, app.exemplu.ro"
-							class={`${field} placeholder:text-paper/30`}
+							class={field}
 						/>
 					</div>
 
 					<div>
-						<label for="buget" class="block text-sm font-medium text-paper/85">
+						<label for="buget" class="spec block">
 							Buget aproximativ
 						</label>
 						<select
@@ -167,22 +169,24 @@ const flowFields = [
 					</div>
 
 					<div>
-						<label for="cand" class="block text-sm font-medium text-paper/85">Când îl vrei</label>
+						<label for="cand" class="spec block">Când îl vrei</label>
 						<select id="cand" name="cand" class={field}>
 							{whens.map((w) => <option value={w}>{w}</option>)}
 						</select>
 					</div>
 
-					<fieldset class="rounded-2xl border border-paper/15 p-5 md:p-6">
-						<legend class="eyebrow px-2">Doar dacă e despre plăți</legend>
-						<p class="text-sm leading-relaxed text-paper/70">
+					<!-- A box inside a box is one box too many, so the group that used to
+					     carry its own border is separated by a hairline now. -->
+					<fieldset class="hair border-x-0 border-b-0 p-0 pt-7">
+						<legend class="spec">Doar dacă e despre plăți</legend>
+						<p class="prose-body mt-3 text-sm">
 							Patru răspunsuri scurte îmi ajung ca să îți spun din prima dacă fluxul se aprobă.
 						</p>
 						<div class="mt-5 flex flex-col gap-5">
 							{
 								flowFields.map((f) => (
 									<div>
-										<label for={f.name} class="block text-sm font-medium text-paper/85">
+										<label for={f.name} class="spec block">
 											{f.label}
 										</label>
 										<input
@@ -190,7 +194,7 @@ const flowFields = [
 											name={f.name}
 											type="text"
 											placeholder={f.placeholder}
-											class={`${field} placeholder:text-paper/30`}
+											class={field}
 										/>
 									</div>
 								))
@@ -201,7 +205,7 @@ const flowFields = [
 					<!-- The only attribution there is. The analytics are cookieless,
 					     so they count visitors without ever saying where one came from. -->
 					<div>
-						<label for="sursa" class="block text-sm font-medium text-paper/85">
+						<label for="sursa" class="spec block">
 							Cum ai ajuns aici
 						</label>
 						<input
@@ -209,7 +213,7 @@ const flowFields = [
 							name="sursa"
 							type="text"
 							placeholder="o căutare, mi-a trimis cineva linkul, Upwork"
-							class={`${field} placeholder:text-paper/30`}
+							class={field}
 						/>
 					</div>
 
