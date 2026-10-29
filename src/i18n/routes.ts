@@ -23,6 +23,7 @@ export type PageId =
 	| 'work'
 	| 'contact'
 	| 'privacy'
+	| 'terms'
 	| 'thanks'
 	| 'escrow';
 
@@ -64,6 +65,7 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 	work: { en: '/work', ro: '/ro/portofoliu' },
 	contact: { en: '/contact', ro: '/ro/contact' },
 	privacy: { en: '/privacy', ro: '/ro/confidentialitate' },
+	terms: { en: '/terms', ro: '/ro/termeni' },
 	thanks: { en: '/thank-you', ro: '/ro/multumesc' },
 	escrow: { en: '/stripe-escrow-marketplace', ro: '/ro/stripe-escrow-marketplace' },
 };
@@ -160,6 +162,7 @@ export const footerNav: Record<
 			items: [
 				{ id: 'work', label: 'Work' },
 				{ id: 'contact', label: 'Contact' },
+				{ id: 'terms', label: 'Terms' },
 				{ id: 'privacy', label: 'Privacy' },
 			],
 		},
@@ -187,6 +190,7 @@ export const footerNav: Record<
 			items: [
 				{ id: 'work', label: 'Portofoliu' },
 				{ id: 'contact', label: 'Contact' },
+				{ id: 'terms', label: 'Termeni' },
 				{ id: 'privacy', label: 'Confidențialitate' },
 			],
 		},

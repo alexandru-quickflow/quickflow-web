@@ -19,11 +19,13 @@
 	"ro-servicii-migrare-bubble",
 	"ro-servicii-platforme-cursuri",
 	"ro-stripe-escrow-marketplace",
+	"ro-termeni",
 	"services-bubble-to-code-migration",
 	"services-course-platforms",
 	"services-internal-apps",
 	"services-marketplace-payments",
 	"stripe-escrow-marketplace",
+	"terms",
 	"thank-you",
 	"work"
 ]

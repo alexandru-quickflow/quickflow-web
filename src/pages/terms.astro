@@ -1,0 +1,142 @@
+---
+import Site from '../layouts/Site.astro';
+import { VERIFIED_ON } from '../content/proof';
+import { paths } from '../i18n/routes';
+
+const updated = VERIFIED_ON.en;
+
+// This page does not invent commitments. Every one below is already written on
+// a product page, and this is where they sit in one place, next to the company
+// making them. The identification details Legea 365/2002 asks for live here
+// rather than in the footer of every page, which is a decision about one
+// person's home address rather than about the law: the registered office is
+// public at the trade register either way.
+const sections = [
+	{
+		title: 'Who you are contracting with',
+		body: [
+			'Quick Flow SRL, registered office at Șos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 Bucharest, Romania.',
+			'Fiscal code 44089760. Trade register number J2021006561401. Written to at alexandru@quickflow.dev, which is the address that answers.',
+		],
+	},
+	{
+		title: 'What this page is, and what it is not',
+		body: [
+			'It is how I work, written down once instead of once per conversation. Everything here is already on the page that sells the thing it describes.',
+			'It is not the contract for your project. That is the proposal you get after an audit or a first exchange, it names your scope, your dates and your price, and where it differs from this page it is the one that counts.',
+		],
+	},
+	{
+		title: 'A fixed price is fixed because the list is',
+		body: [
+			'Every product with a price on this site has a list that goes with it, agreed in writing before anything is built. That list is the price.',
+			'Adding to it is a different price, and I would rather say so in the first week than discover it in the third. Nothing gets built quietly and invoiced afterwards.',
+		],
+	},
+	{
+		title: 'Paying',
+		body: [
+			'On the fixed-price products, half on start and half on handover.',
+			'On projects delivered in phases, each phase is invoiced when it is delivered, and after each one you have something that works rather than a progress report.',
+			'An audit paid for before a project comes off the price of that project, which is written on the page of every audit I sell.',
+		],
+	},
+	{
+		title: 'What is yours',
+		body: [
+			'The domain, the hosting accounts and the code are in your name from the first day, not handed over at the end.',
+			'An audit document is yours whether or not we go further, and you can give it to anybody else.',
+			'Your text, your images and your data stay yours. I do not reuse them for anything.',
+		],
+	},
+	{
+		title: 'What I need from you',
+		body: [
+			'The text, the images, the access, and a decision when one is needed. These are the things that delay this kind of work, every time, and none of them is something I can do in your place.',
+			'If a project stalls on my side you do not pay for the wait. If it stalls on yours for longer than a month, I may close it and invoice what was delivered.',
+		],
+	},
+	{
+		title: 'Changes, and stopping',
+		body: [
+			'On the fixed-price website products, two rounds of changes and then it goes live, because a site that is never finished never earns anything.',
+			'Either of us can stop a phased project between phases. You pay for the phases that were delivered and you keep them, running, in your own accounts.',
+		],
+	},
+	{
+		title: 'What I answer, and when',
+		body: [
+			'A first message is answered the same working day, in writing. That is a promise about the first answer, not about every answer in a project, which has its own dates in the proposal.',
+		],
+	},
+	{
+		title: 'Law, and where a disagreement goes',
+		body: [
+			'Romanian law applies, and the courts of Bucharest have jurisdiction.',
+			'If you are a consumer rather than a company, that choice does not take away any right you have under the law of the country you live in, and you can also take a complaint to the Romanian consumer protection authority, ANPC.',
+		],
+	},
+	{
+		title: 'If this page changes',
+		body: [
+			'I change it and I change the date below. The version that applies to your project is the one in force when you signed its proposal, and the proposal is the document that governs it.',
+		],
+	},
+];
+
+const title = 'Terms | Quick Flow';
+const description =
+	'How Quick Flow works, in one place: what a fixed price covers, how paying works, what is yours, and who you are contracting with.';
+---
+
+<Site lang="en" title={title} description={description} noindex={false}>
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Terms</p>
+			<p class="spec">Updated {updated}</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">How I work, written down.</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Nothing here is new. Every commitment below is already on the page that sells the thing it
+			describes, and this is where they sit together, next to the company making them.
+		</p>
+	</section>
+
+	<section class="bleed mt-32" aria-labelledby="terms">
+		<h2 id="terms" class="sr-only">The terms</h2>
+
+		<div class="flex flex-col">
+			{
+				sections.map((s, i) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-10 md:py-12">
+						<p class="spec md:col-span-1 md:pt-2">{String(i + 1).padStart(2, '0')}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<div class="md:col-span-6 md:col-start-7">
+							{s.body.map((line, j) => (
+								<p class:list={['prose-body max-w-[54ch]', j > 0 && 'mt-4']}>{line}</p>
+							))}
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					If something here is not what you expected, say so before we start and not after.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Write to me</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Answered the same working day. A term you cannot live with is worth an email now.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

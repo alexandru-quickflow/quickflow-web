@@ -31,7 +31,7 @@ export const ui: Record<Locale, Ui> = {
 		footerContact: 'Contact',
 		footerBuilt: 'Built with no framework on the client',
 		legal:
-			'Quick Flow SRL, registered office Șos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 Bucharest, Romania. Fiscal code 44089760, trade register J2021006561401.',
+			'Quick Flow SRL, Bucharest, Romania. Fiscal code 44089760, trade register J2021006561401. The registered office is on the terms page.',
 	},
 	ro: {
 		skip: 'Sari la conținut',
@@ -45,6 +45,6 @@ export const ui: Record<Locale, Ui> = {
 		footerContact: 'Contact',
 		footerBuilt: 'Construit fără framework pe client',
 		legal:
-			'Quick Flow SRL, sediul social Șos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 București. CUI 44089760, nr. reg. com. J2021006561401.',
+			'Quick Flow SRL, București, România. CUI 44089760, nr. reg. com. J2021006561401. Sediul social e pe pagina de termeni.',
 	},
 };

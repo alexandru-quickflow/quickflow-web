@@ -1,0 +1,142 @@
+---
+import Site from '../../layouts/Site.astro';
+import { VERIFIED_ON } from '../../content/proof';
+import { paths } from '../../i18n/routes';
+
+const updated = VERIFIED_ON.ro;
+
+// This page does not invent commitments. Every one below is already written on
+// a product page, and this is where they sit in one place, next to the company
+// making them. The identification details Legea 365/2002 asks for live here
+// rather than in the footer of every page, which is a decision about one
+// person's home address rather than about the law: the registered office is
+// public at the trade register either way.
+const sections = [
+	{
+		title: 'Cu cine contractezi',
+		body: [
+			'Quick Flow SRL, sediul social în Șos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 București.',
+			'CUI 44089760. Nr. reg. com. J2021006561401. Scrii la alexandru@quickflow.dev, care e adresa care răspunde.',
+		],
+	},
+	{
+		title: 'Ce e pagina asta, și ce nu e',
+		body: [
+			'E felul în care lucrez, scris o dată în loc de o dată per discuție. Tot ce e aici e deja pe pagina care vinde lucrul pe care îl descrie.',
+			'Nu e contractul proiectului tău. Ăla e propunerea pe care o primești după un audit sau după un prim schimb de mesaje, are scope-ul tău, datele tale și prețul tău, iar unde diferă de pagina asta, ea contează.',
+		],
+	},
+	{
+		title: 'Un preț e fix pentru că lista e fixă',
+		body: [
+			'Fiecare produs cu preț de pe site are o listă care merge cu el, stabilită în scris înainte să se construiască ceva. Lista aia e prețul.',
+			'Ce se adaugă la ea e alt preț, și prefer să o spun în prima săptămână decât să o descopăr în a treia. Nu se construiește nimic pe tăcute ca să fie facturat după.',
+		],
+	},
+	{
+		title: 'Plata',
+		body: [
+			'La produsele cu preț fix, jumătate la start și jumătate la predare.',
+			'La proiectele livrate pe faze, fiecare fază se facturează când e livrată, iar după fiecare ai ceva care funcționează, nu un raport de progres.',
+			'Un audit plătit înaintea unui proiect se scade din prețul acelui proiect, ceea ce scrie pe pagina fiecărui audit pe care îl vând.',
+		],
+	},
+	{
+		title: 'Ce e al tău',
+		body: [
+			'Domeniul, conturile de găzduire și codul sunt pe numele tău din prima zi, nu predate la final.',
+			'Un document de audit e al tău indiferent dacă mergem mai departe, și îl poți da oricui altcuiva.',
+			'Textul tău, imaginile tale și datele tale rămân ale tale. Nu le refolosesc pentru nimic.',
+		],
+	},
+	{
+		title: 'Ce am nevoie de la tine',
+		body: [
+			'Textul, imaginile, accesul, și o decizie când e nevoie de una. Astea sunt lucrurile care întârzie munca de felul ăsta, de fiecare dată, și niciunul nu e ceva ce pot face în locul tău.',
+			'Dacă un proiect stă din cauza mea, nu plătești așteptarea. Dacă stă din cauza ta mai mult de o lună, pot să îl închid și să facturez ce a fost livrat.',
+		],
+	},
+	{
+		title: 'Modificări, și oprire',
+		body: [
+			'La produsele de site cu preț fix, două runde de modificări și apoi intră live, pentru că un site care nu se termină niciodată nu aduce niciodată nimic.',
+			'Oricare dintre noi poate opri un proiect pe faze, între faze. Plătești fazele livrate și rămâi cu ele, în funcțiune, în conturile tale.',
+		],
+	},
+	{
+		title: 'La ce răspund, și când',
+		body: [
+			'Un prim mesaj primește răspuns în aceeași zi lucrătoare, în scris. E o promisiune despre primul răspuns, nu despre fiecare răspuns dintr-un proiect, care își are datele lui în propunere.',
+		],
+	},
+	{
+		title: 'Legea, și unde ajunge o neînțelegere',
+		body: [
+			'Se aplică legea română, iar instanțele din București sunt competente.',
+			'Dacă ești consumator, nu firmă, alegerea asta nu îți ia niciun drept pe care îl ai după legea țării în care locuiești, și poți duce o reclamație și la Autoritatea Națională pentru Protecția Consumatorilor, ANPC.',
+		],
+	},
+	{
+		title: 'Dacă pagina asta se schimbă',
+		body: [
+			'O schimb și schimb data de mai jos. Versiunea care se aplică proiectului tău e cea în vigoare când ai semnat propunerea lui, iar propunerea e documentul care îl guvernează.',
+		],
+	},
+];
+
+const title = 'Termeni';
+const description =
+	'Cum lucrează Quick Flow, într-un singur loc: ce acoperă un preț fix, cum se plătește, ce e al tău, și cu cine contractezi.';
+---
+
+<Site lang="ro" title={title} description={description}>
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Termeni</p>
+			<p class="spec">Actualizat {updated}</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">Cum lucrez, scris.</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Nimic de aici nu e nou. Fiecare angajament de mai jos e deja pe pagina care vinde lucrul pe
+			care îl descrie, iar aici stau împreună, lângă firma care le face.
+		</p>
+	</section>
+
+	<section class="bleed mt-32" aria-labelledby="termeni">
+		<h2 id="termeni" class="sr-only">Termenii</h2>
+
+		<div class="flex flex-col">
+			{
+				sections.map((s, i) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-10 md:py-12">
+						<p class="spec md:col-span-1 md:pt-2">{String(i + 1).padStart(2, '0')}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<div class="md:col-span-6 md:col-start-7">
+							{s.body.map((line, j) => (
+								<p class:list={['prose-body max-w-[54ch]', j > 0 && 'mt-4']}>{line}</p>
+							))}
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Dacă ceva de aici nu e ce te așteptai, spune înainte să începem, nu după.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Scrie-mi</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Răspuns în aceeași zi lucrătoare. Un termen cu care nu poți trăi merită un email acum.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>
