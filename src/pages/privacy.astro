@@ -26,7 +26,7 @@ const sections = [
 	{
 		title: 'What I collect',
 		body: [
-			'Only what you write in the contact form: your name, your email address, the description of the project and the budget range. If it is about a payment flow, also the four short answers about who pays, who is paid, who takes a cut and when the work counts as delivered.',
+			'Only what you write in the contact form: your name, your email address, what the message is about, the description of the project, what you have now and a link to it if you give one, the budget range, when you want it, and how you got here. If it is about a payment flow, also the four short answers about who pays, who is paid, who takes a cut and when the work counts as delivered.',
 			'I do not ask for and do not collect health data, beliefs, financial data or any other kind of sensitive data. If you write them into the description of your own accord they end up in my inbox, so avoid them.',
 		],
 	},
@@ -46,7 +46,7 @@ const sections = [
 	{
 		title: 'Who else sees the data, as a provider',
 		body: [
-			'Cloudflare, which hosts the site and runs the form function. Cloudflare Turnstile checks whether the submission comes from a person, and to do that it processes the IP address and technical signals about the browser.',
+			'Cloudflare, which hosts the site and runs the form function. Cloudflare Turnstile checks whether the submission comes from a person, and to do that it processes the IP address and technical signals about the browser. A rule at the edge also counts submissions per IP address and blocks more than five an hour, which is what keeps the form from being a free mailer.',
 			'Resend, which delivers the email.',
 			...(analytics
 				? ['Cloudflare Web Analytics, which counts page views. It stores no cookie and builds no profile.']

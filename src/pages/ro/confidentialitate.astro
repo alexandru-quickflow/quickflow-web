@@ -27,7 +27,7 @@ const sections = [
 	{
 		title: 'Ce colectez',
 		body: [
-			'Doar ce scrii tu în formularul de contact: numele, adresa de email, descrierea proiectului și intervalul de buget. Dacă e despre un flux de plăți, și cele patru răspunsuri scurte despre cine plătește, cine încasează, cine ia comision și când se consideră livrată munca.',
+			'Doar ce scrii tu în formularul de contact: numele, adresa de email, despre ce e vorba, descrierea proiectului, ce ai acum și un link dacă îl dai, intervalul de buget, când îl vrei, și cum ai ajuns aici. Dacă e despre un flux de plăți, și cele patru răspunsuri scurte despre cine plătește, cine încasează, cine ia comision și când se consideră livrată munca.',
 			'Nu cer și nu colectez date despre sănătate, convingeri, date financiare sau orice alt fel de date sensibile. Dacă le scrii din proprie inițiativă în descriere, ajung în emailul meu, deci evită-le.',
 		],
 	},
@@ -47,7 +47,7 @@ const sections = [
 	{
 		title: 'Cine mai vede datele, ca furnizor',
 		body: [
-			'Cloudflare, care găzduiește site-ul și rulează funcția formularului. Cloudflare Turnstile verifică dacă trimiterea vine de la un om, iar pentru asta procesează adresa IP și semnale tehnice despre browser.',
+			'Cloudflare, care găzduiește site-ul și rulează funcția formularului. Cloudflare Turnstile verifică dacă trimiterea vine de la un om, iar pentru asta procesează adresa IP și semnale tehnice despre browser. O regulă la margine numără și trimiterile pe adresă IP și blochează peste cinci pe oră, ceea ce împiedică formularul să fie un expeditor gratuit pentru oricine.',
 			'Resend, care livrează emailul.',
 			...(analytics
 				? ['Cloudflare Web Analytics, care numără afișările de pagină. Nu pune niciun cookie și nu construiește niciun profil.']
