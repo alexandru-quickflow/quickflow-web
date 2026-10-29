@@ -1,0 +1,77 @@
+---
+// The course platform page's argument, drawn: six months of access, and the
+// thing that is supposed to end it.
+//
+// The detached box under the bar is the whole point. On a platform, the end of
+// access is a job sitting in a queue nobody can list, parked off the timeline
+// it belongs to. In code it is a date on the purchase, which is why it moves
+// onto the bar in the second row.
+interface Props {
+	lang: 'en' | 'ro';
+	class?: string;
+}
+
+const { lang, class: cls = '' } = Astro.props;
+
+const copy = {
+	en: {
+		bought: 'Paid',
+		open: 'Six months of access',
+		ends: 'Ends',
+		onPlatform: 'On a platform',
+		platformNote: 'A job scheduled for that date, in a queue nothing lists and nothing exports. If it fails, nothing says so.',
+		outOfReach: 'Out of reach',
+		onRecord: 'On the record',
+		inCode: 'In code',
+		codeNote: 'A date on the purchase, asked at the moment the page loads. It can be listed, counted and corrected.',
+		caption: 'Same promise, two places to keep it.',
+	},
+	ro: {
+		bought: 'Plătit',
+		open: 'Șase luni de acces',
+		ends: 'Se termină',
+		onPlatform: 'Pe o platformă',
+		platformNote: 'Un job programat pentru data aia, într-o coadă pe care nimic nu o listează și nimic nu o exportă. Dacă pică, nimic nu o spune.',
+		outOfReach: 'De neatins',
+		onRecord: 'Pe înregistrare',
+		inCode: 'În cod',
+		codeNote: 'O dată pe cumpărare, întrebată în momentul în care se încarcă pagina. Se poate lista, număra și corecta.',
+		caption: 'Aceeași promisiune, două locuri în care să o ții.',
+	},
+}[lang];
+---
+
+<figure class={`m-0 ${cls}`}>
+	<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+		<p class="spec">{copy.bought}</p>
+		<p class="spec">{copy.ends}</p>
+	</div>
+
+	<div class="mt-4 flex items-center gap-2">
+		<span class="h-2.5 w-2.5 shrink-0 rounded-full bg-teal"></span>
+		<span class="h-2.5 flex-1 rounded-full bg-teal/25"></span>
+		<span class="h-2.5 w-2.5 shrink-0 rounded-full bg-hot"></span>
+	</div>
+
+	<p class="spec mt-4 text-center">{copy.open}</p>
+
+	<div class="mt-10 grid gap-5 md:grid-cols-2">
+		<div class="rounded-xl border border-dashed border-hot/45 p-5">
+			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+				<p class="spec">{copy.onPlatform}</p>
+				<span class="state state-risk">{copy.outOfReach}</span>
+			</div>
+			<p class="prose-body mt-4 text-[0.9rem]">{copy.platformNote}</p>
+		</div>
+
+		<div class="rounded-xl border border-teal/45 p-5">
+			<div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+				<p class="spec">{copy.inCode}</p>
+				<span class="state state-ok">{copy.onRecord}</span>
+			</div>
+			<p class="prose-body mt-4 text-[0.9rem]">{copy.codeNote}</p>
+		</div>
+	</div>
+
+	<figcaption class="stamp mt-6">{copy.caption}</figcaption>
+</figure>

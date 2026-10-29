@@ -1,0 +1,62 @@
+---
+// The internal apps page's argument, drawn: the state of one order, spread
+// across five places that do not agree, against one record that does.
+//
+// The dashed boxes are dashed on purpose. None of them is wrong on its own;
+// what is wrong is that there are five of them and no one of them is the
+// answer.
+interface Props {
+	lang: 'en' | 'ro';
+	class?: string;
+}
+
+const { lang, class: cls = '' } = Astro.props;
+
+const copy = {
+	en: {
+		before: 'Where the state of one order lives now',
+		places: ['A chat group', 'A spreadsheet', 'Somebody\'s inbox', 'A paper note', 'Somebody\'s memory'],
+		after: 'Where it lives after',
+		record: 'One record',
+		recordNote: 'With who changed it, and when.',
+		caption: 'None of the five is wrong. There being five of them is.',
+	},
+	ro: {
+		before: 'Unde stă acum starea unei comenzi',
+		places: ['Un grup de WhatsApp', 'Un tabel', 'Inboxul cuiva', 'Un bilet pe hârtie', 'Memoria cuiva'],
+		after: 'Unde stă după',
+		record: 'O singură înregistrare',
+		recordNote: 'Cu cine a schimbat-o, și când.',
+		caption: 'Niciuna din cele cinci nu e greșită. Faptul că sunt cinci, da.',
+	},
+}[lang];
+---
+
+<figure class={`m-0 ${cls}`}>
+	<p class="spec">{copy.before}</p>
+
+	<div class="mt-6 flex flex-wrap gap-2.5">
+		{
+			copy.places.map((place) => (
+				<span class="rounded-lg border border-dashed border-[var(--line-strong)] px-3.5 py-2.5 text-[0.9rem] text-[var(--mute)]">
+					{place}
+				</span>
+			))
+		}
+	</div>
+
+	<div class="mt-7 flex items-center gap-4" aria-hidden="true">
+		<span class="h-px flex-1 bg-[var(--line)]"></span>
+		<span class="spec">01</span>
+		<span class="h-px flex-1 bg-[var(--line)]"></span>
+	</div>
+
+	<p class="spec mt-7">{copy.after}</p>
+
+	<div class="mt-4 rounded-xl border border-teal/45 bg-teal/10 px-5 py-5">
+		<p class="text-base font-medium leading-snug">{copy.record}</p>
+		<p class="prose-body mt-2 text-[0.9rem]">{copy.recordNote}</p>
+	</div>
+
+	<figcaption class="stamp mt-6">{copy.caption}</figcaption>
+</figure>

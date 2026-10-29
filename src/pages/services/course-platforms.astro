@@ -1,6 +1,7 @@
 ---
 import Site from '../../layouts/Site.astro';
 import { paths } from '../../i18n/routes';
+import AccessPlate from '../../components/AccessPlate.astro';
 
 // The signs are all the same sentence from three sides: access is being kept
 // in somebody's head instead of in the system.
@@ -222,6 +223,8 @@ const schema = {
 				</a>
 			</div>
 		</div>
+
+		<AccessPlate lang="en" class="mt-16" />
 	</section>
 
 	<!-- 5. The proof, and it is the strongest on the site. Four of the five

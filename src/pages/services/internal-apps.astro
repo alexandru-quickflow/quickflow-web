@@ -1,6 +1,7 @@
 ---
 import Site from '../../layouts/Site.astro';
 import { paths } from '../../i18n/routes';
+import StatePlate from '../../components/StatePlate.astro';
 
 const signs = [
 	{
@@ -176,6 +177,17 @@ const schema = {
 					quietly.
 				</p>
 			</div>
+		</div>
+	</section>
+
+	<!-- 3b. The before and after, drawn. The page says the state of an order
+	     lives in a chat group; it never showed the five places next to the
+	     one record that replaces them. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="places">
+		<div class="hair pt-10 md:pt-14">
+			<p class="spec">Before, and after</p>
+			<h2 id="places" class="display-lg mt-6 max-w-[24ch]">Five places that <em>do not agree</em>.</h2>
+			<StatePlate lang="en" class="mt-12" />
 		</div>
 	</section>
 

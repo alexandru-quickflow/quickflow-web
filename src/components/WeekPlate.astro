@@ -1,0 +1,49 @@
+---
+// The prototype page's argument, drawn: five days, and a link that works at
+// the end of each one. The second row is the point. A week with a deliverable
+// only on Friday is the week everyone has already had.
+interface Props {
+	lang: 'en' | 'ro';
+	class?: string;
+}
+
+const { lang, class: cls = '' } = Astro.props;
+
+const copy = {
+	en: {
+		title: 'The week',
+		days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+		work: ['Scope, then build', 'Build', 'Build', 'Build', 'Your changes, handover'],
+		link: 'Link',
+		caption: 'A link that works at the end of every day, not only on Friday.',
+	},
+	ro: {
+		title: 'Săptămâna',
+		days: ['Lun', 'Mar', 'Mie', 'Joi', 'Vin'],
+		work: ['Tăiere, apoi construit', 'Construit', 'Construit', 'Construit', 'Modificările tale, predare'],
+		link: 'Link',
+		caption: 'Un link care merge la finalul fiecărei zile, nu doar vineri.',
+	},
+}[lang];
+---
+
+<figure class={`m-0 ${cls}`}>
+	<p class="spec">{copy.title}</p>
+
+	<ol class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
+		{
+			copy.days.map((day, i) => (
+				<li class="flex flex-col gap-3 rounded-xl border border-[var(--line)] p-4">
+					<span class="spec">{day}</span>
+					<span class="text-[0.9rem] leading-snug">{copy.work[i]}</span>
+					<span class="mt-auto flex items-center gap-2 pt-3">
+						<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-teal" />
+						<span class="spec">{copy.link}</span>
+					</span>
+				</li>
+			))
+		}
+	</ol>
+
+	<figcaption class="stamp mt-6">{copy.caption}</figcaption>
+</figure>

@@ -2,6 +2,7 @@
 import Site from '../layouts/Site.astro';
 import { paths } from '../i18n/routes';
 import { SELF_JS } from '../content/proof';
+import WeekPlate from '../components/WeekPlate.astro';
 
 // The reader arrives here from one of three places, and each one is a reason
 // they cannot answer the only question that matters yet.
@@ -240,7 +241,9 @@ const schema = {
 				You see a working link at the end of <em>every day</em>.
 			</h2>
 
-			<ol class="mt-14 flex flex-col gap-10 md:gap-14">
+			<WeekPlate lang="en" class="mt-12" />
+
+			<ol class="mt-16 flex flex-col gap-10 md:gap-14">
 				{
 					days.map((day, i) => (
 						<li class="rise grid gap-3 md:grid-cols-12 md:gap-10">

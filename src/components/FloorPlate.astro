@@ -1,0 +1,65 @@
+---
+// The audit page's argument, drawn: everything you can fix sits on top of
+// something you cannot move.
+//
+// HTML and hairlines rather than SVG, for the same reason the payment diagram
+// is: the labels stay text, so they translate, the probe can measure them and
+// the contrast check can read them. An SVG with text inside it is a picture of
+// a sentence.
+interface Props {
+	lang: 'en' | 'ro';
+	class?: string;
+}
+
+const { lang, class: cls = '' } = Astro.props;
+
+const copy = {
+	en: {
+		above: 'What a day of measuring finds',
+		below: 'What it sits on',
+		floor: 'The Bubble runtime',
+		floorNote: 'Arrives before your first word. No setting removes it.',
+		stack: ['Searches', 'Repeating groups', 'Workflows', 'Plugins', 'Images'],
+		caption: 'Each bar is work you can have done. The base is not a bar.',
+	},
+	ro: {
+		above: 'Ce găsește o zi de măsurat',
+		below: 'Pe ce stă',
+		floor: 'Runtime-ul Bubble',
+		floorNote: 'Ajunge înaintea primului tău cuvânt. Nicio setare nu îl scoate.',
+		stack: ['Căutări', 'Repeating groups', 'Workflow-uri', 'Plugin-uri', 'Imagini'],
+		caption: 'Fiecare bară e muncă ce se poate face. Baza nu e o bară.',
+	},
+}[lang];
+
+// Widths are not data. They are the shape of the argument: five things of
+// different sizes, all of them smaller than the thing under them.
+const widths = [72, 58, 46, 34, 24];
+---
+
+<figure class={`m-0 ${cls}`}>
+	<p class="spec">{copy.above}</p>
+
+	<div class="mt-6 flex flex-col gap-2.5">
+		{
+			copy.stack.map((label, i) => (
+				<div class="flex items-center gap-4">
+					<span
+						class="h-7 shrink-0 rounded-[4px] border border-teal/40 bg-teal/15"
+						style={`width:${widths[i]}%`}
+					/>
+					<span class="spec whitespace-nowrap">{label}</span>
+				</div>
+			))
+		}
+	</div>
+
+	<p class="spec mt-8">{copy.below}</p>
+
+	<div class="mt-4 rounded-xl border border-hot/45 bg-hot/10 px-5 py-5">
+		<p class="text-base font-medium leading-snug">{copy.floor}</p>
+		<p class="prose-body mt-2 max-w-[48ch] text-[0.9rem]">{copy.floorNote}</p>
+	</div>
+
+	<figcaption class="stamp mt-6">{copy.caption}</figcaption>
+</figure>

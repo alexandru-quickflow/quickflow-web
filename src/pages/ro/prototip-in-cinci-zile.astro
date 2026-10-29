@@ -2,6 +2,7 @@
 import Site from '../../layouts/Site.astro';
 import { paths } from '../../i18n/routes';
 import { SELF_JS } from '../../content/proof';
+import WeekPlate from '../../components/WeekPlate.astro';
 
 // Cititorul ajunge aici din unul din trei locuri, și fiecare e o variantă a
 // aceluiași gol: o decizie care nu se poate lua dintr-un desen.
@@ -243,7 +244,9 @@ const schema = {
 				Vezi un link care funcționează la finalul <em>fiecărei zile</em>.
 			</h2>
 
-			<ol class="mt-14 flex flex-col gap-10 md:gap-14">
+			<WeekPlate lang="ro" class="mt-12" />
+
+			<ol class="mt-16 flex flex-col gap-10 md:gap-14">
 				{
 					days.map((day, i) => (
 						<li class="rise grid gap-3 md:grid-cols-12 md:gap-10">

@@ -2,6 +2,7 @@
 import Site from '../layouts/Site.astro';
 import { proof, weightSnippet, VERIFIED_ON } from '../content/proof';
 import { paths } from '../i18n/routes';
+import FloorPlate from '../components/FloorPlate.astro';
 
 const weight = proof('en', 'bubble-weight');
 
@@ -124,6 +125,18 @@ const schema = {
 					</article>
 				))
 			}
+		</div>
+	</section>
+
+	<!-- 2b. The argument in one look, before the two lists give it in detail.
+	     This page had a code block and two numerals and no drawing at all,
+	     which on a page whose whole point is a picture of a ceiling was the
+	     wrong thing to be missing. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="shape">
+		<div class="hair pt-10 md:pt-14">
+			<p class="spec">The shape of it</p>
+			<h2 id="shape" class="display-lg mt-6 max-w-[24ch]">Everything you can fix sits <em>on top of something you cannot</em>.</h2>
+			<FloorPlate lang="en" class="mt-12" />
 		</div>
 	</section>
 
