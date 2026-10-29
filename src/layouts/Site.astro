@@ -130,14 +130,14 @@ const ogImage = new URL(
 					<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-6 w-auto" />
 				</a>
 
-				<nav aria-label={t.navLabel} class="hidden items-center gap-6 md:flex lg:gap-9">
+				<nav aria-label={t.navLabel} class="hidden items-center gap-6 lg:flex xl:gap-9">
 					{
 						items.map((item) => (
 							<a
 								href={paths[item.id][lang]}
 								aria-current={here(paths[item.id][lang]) ? 'page' : undefined}
 								class:list={[
-									'spec transition-colors hover:text-paper',
+									'spec whitespace-nowrap transition-colors hover:text-paper',
 									here(paths[item.id][lang]) && 'text-paper',
 								]}
 							>
@@ -150,7 +150,7 @@ const ogImage = new URL(
 				<!-- The stamp, not coordinates. An instrument states when it was
 				     last checked; a brochure states where it was made. -->
 				<div class="hidden items-center gap-6 lg:flex">
-					<span class="stamp">{t.verified(VERIFIED_ON[lang])}</span>
+					<span class="stamp hidden whitespace-nowrap xl:inline">{t.verified(VERIFIED_ON[lang])}</span>
 					<p class="spec flex items-center gap-2">
 						<span class="text-paper">{localeNames[lang].short}</span>
 						{
@@ -173,7 +173,7 @@ const ogImage = new URL(
 				</div>
 
 				<!-- No JavaScript. A details element is the whole mobile menu. -->
-				<details class="relative md:hidden">
+				<details class="relative lg:hidden">
 					<summary
 						class="spec cursor-pointer list-none rounded-full border border-[var(--line-strong)] px-4 py-2"
 					>
