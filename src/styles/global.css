@@ -358,6 +358,48 @@
 		border-top: 1px solid var(--line);
 	}
 
+	/* The bar that stays ---------------------------------------------------
+	 * Sticky, and the ground under it is taken away at the top rather than
+	 * added. The two glow layers behind the page are `position: fixed`, so a
+	 * bar carrying a solid ground from the first pixel cuts a rectangle out of
+	 * the light exactly where the light is brightest. It is clear over the
+	 * hero and solid from 90 pixels down.
+	 *
+	 * Written that way round on purpose. The declared state is the readable
+	 * one, and the scroll timeline only removes it: a browser without scroll
+	 * timelines, or a reader who asked for less motion, gets an opaque bar
+	 * instead of paper-white type sitting on a paper band with nothing behind
+	 * it. The same rule as the reveals further down, which hide nothing unless
+	 * the script that shows them again is running.
+	 *
+	 * Solid, not translucent. At 88% the serif headline of the light band
+	 * showed through the bar as a grey ghost of itself, which reads as a
+	 * rendering fault rather than a surface. The glow it covers once you have
+	 * scrolled is the glow over the bar, not the glow over the page. */
+	.topbar {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		background-color: var(--color-ink);
+		border-bottom: 1px solid var(--line);
+	}
+
+	@supports (animation-timeline: scroll()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.topbar {
+				animation: topbar-ground linear both;
+				animation-timeline: scroll(root);
+				animation-range: 0 90px;
+			}
+		}
+	}
+
+	/* A heading landing under a bar that is always there is the one thing
+	   sticky costs, and it costs it silently. */
+	:where([id]) {
+		scroll-margin-top: 6.5rem;
+	}
+
 	/* The light band -----------------------------------------------------
 	 * Named .band, not .invert, and that rename is the whole fix. Tailwind
 	 * ships an `invert` utility, the utilities layer is emitted after the
@@ -1101,6 +1143,15 @@
 	}
 	to {
 		transform: translateY(-22px);
+	}
+}
+
+/* Only the ground moves. The hairline stays at the top, because a line over
+   the glow costs nothing and it is the one thing keeping the header's row of
+   mono from reading as part of the hero's own row of mono underneath it. */
+@keyframes topbar-ground {
+	from {
+		background-color: transparent;
 	}
 }
 

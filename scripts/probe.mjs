@@ -438,8 +438,18 @@ async function motion(page, base, url) {
 	});
 
 	const height = await page.evaluate(() => document.scrollingElement.scrollHeight);
-	const step = 120;
-	for (let y = 0; y < height; y += step) {
+	// Two sweeps, not one. The coarse pass covers the page in 120px steps; the
+	// fine pass covers the first 240 in 30s. An animation whose active range is
+	// shorter than the step is invisible to a sampler that never lands inside
+	// it, and that is not a hypothetical: the sticky header's ground runs over
+	// 90 pixels of scroll(root) and the coarse pass stepped from 0 straight to
+	// 120, reading progress 0 and then 1 and never anything between. It was
+	// reported as an animation that never runs. Short ranges live at the top of
+	// the document, which is why the fine pass is where it is.
+	const stops = new Set();
+	for (let y = 0; y <= 240; y += 30) stops.add(y);
+	for (let y = 0; y < height; y += 120) stops.add(y);
+	for (const y of [...stops].sort((a, b) => a - b)) {
 		await page.evaluate((to) => window.scrollTo(0, to), y);
 		await page.waitForTimeout(settle);
 		await page.evaluate(() => window.__tick());
