@@ -95,6 +95,24 @@ const stay = [
 	},
 ];
 
+// The step before the migration audit, for an owner who has not decided yet
+// and so cannot buy one. The two lists are the whole product: what the app is
+// doing to itself, which is fixable, and the platform under it, which is not.
+// The second list is also the argument for everything below it on this page.
+const faster = [
+	'Căutări care încarcă toată lista ca să o numere, și cele care se refac la fiecare afișare',
+	'Repeating group-uri care interoghează înăuntrul rândului, în loc de o singură dată sus',
+	'Workflow-uri care pornesc la fiecare încărcare de pagină, pentru că nimeni nu le-a pus o condiție',
+	'Plugin-uri încărcate pe toate paginile pentru singurul ecran care le folosește',
+	'Imagini servite la dimensiunea la care au fost urcate',
+];
+
+const floor = [
+	'Runtime-ul. 1.371 KB ajung înaintea primului tău cuvânt și nicio setare nu îi scoate',
+	'O pagină publică se desenează întrebând baza de date, deci un crawler care nu a cerut nimic te costă',
+	'Factura urmează cât e folosită aplicația, nu ce ai construit. Optimizarea mișcă numărul, nu de ce e legat',
+];
+
 const steps = [
 	'Îmi scrii ce aplicație ai și ce te deranjează cel mai tare la ea. Îți răspund în aceeași zi lucrătoare, cu o întrebare sau două.',
 	'Dacă pare că are sens, vorbim treizeci de minute. Fără prezentare și fără ofertă pregătită dinainte.',
@@ -103,7 +121,7 @@ const steps = [
 
 const title = 'Migrare de pe Bubble pe cod, pe faze';
 const description =
-	'Scot aplicații din Bubble pe faze, fără să le opresc. Începe cu un audit de două zile, 600 EUR, scăzut din prețul proiectului.';
+	'Scot aplicații din Bubble pe faze, fără să le opresc. O zi și 350 EUR ca să afli dacă merită, două zile și 600 EUR ca să planificăm mutarea.';
 
 const schema = {
 	'@context': 'https://schema.org',
@@ -114,6 +132,23 @@ const schema = {
 	inLanguage: 'ro',
 	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
 	areaServed: 'RO',
+	offers: [
+		{
+			'@type': 'Offer',
+			name: 'Audit de performanță Bubble',
+			price: '350',
+			priceCurrency: 'EUR',
+			description:
+				'O zi. Ce se poate face mai rapid în Bubble și ce nu se poate muta cu niciun preț.',
+		},
+		{
+			'@type': 'Offer',
+			name: 'Audit de migrare',
+			price: '600',
+			priceCurrency: 'EUR',
+			description: 'Un audit de două zile al aplicației, livrat ca document pe care îl păstrezi.',
+		},
+	],
 };
 ---
 
@@ -336,8 +371,77 @@ const schema = {
 		</ol>
 	</section>
 
-	<!-- 7. Auditul. Un preț, o durată, o listă cu ce ajunge la tine. -->
-	<section class="bleed mt-40 md:mt-52" aria-labelledby="audit">
+	<!-- 7. The step before the audit. An owner who has not decided cannot buy a
+	     migration audit, and telling him to decide first is not an offer. This
+	     is also the one thing on the site that needs no AI in its argument: it
+	     is sold on eight years inside the platform. The ceiling it names is the
+	     argument for everything below it, which is why the two lists sit side
+	     by side rather than the fixable one standing alone. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="viteza">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">Înainte să decizi că pleci</p>
+			<span class="spec">O zi, 350 EUR</span>
+		</div>
+
+		<h2 id="viteza" class="display-lg mt-8 max-w-[24ch]">
+			Majoritatea aplicațiilor Bubble sunt mai lente decât <em>le face Bubble</em>.
+		</h2>
+
+		<p class="lead mt-8 max-w-[58ch]">
+			O parte din ce plătești e platforma și o parte e aplicația. O măsor pe a ta și îți spun care
+			cât, în scris, înainte să decizi ceva.
+		</p>
+
+		<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+					<p class="spec">Ce își face aplicația singură</p>
+					<span class="state state-ok">Reparabil</span>
+				</div>
+				<ul class="mt-7 flex flex-col gap-3">
+					{
+						faster.map((item) => (
+							<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+								<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+					<p class="spec">Ce nu poate muta nimeni</p>
+					<span class="state state-risk">Podeaua</span>
+				</div>
+				<ul class="mt-7 flex flex-col gap-3">
+					{
+						floor.map((item) => (
+							<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+								<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-hot" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+
+				<p class="prose-body mt-9 max-w-[52ch] text-[0.95rem]">
+					Auditul se termină într-una din două propoziții. Repari ce își face aplicația singură și
+					rămâi, sau aplicația e deja atât de rapidă cât permite platforma și nu mai rămâne decât să
+					pleci. O scriu pe cea adevărată, iar dacă e a doua cei 350 EUR se scad din cei 600 de mai
+					jos.
+				</p>
+
+				<a href={paths.contact.ro} class="btn btn-ghost mt-8">Cere măsurătoarea</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. Auditul. Un preț, o durată, o listă cu ce ajunge la tine. Primește
+	     spațiul normal, nu o încheietură: el și ziua de deasupra sunt o
+	     singură mișcare, cele două lucruri care se cumpără înainte de proiect. -->
+	<section class="bleed mt-32" aria-labelledby="audit">
 		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
 			<div class="grid gap-10 md:grid-cols-12">
 				<div class="md:col-span-5">

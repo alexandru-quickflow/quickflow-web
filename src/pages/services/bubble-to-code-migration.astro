@@ -93,6 +93,24 @@ const deliverables = [
 	'What it costs you per month afterwards, against what it costs you now',
 ];
 
+// The step before the migration audit, for an owner who has not decided yet
+// and so cannot buy one. The two lists are the whole product: what the app is
+// doing to itself, which is fixable, and the platform under it, which is not.
+// The second list is also the argument for everything below it on this page.
+const faster = [
+	'Searches that load a whole list in order to count it, and the ones that run again on every view',
+	'Repeating groups that query inside the row instead of once at the top',
+	'Workflows that fire on every page load because nobody put a condition on them',
+	'Plugins loaded on every page for the one screen that uses them',
+	'Images served at the size they were uploaded at',
+];
+
+const floor = [
+	'The runtime. 1,371 KB arrives before your first word and no setting removes it',
+	'A public page renders by asking the database, so a crawler that asked for nothing still costs you',
+	'The bill follows how much the app is used, not what you built. Tuning moves the number, not what it is tied to',
+];
+
 const steps = [
 	'You write to me about the app you have and what bothers you most about it. I answer the same working day, with a question or two.',
 	'If it looks like it makes sense, we talk for thirty minutes. No deck, and no proposal prepared in advance.',
@@ -101,7 +119,7 @@ const steps = [
 
 const title = 'Bubble to code migration, phase by phase | Quick Flow';
 const description =
-	'I move apps off Bubble onto code in phases, without taking them down. It starts with a two-day audit, 600 EUR, deducted from the price of the project.';
+	'I move apps off Bubble onto code in phases, without taking them down. One day and 350 EUR to find out whether it is worth it, two days and 600 EUR to plan the move.';
 
 const schema = {
 	'@context': 'https://schema.org',
@@ -111,13 +129,23 @@ const schema = {
 	description,
 	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
 	areaServed: 'Worldwide',
-	offers: {
-		'@type': 'Offer',
-		name: 'Migration audit',
-		price: '600',
-		priceCurrency: 'EUR',
-		description: 'A two-day audit of the app, delivered as a document you keep.',
-	},
+	offers: [
+		{
+			'@type': 'Offer',
+			name: 'Bubble performance audit',
+			price: '350',
+			priceCurrency: 'EUR',
+			description:
+				'One day. What can be made faster inside Bubble, and what cannot be moved at any price.',
+		},
+		{
+			'@type': 'Offer',
+			name: 'Migration audit',
+			price: '600',
+			priceCurrency: 'EUR',
+			description: 'A two-day audit of the app, delivered as a document you keep.',
+		},
+	],
 };
 ---
 
@@ -341,8 +369,76 @@ const schema = {
 		</ol>
 	</section>
 
-	<!-- 7. The audit. One price, one duration, one list of what arrives. -->
-	<section class="bleed mt-40 md:mt-52" aria-labelledby="audit">
+	<!-- 7. The step before the audit. An owner who has not decided cannot buy a
+	     migration audit, and telling him to decide first is not an offer. This
+	     is also the one thing on the site that needs no AI in its argument: it
+	     is sold on eight years inside the platform. The ceiling it names is the
+	     argument for everything below it, which is why the two lists sit side
+	     by side rather than the fixable one standing alone. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="speed">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">Before you decide to leave</p>
+			<span class="spec">One day, 350 EUR</span>
+		</div>
+
+		<h2 id="speed" class="display-lg mt-8 max-w-[24ch]">
+			Most Bubble apps are slower than <em>Bubble makes them</em>.
+		</h2>
+
+		<p class="lead mt-8 max-w-[58ch]">
+			Part of what you are paying for is the platform and part of it is the app. I measure yours and
+			tell you which is which, in writing, before you decide anything.
+		</p>
+
+		<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+					<p class="spec">What the app does to itself</p>
+					<span class="state state-ok">Fixable</span>
+				</div>
+				<ul class="mt-7 flex flex-col gap-3">
+					{
+						faster.map((item) => (
+							<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+								<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+					<p class="spec">What nobody can move</p>
+					<span class="state state-risk">The floor</span>
+				</div>
+				<ul class="mt-7 flex flex-col gap-3">
+					{
+						floor.map((item) => (
+							<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+								<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-hot" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+
+				<p class="prose-body mt-9 max-w-[52ch] text-[0.95rem]">
+					The audit ends in one of two sentences. Fix what the app is doing to itself and stay, or
+					the app is already as fast as the platform allows and the only thing left is to leave. I
+					write the one that is true, and if it is the second the 350 EUR comes off the 600 below.
+				</p>
+
+				<a href={paths.contact.en} class="btn btn-ghost mt-8">Ask for the measurement</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. The audit. One price, one duration, one list of what arrives. It
+	     takes the normal gap and not a joint, because it and the day above it
+	     are one movement now: the two things you can buy before a project. -->
+	<section class="bleed mt-32" aria-labelledby="audit">
 		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
 			<div class="grid gap-10 md:grid-cols-12">
 				<div class="md:col-span-5">
