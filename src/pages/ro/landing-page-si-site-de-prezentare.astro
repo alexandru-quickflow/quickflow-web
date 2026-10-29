@@ -1,0 +1,287 @@
+---
+import Site from '../../layouts/Site.astro';
+import { paths } from '../../i18n/routes';
+import { SELF_JS } from '../../content/proof';
+import ogSlugs from '../../content/og.json';
+
+// Counted rather than typed, so the number cannot go stale the way a hand
+// written one would. Every page in the build has a share image.
+const PAGES = (ogSlugs as string[]).length;
+
+const tiers = [
+	{
+		name: 'Landing page',
+		price: '800',
+		time: 'O săptămână',
+		what: 'O pagină, o limbă, o treabă: cineva ajunge și ori îți scrie, ori nu.',
+		includes: [
+			'O pagină, cu secțiunile stabilite înainte să se construiască ceva',
+			'O limbă',
+			'Un formular care ajunge în inboxul tău, cu o copie pentru cine l-a completat',
+			'Domeniu, găzduire, și analytics care nu are nevoie de banner de cookie-uri',
+			'Totul pe numele tău din prima zi',
+		],
+	},
+	{
+		name: 'Site de prezentare',
+		price: '1.500',
+		time: 'Două săptămâni',
+		what: 'Patru sau cinci pagini, două limbi, și loc să scrii mai târziu fără să mă chemi înapoi.',
+		includes: [
+			'Patru sau cinci pagini, stabilite înainte să se construiască ceva',
+			'Două limbi, cu adresele traduse, nu împărțite',
+			'Același formular, și o pagină de mulțumire în ambele limbi',
+			'Un blog construit și stins, gata pentru primul articol',
+			'O imagine de share pe pagină, desenată din titlul acelei pagini',
+		],
+	},
+];
+
+// The honest boundary, which is what makes a fixed price mean anything.
+const fixed = [
+	{
+		title: 'Secțiunile se stabilesc întâi, în scris',
+		body: 'Lista aia e prețul. A adăuga a șasea pagină la un site de patru e alt preț, și prefer să o spun în prima săptămână decât să o descopăr în a treia.',
+	},
+	{
+		title: 'Textul e al tău',
+		body: 'Îl editez, îl tai, și îți spun când o propoziție nu face nimic. Nu inventez ce face firma ta. Ăsta e singurul lucru care întârzie proiectele de felul ăsta, de fiecare dată.',
+	},
+	{
+		title: 'Pozele sunt tot ale tale',
+		body: 'Stock e în regulă și îl aleg cu tine. Un fotograf nu e în preț, iar pe un site de prezentare de obicei el e diferența dintre credibil și nu.',
+	},
+	{
+		title: 'Două runde de modificări',
+		body: 'Apoi intră live. Nu pentru că a treia m-ar omorî, ci pentru că un site care nu se termină niciodată nu aduce niciodată nimic.',
+	},
+];
+
+// When this is the wrong purchase. The pages that say no are the ones
+// believed when they say yes.
+const instead = [
+	{
+		title: 'Dacă oamenii trebuie să se logheze',
+		body: 'Conturi, acces care expiră, o zonă de membri. Asta e o platformă de cursuri și pornește de la alt număr.',
+		href: 'courses' as const,
+		label: 'Platforme de cursuri',
+	},
+	{
+		title: 'Dacă banii se mișcă între alți doi oameni',
+		body: 'Iei comision din tranzacția altcuiva. Ăsta e un marketplace, și partea grea nu e pagina.',
+		href: 'marketplace' as const,
+		label: 'Marketplace cu plăți',
+	},
+	{
+		title: 'Dacă trebuie să facă ceva',
+		body: 'Rezervări, un calculator, un panou, orice are stare. Asta e o aplicație, iar cinci zile îți spun cât costă.',
+		href: 'prototype' as const,
+		label: 'Prototip în cinci zile',
+	},
+];
+
+const title = 'Landing page, 800 EUR. Site de prezentare, 1.500 EUR';
+const description =
+	'O landing page într-o săptămână la 800 EUR, sau un site de prezentare în două limbi în două săptămâni la 1.500. Scope fix, preț fix, iar site-ul ăsta e demoul.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Landing page și site de prezentare',
+	serviceType: 'Dezvoltare web',
+	description,
+	inLanguage: 'ro',
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'RO',
+	offers: [
+		{
+			'@type': 'Offer',
+			name: 'Landing page',
+			price: '800',
+			priceCurrency: 'EUR',
+			description: 'O pagină, o limbă, livrată într-o săptămână.',
+		},
+		{
+			'@type': 'Offer',
+			name: 'Site de prezentare',
+			price: '1500',
+			priceCurrency: 'EUR',
+			description: 'Patru sau cinci pagini în două limbi, livrate în două săptămâni.',
+		},
+	],
+};
+---
+
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Two prices and two durations, before any argument for them. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Landing page, sau un site</p>
+			<p class="spec">800 sau 1.500 EUR, fix</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			Un site cu preț pe el, și <em>cu o dată</em>.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			O pagină într-o săptămână la 800, sau patru-cinci pagini în două limbi în două săptămâni la
+			1.500. Secțiunile se stabilesc înainte să se construiască ceva, care e singurul fel în care
+			un preț fix înseamnă ceva.
+		</p>
+
+		<div class="mt-10 flex flex-wrap gap-4">
+			<a href={paths.contact.ro} class="btn btn-primary">Spune-mi pentru ce e</a>
+		</div>
+	</section>
+
+	<!-- 2. The demo is the thing you are standing in. Nothing else on this
+	     site uses that, and for this product it is the whole argument: the
+	     numbers below are this page, measured, not a promise about yours. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="demo">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Demonstrația</p>
+			<h2 id="demo" class="display-lg mt-6 max-w-[20ch]">
+				Stai <em>în ea</em> chiar acum.
+			</h2>
+
+			<p class="prose-body mt-8 max-w-[56ch]">
+				Site-ul ăsta e exact lucrul pe care ți l-aș construi, la mărimea celei de-a doua trepte și
+				ceva pe deasupra. Fiecare număr de mai jos e măsurat pe pagina pe care o citești, nu
+				promis despre a ta.
+			</p>
+
+			<dl class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-4">
+				<div class="hair pt-6">
+					<dt class="spec">Pagini, ambele limbi</dt>
+					<dd class="figure mt-5">{PAGES}</dd>
+				</div>
+				<div class="hair pt-6">
+					<dt class="spec">JavaScript trimis de pagină</dt>
+					<dd class="figure mt-5">{SELF_JS}</dd>
+				</div>
+				<div class="hair pt-6">
+					<dt class="spec">Bannere de cookie-uri</dt>
+					<dd class="figure mt-5">0</dd>
+				</div>
+				<div class="hair pt-6">
+					<dt class="spec">Găzduire, pe lună</dt>
+					<dd class="figure mt-5">0 <span>EUR</span></dd>
+				</div>
+			</dl>
+
+			<p class="prose-body mt-12 max-w-[56ch] text-[0.95rem]">
+				Analytics-ul e fără cookie-uri, deci nu e niciun banner de închis și nimic la care să
+				consimți. Găzduirea e gratuită la mărimea asta și rămâne gratuită la aproape orice
+				mărime. Fiecare pagină e verificată de un script pentru text ilizibil și depășiri
+				laterale înainte să iasă, iar cele două limbi sunt comparate element cu element, ca una
+				să nu rămână în urmă pe tăcute.
+			</p>
+		</div>
+	</section>
+
+	<!-- 3. The two tiers, side by side, because that is how the choice is
+	     actually made. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="trepte">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Cele două mărimi</p>
+			<span class="spec">02</span>
+		</div>
+
+		<h2 id="trepte" class="display-lg mt-8 max-w-[24ch]">
+			O pagină, sau un loc unde să trimiți oameni.
+		</h2>
+
+		<div class="mt-12 grid gap-x-16 gap-y-12 md:grid-cols-2">
+			{
+				tiers.map((tier) => (
+					<article class="rise rounded-2xl border border-[var(--line)] p-7 md:p-10">
+						<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+							<p class="spec">{tier.name}</p>
+							<p class="spec">{tier.time}</p>
+						</div>
+
+						<p class="figure mt-6">
+							{tier.price} <span>EUR</span>
+						</p>
+						<p class="prose-body mt-6 max-w-[40ch] text-[0.95rem]">{tier.what}</p>
+
+						<ul class="mt-8 flex flex-col gap-3">
+							{tier.includes.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))}
+						</ul>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 4. What fixed means. A price without a boundary is a number, not a
+	     promise. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="fix">
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+			<p class="spec">Ce înseamnă fix</p>
+			<span class="state state-risk">Pe asta citește-o</span>
+		</div>
+		<h2 id="fix" class="display-lg mt-6 max-w-[24ch]">
+			Un preț e fix doar dacă <em>lista e</em>.
+		</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				fixed.map((f) => (
+					<div class="hair grid gap-3 py-8 md:grid-cols-12 md:gap-8">
+						<h3 class="display-md md:col-span-5">{f.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{f.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 5. When it is the wrong purchase, with the right one linked. -->
+	<section class="bleed mt-32" aria-labelledby="altceva">
+		<p class="spec">Când nu asta e de cumpărat</p>
+		<h2 id="altceva" class="display-lg mt-6 max-w-[24ch]">
+			Un site arată. Nu <em>face</em>.
+		</h2>
+
+		<div class="mt-12 grid gap-x-16 gap-y-12 md:grid-cols-3">
+			{
+				instead.map((item) => (
+					<article class="hair rise pt-6">
+						<h3 class="display-md max-w-[20ch]">{item.title}</h3>
+						<p class="prose-body mt-5 max-w-[40ch] text-[0.95rem]">{item.body}</p>
+						<a href={paths[item.href].ro} class="link mt-6 inline-block text-sm font-medium">
+							{item.label}
+						</a>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 6. Closing, on ink, flowing into the footer. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Spune-mi pentru cine e site-ul și ce vrei să facă omul pe el.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Spune-mi pentru ce e</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Răspuns în aceeași zi lucrătoare. Primești lista de secțiuni și prețul înapoi înainte
+						să te angajezi la ceva.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

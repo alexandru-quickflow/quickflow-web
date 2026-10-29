@@ -1,0 +1,283 @@
+---
+import Site from '../layouts/Site.astro';
+import { paths } from '../i18n/routes';
+import { SELF_JS } from '../content/proof';
+import ogSlugs from '../content/og.json';
+
+// Counted rather than typed, so the number cannot go stale the way a hand
+// written one would. Every page in the build has a share image.
+const PAGES = (ogSlugs as string[]).length;
+
+const tiers = [
+	{
+		name: 'Landing page',
+		price: '800',
+		time: 'One week',
+		what: 'One page, one language, one job: somebody arrives and either writes to you or does not.',
+		includes: [
+			'One page, with the sections agreed before anything is built',
+			'One language',
+			'A form that reaches your inbox, with a copy to whoever filled it in',
+			'A domain, hosting, and the analytics that need no cookie banner',
+			'Everything in your name from the first day',
+		],
+	},
+	{
+		name: 'Presentation site',
+		price: '1,500',
+		time: 'Two weeks',
+		what: 'Four or five pages, two languages, and the room to write later without calling me back.',
+		includes: [
+			'Four or five pages, agreed before anything is built',
+			'Two languages, with the slugs translated rather than shared',
+			'The same form, and a thank-you page in both languages',
+			'A blog that is built and switched off, ready for the first article',
+			'A share image per page, drawn from that page\'s own headline',
+		],
+	},
+];
+
+// The honest boundary, which is what makes a fixed price mean anything.
+const fixed = [
+	{
+		title: 'The sections are agreed first, in writing',
+		body: 'That list is the price. Adding a sixth page to a four-page site is a different price, and I would rather say so in week one than discover it in week three.',
+	},
+	{
+		title: 'The text is yours',
+		body: 'I will edit it, cut it and tell you when a sentence is doing nothing. I will not invent what your company does. This is the single thing that delays these projects, every time.',
+	},
+	{
+		title: 'Photographs are yours too',
+		body: 'Stock is fine and I will choose it with you. A photographer is not in the price, and on a presentation site it is usually the difference between credible and not.',
+	},
+	{
+		title: 'Two rounds of changes',
+		body: 'Then it goes live. Not because a third would kill me, but because a site that is never finished never earns anything.',
+	},
+];
+
+// When this is the wrong purchase. The pages that say no are the ones
+// believed when they say yes.
+const instead = [
+	{
+		title: 'If people have to log in',
+		body: 'Accounts, access that expires, a members area. That is a course platform and it starts at a different number.',
+		href: 'courses' as const,
+		label: 'Course platforms',
+	},
+	{
+		title: 'If money moves between two other people',
+		body: 'You take a cut of somebody else\'s transaction. That is a marketplace, and the hard part is not the page.',
+		href: 'marketplace' as const,
+		label: 'Marketplace with payments',
+	},
+	{
+		title: 'If it has to do something',
+		body: 'Bookings, a calculator, a dashboard, anything with state. That is an app, and five days will tell you what it costs.',
+		href: 'prototype' as const,
+		label: 'Prototype in five days',
+	},
+];
+
+const title = 'Landing page, 800 EUR. Presentation site, 1,500 EUR | Quick Flow';
+const description =
+	'A landing page in one week at 800 EUR, or a presentation site in two languages in two weeks at 1,500. Fixed scope, fixed price, and this site is the demo.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Landing pages and presentation sites',
+	serviceType: 'Website development',
+	description,
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'Worldwide',
+	offers: [
+		{
+			'@type': 'Offer',
+			name: 'Landing page',
+			price: '800',
+			priceCurrency: 'EUR',
+			description: 'One page, one language, delivered in a week.',
+		},
+		{
+			'@type': 'Offer',
+			name: 'Presentation site',
+			price: '1500',
+			priceCurrency: 'EUR',
+			description: 'Four or five pages in two languages, delivered in two weeks.',
+		},
+	],
+};
+---
+
+<Site lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Two prices and two durations, before any argument for them. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Landing page, or a site</p>
+			<p class="spec">800 or 1,500 EUR, fixed</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			A site with a price on it, and <em>a date</em>.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			One page in a week at 800, or four to five pages in two languages in two weeks at 1,500. The
+			sections are agreed before anything is built, which is the only way a fixed price means
+			anything.
+		</p>
+
+		<div class="mt-10 flex flex-wrap gap-4">
+			<a href={paths.contact.en} class="btn btn-primary">Tell me what it is for</a>
+		</div>
+	</section>
+
+	<!-- 2. The demo is the thing you are standing in. Nothing else on this
+	     site uses that, and for this product it is the whole argument: the
+	     numbers below are this page, measured, not a promise about yours. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="demo">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">The demonstration</p>
+			<h2 id="demo" class="display-lg mt-6 max-w-[20ch]">
+				You are <em>standing in it</em>.
+			</h2>
+
+			<p class="prose-body mt-8 max-w-[56ch]">
+				This site is the same thing I would build you, at the size of the second tier and then
+				some. Every number below is measured on the page you are reading rather than promised
+				about yours.
+			</p>
+
+			<dl class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-4">
+				<div class="hair pt-6">
+					<dt class="spec">Pages, both languages</dt>
+					<dd class="figure mt-5">{PAGES}</dd>
+				</div>
+				<div class="hair pt-6">
+					<dt class="spec">JavaScript this page sends</dt>
+					<dd class="figure mt-5">{SELF_JS}</dd>
+				</div>
+				<div class="hair pt-6">
+					<dt class="spec">Cookie banners</dt>
+					<dd class="figure mt-5">0</dd>
+				</div>
+				<div class="hair pt-6">
+					<dt class="spec">Hosting, per month</dt>
+					<dd class="figure mt-5">0 <span>EUR</span></dd>
+				</div>
+			</dl>
+
+			<p class="prose-body mt-12 max-w-[56ch] text-[0.95rem]">
+				The analytics are cookieless, so there is no banner to dismiss and nothing to consent to.
+				The hosting is free at this size and stays free at most sizes. Every page is checked for
+				unreadable text and sideways overflow by a script, before it goes out, and both languages
+				are compared element by element so one cannot quietly fall behind the other.
+			</p>
+		</div>
+	</section>
+
+	<!-- 3. The two tiers, side by side, because that is how the choice is
+	     actually made. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="tiers">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">The two sizes</p>
+			<span class="spec">02</span>
+		</div>
+
+		<h2 id="tiers" class="display-lg mt-8 max-w-[24ch]">One page, or somewhere to send people.</h2>
+
+		<div class="mt-12 grid gap-x-16 gap-y-12 md:grid-cols-2">
+			{
+				tiers.map((tier) => (
+					<article class="rise rounded-2xl border border-[var(--line)] p-7 md:p-10">
+						<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+							<p class="spec">{tier.name}</p>
+							<p class="spec">{tier.time}</p>
+						</div>
+
+						<p class="figure mt-6">
+							{tier.price} <span>EUR</span>
+						</p>
+						<p class="prose-body mt-6 max-w-[40ch] text-[0.95rem]">{tier.what}</p>
+
+						<ul class="mt-8 flex flex-col gap-3">
+							{tier.includes.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))}
+						</ul>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 4. What fixed means. A price without a boundary is a number, not a
+	     promise. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="fixed">
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+			<p class="spec">What fixed means</p>
+			<span class="state state-risk">Read this one</span>
+		</div>
+		<h2 id="fixed" class="display-lg mt-6 max-w-[24ch]">
+			A price is only fixed if <em>the list is</em>.
+		</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				fixed.map((f) => (
+					<div class="hair grid gap-3 py-8 md:grid-cols-12 md:gap-8">
+						<h3 class="display-md md:col-span-5">{f.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{f.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 5. When it is the wrong purchase, with the right one linked. -->
+	<section class="bleed mt-32" aria-labelledby="instead">
+		<p class="spec">When this is the wrong thing to buy</p>
+		<h2 id="instead" class="display-lg mt-6 max-w-[24ch]">
+			A site shows. It does not <em>do</em>.
+		</h2>
+
+		<div class="mt-12 grid gap-x-16 gap-y-12 md:grid-cols-3">
+			{
+				instead.map((item) => (
+					<article class="hair rise pt-6">
+						<h3 class="display-md max-w-[20ch]">{item.title}</h3>
+						<p class="prose-body mt-5 max-w-[40ch] text-[0.95rem]">{item.body}</p>
+						<a href={paths[item.href].en} class="link mt-6 inline-block text-sm font-medium">
+							{item.label}
+						</a>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 6. Closing, on ink, flowing into the footer. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Tell me who the site is for and what you want them to do on it.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Tell me what it is for</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Answered the same working day. You get the section list and the price back before you
+						commit to anything.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

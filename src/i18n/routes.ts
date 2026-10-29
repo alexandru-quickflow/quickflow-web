@@ -19,6 +19,7 @@ export type PageId =
 	| 'internal'
 	| 'prototype'
 	| 'audit'
+	| 'websites'
 	| 'work'
 	| 'contact'
 	| 'privacy'
@@ -53,6 +54,12 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 	audit: {
 		en: '/bubble-performance-audit',
 		ro: '/ro/audit-performanta-bubble',
+	},
+	// The Romanian slug carries both terms because both are searched for
+	// separately, and the Romanian market is the one where that matters.
+	websites: {
+		en: '/landing-page-and-website',
+		ro: '/ro/landing-page-si-site-de-prezentare',
 	},
 	work: { en: '/work', ro: '/ro/portofoliu' },
 	contact: { en: '/contact', ro: '/ro/contact' },
@@ -138,6 +145,7 @@ export const footerNav: Record<
 				{ id: 'marketplace', label: 'Marketplace with payments' },
 				{ id: 'courses', label: 'Course platforms' },
 				{ id: 'internal', label: 'Internal apps' },
+				{ id: 'websites', label: 'Landing page and site' },
 			],
 		},
 		{
@@ -164,6 +172,7 @@ export const footerNav: Record<
 				{ id: 'marketplace', label: 'Marketplace cu plăți' },
 				{ id: 'courses', label: 'Platforme de cursuri' },
 				{ id: 'internal', label: 'Aplicații interne' },
+				{ id: 'websites', label: 'Landing page și site' },
 			],
 		},
 		{
