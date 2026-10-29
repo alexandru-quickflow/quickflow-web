@@ -446,15 +446,10 @@
 		display: block;
 		width: 100%;
 		height: auto;
-		transition: transform 0.7s var(--ease);
 	}
 
 	.shot:hover {
 		transform: translateY(-4px);
-	}
-
-	.shot:hover img {
-		transform: scale(1.035);
 	}
 
 	/* A row of work: a screenshot and what it is. The rows alternate, but the

@@ -8,6 +8,48 @@ import { paths } from '../i18n/routes';
 const weight = proof('en', 'bubble-weight');
 const escrow = proof('en', 'stripe-escrow');
 
+// The three facts the rest of the page rests on. They were one justified
+// paragraph, which was true and read as a wall. The numeral carries each one
+// now and the sentence under it only says why it matters.
+const facts = [
+	{
+		figure: '8',
+		unit: 'years inside Bubble',
+		what: 'Which is why I can tell you what will not survive the move.',
+	},
+	{
+		figure: '1',
+		unit: 'person on the project',
+		what: 'Nothing is lost between whoever designed it and whoever built it.',
+	},
+	{
+		figure: '5',
+		unit: 'days to something running',
+		what: 'Built with AI, which is why five days is a real unit of delivery.',
+	},
+];
+
+// What happens after someone writes. The closing band was a headline and a
+// button on the largest surface of the page, and the thing that stops a
+// reader writing is not knowing what comes back.
+const steps = [
+	{
+		n: '01',
+		label: 'What to write',
+		text: 'One paragraph. What it is, who uses it, and what hurts right now.',
+	},
+	{
+		n: '02',
+		label: 'What comes back',
+		text: 'An answer the same working day, in writing, from me.',
+	},
+	{
+		n: '03',
+		label: 'What it costs',
+		text: 'Nothing, and you are not on a list afterwards.',
+	},
+];
+
 const services = [
 	{
 		n: '01',
@@ -183,11 +225,7 @@ const schema = {
 			<a href={paths.migration.en} class="btn btn-ghost">See how a Bubble migration runs</a>
 		</div>
 
-		<div class="mt-12 md:mt-16">
-			<PaymentFlow lang="en" />
-		</div>
-
-		<p class="stamp mt-7">This page ships {SELF_JS} of JavaScript</p>
+		<p class="stamp mt-12">This page ships {SELF_JS} of JavaScript</p>
 	</section>
 
 	<!-- 2. Proof. The content inventory says this site has one asset in
@@ -249,21 +287,26 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- 3. The statement. One sentence, justified, filling the measure. -->
+	<!-- 3. Three facts, each under the number that carries it. -->
 	<section class="bleed mt-24 md:mt-36">
-		<div class="hair pt-10 md:pt-14">
-			<p class="statement max-w-[30ch] md:max-w-none">
-				<strong>Eight years inside Bubble</strong>, which is why I can tell you what will not survive
-				the move. <strong>One person</strong>, so nothing is lost between whoever designed it and
-				whoever built it. <strong>Built with AI</strong>, which is why five days is a real unit of
-				delivery and not a sales number.
-			</p>
+		<div class="grid gap-x-16 gap-y-12 md:grid-cols-3">
+			{
+				facts.map((f) => (
+					<div class="hair rise pt-6">
+						<p class="figure">{f.figure}</p>
+						<p class="spec mt-5">{f.unit}</p>
+						<p class="mt-5 max-w-[30ch] text-lg leading-snug">{f.what}</p>
+					</div>
+				))
+			}
 		</div>
 	</section>
 
-	<!-- 4. Services. Two by two, each with its own hairline mark. They are
-	     drawn, not iconified: four marks in one geometry read as a system,
-	     four icons read as a kit. -->
+	<!-- 4. Services. One per row, not two by two. In the grid each of the four
+	     had a quarter of the page and the reader met them as a block of equal
+	     weight; on its own row each one has the measure to say what the hard
+	     part is. The marks are drawn, not iconified: four marks in one geometry
+	     read as a system, four icons read as a kit. -->
 	<section class="bleed mt-24 md:mt-36" aria-labelledby="services">
 		<div class="hair flex items-baseline justify-between gap-6 pt-5">
 			<p class="spec">What I build</p>
@@ -274,23 +317,47 @@ const schema = {
 			The hard part is never the one people expect.
 		</h2>
 
-		<div class="mt-12 grid gap-x-16 gap-y-14 md:mt-16 md:grid-cols-2 md:gap-y-20">
+		<div class="mt-8 md:mt-12">
 			{
 				services.map((s, i) => (
-					<article class="rise">
-						<div class="flex items-start justify-between gap-6">
-							<span class="spec">{s.n}</span>
-							<ServiceMark n={i as 0 | 1 | 2 | 3} class="h-20 w-auto shrink-0" />
+					<article class="hair rise grid gap-6 py-10 md:grid-cols-12 md:gap-10 md:py-16">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+
+						<div class="md:col-span-4 md:col-start-2">
+							<h3 class="display-md max-w-[18ch]">{s.title}</h3>
+							<ServiceMark n={i as 0 | 1 | 2 | 3} class="mt-10 h-20 w-auto" />
 						</div>
 
-						<h3 class="display-md mt-5 max-w-[20ch]">{s.title}</h3>
-						<p class="prose-body mt-4 max-w-[46ch] text-[0.95rem]">{s.problem}</p>
-						<a href={s.href} class="link mt-5 inline-block text-sm font-medium">
-							{s.cta}
-						</a>
+						<div class="md:col-span-5 md:col-start-8">
+							<p class="prose-body max-w-[46ch]">{s.problem}</p>
+							<a href={s.href} class="link mt-7 inline-block text-sm font-medium">
+								{s.cta}
+							</a>
+						</div>
 					</article>
 				))
 			}
+		</div>
+	</section>
+
+	<!-- 4c. One example, drawn. The diagram used to sit in the hero, where it
+	     argued for one service out of four under a headline that had just
+	     widened the offer to all of them. Down here it is what it always was:
+	     the inside of position 02. -->
+	<section class="bleed mt-24 md:mt-32" aria-labelledby="example">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">One example, from a marketplace</p>
+			<a href={paths.marketplace.en} class="spec transition-colors hover:text-paper">
+				How it is built
+			</a>
+		</div>
+
+		<h2 id="example" class="display-lg mt-8 max-w-[22ch]">
+			Money taken on Monday and paid out on Friday has to <em>live somewhere</em>.
+		</h2>
+
+		<div class="mt-12 md:mt-16">
+			<PaymentFlow lang="en" />
 		</div>
 	</section>
 
@@ -509,17 +576,35 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- 8. Closing. Flows straight into the footer, one mass of ink. -->
+	<!-- 8. Closing. Flows straight into the footer, one mass of ink. The three
+	     steps under the line are there because a headline and a button on the
+	     largest surface of the page is not an invitation, it is a sign. -->
 	<section class="band mt-24 md:mt-36">
 		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
 			<div class="grid gap-10 md:grid-cols-12">
-				<h2 class="display-lg md:col-span-8">
+				<h2 class="display-lg md:col-span-7">
 					If something your company runs on is stuck, or should exist and does not, tell me what it
 					is.
 				</h2>
-				<div class="md:col-span-3 md:col-start-10 md:self-end md:justify-self-end">
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
 					<a href={paths.contact.en} class="btn btn-primary">Tell me what you are building</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						If it is not something I build, I say so and point you somewhere else.
+					</p>
 				</div>
+			</div>
+
+			<div class="hair mt-16 grid gap-x-12 gap-y-8 pt-8 md:mt-20 md:grid-cols-3">
+				{
+					steps.map((s) => (
+						<div>
+							<p class="spec">
+								{s.n} {s.label}
+							</p>
+							<p class="mt-3 max-w-[34ch] text-[0.95rem] leading-relaxed text-paper/80">{s.text}</p>
+						</div>
+					))
+				}
 			</div>
 		</div>
 	</section>
