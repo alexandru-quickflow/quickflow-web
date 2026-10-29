@@ -30,8 +30,7 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Romanian, Russian, English',
 		footerContact: 'Contact',
 		footerBuilt: 'Built with no framework on the client',
-		legal:
-			'Quick Flow SRL, Bucharest, Romania. Fiscal code 44089760, trade register J2021006561401. The registered office is on the terms page.',
+		legal: 'Quick Flow SRL · CUI 44089760 · Reg. J2021006561401',
 	},
 	ro: {
 		skip: 'Sari la conținut',
@@ -44,7 +43,6 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Română, rusă, engleză',
 		footerContact: 'Contact',
 		footerBuilt: 'Construit fără framework pe client',
-		legal:
-			'Quick Flow SRL, București, România. CUI 44089760, nr. reg. com. J2021006561401. Sediul social e pe pagina de termeni.',
+		legal: 'Quick Flow SRL · CUI 44089760 · Reg. com. J2021006561401',
 	},
 };
