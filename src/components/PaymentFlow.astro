@@ -66,44 +66,49 @@ const copy = {
 const parts = [850, 120, 30];
 ---
 
-<div class="flowmap">
-	<div class="node">
-		<p class="spec">{copy.buyer}</p>
-		<p class="amount">{copy.total}</p>
-		<p class="sub">{copy.buyerSub}</p>
-	</div>
+<!-- The row form depends on how much room this drawing has, not on how wide
+     the window is, so the breakpoint lives on this wrapper. On the escrow page
+     the same component sits in half a twelve-column grid. -->
+<div class="flowfit">
+	<div class="flowmap">
+		<div class="node">
+			<p class="spec">{copy.buyer}</p>
+			<p class="amount">{copy.total}</p>
+			<p class="sub">{copy.buyerSub}</p>
+		</div>
 
-	<div class="step">
-		<p class="spec">{copy.step1}</p>
-		<span class="arrow">
-			<i></i>
-			<svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"
-				><path d="M1,1 l6,4 -6,4"></path></svg
-			>
-		</span>
-	</div>
+		<div class="step">
+			<p class="spec">{copy.step1}</p>
+			<span class="arrow">
+				<i></i>
+				<svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"
+					><path d="M1,1 l6,4 -6,4"></path></svg
+				>
+			</span>
+		</div>
 
-	<div class="node">
-		<p class="spec">{copy.platform}</p>
-		<p class="amount">{copy.total}</p>
-		<p class="chip">{copy.held}</p>
-		<p class="sub">{copy.platformSub}</p>
-	</div>
+		<div class="node">
+			<p class="spec">{copy.platform}</p>
+			<p class="amount">{copy.total}</p>
+			<p class="chip">{copy.held}</p>
+			<p class="sub">{copy.platformSub}</p>
+		</div>
 
-	<div class="step">
-		<p class="spec">{copy.step3}</p>
-		<span class="arrow">
-			<i></i>
-			<svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"
-				><path d="M1,1 l6,4 -6,4"></path></svg
-			>
-		</span>
-	</div>
+		<div class="step">
+			<p class="spec">{copy.step3}</p>
+			<span class="arrow">
+				<i></i>
+				<svg width="8" height="10" viewBox="0 0 8 10" aria-hidden="true"
+					><path d="M1,1 l6,4 -6,4"></path></svg
+				>
+			</span>
+		</div>
 
-	<div class="node">
-		<p class="spec">{copy.seller}</p>
-		<p class="amount">{copy.sellerAmount}</p>
-		<p class="sub">{copy.sellerSub}</p>
+		<div class="node">
+			<p class="spec">{copy.seller}</p>
+			<p class="amount">{copy.sellerAmount}</p>
+			<p class="sub">{copy.sellerSub}</p>
+		</div>
 	</div>
 </div>
 

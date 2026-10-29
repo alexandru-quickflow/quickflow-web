@@ -641,13 +641,24 @@
 	 * a label would grow, or a band would sit where a word needed to be. Here
 	 * padding is padding and nothing can overlap anything. */
 
+	/* The row form needs about 820px, which is what this drawing gets on the
+	   home and marketplace pages at a 900px window: three nodes carrying 56px
+	   of padding each, and two step columns holding a label and an arrow. It
+	   used to ask the window instead, and on the escrow page, where the same
+	   component sits in half a twelve-column grid, the container is 452px at
+	   1,024 and never more than 580. The row was drawn anyway and each label
+	   was squeezed into between 2 and 52 pixels. */
+	.flowfit {
+		container-type: inline-size;
+	}
+
 	.flowmap {
 		display: grid;
 		gap: 1rem;
 		align-items: stretch;
 	}
 
-	@media (min-width: 900px) {
+	@container (min-width: 820px) {
 		.flowmap {
 			grid-template-columns: 1fr auto 1fr auto 1fr;
 			gap: 0;
@@ -738,7 +749,7 @@
 		stroke-width: 1.25;
 	}
 
-	@media (max-width: 899px) {
+	@container (max-width: 819px) {
 		.step {
 			padding-block: 0.25rem;
 		}
