@@ -287,9 +287,25 @@ const ogImage = new URL(
 					}
 				</div>
 
-				<div class="mt-16 flex flex-wrap items-center justify-between gap-4">
-					<span class="spec">Quick Flow, {new Date().getFullYear()}</span>
-					<span class="spec">{t.footerBuilt}</span>
+				<!-- Legea 365/2002, articolul 5, asks for the name, the registered
+				     office, the contact details, the trade register number and the
+				     fiscal code, put somewhere easy to find, permanent and free of
+				     charge. A colophon under the index is where a reader looks for
+				     exactly this, and the email is one column above it.
+
+				     Not in mono uppercase like the rest of the footer: an address
+				     read in capitals with 0.1em of tracking is a puzzle, and this
+				     is the one block on the site whose only job is to be read
+				     accurately. The bank details are not here either. No law asks
+				     for an IBAN and it belongs on an invoice, not on a page
+				     anybody can open. -->
+				<div class="hair mt-16 pt-8">
+					<p class="prose-body max-w-[78ch] text-[0.8rem]">{t.legal}</p>
+
+					<div class="mt-7 flex flex-wrap items-center justify-between gap-4">
+						<span class="spec">Quick Flow, {new Date().getFullYear()}</span>
+						<span class="spec">{t.footerBuilt}</span>
+					</div>
 				</div>
 			</div>
 		</footer>

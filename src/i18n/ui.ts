@@ -15,6 +15,7 @@ interface Ui {
 	footerLanguages: string;
 	footerContact: string;
 	footerBuilt: string;
+	legal: string;
 }
 
 export const ui: Record<Locale, Ui> = {
@@ -29,6 +30,8 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Romanian, Russian, English',
 		footerContact: 'Contact',
 		footerBuilt: 'Built with no framework on the client',
+		legal:
+			'Quick Flow SRL, registered office Șos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 Bucharest, Romania. Fiscal code 44089760, trade register J2021006561401.',
 	},
 	ro: {
 		skip: 'Sari la conținut',
@@ -41,5 +44,7 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Română, rusă, engleză',
 		footerContact: 'Contact',
 		footerBuilt: 'Construit fără framework pe client',
+		legal:
+			'Quick Flow SRL, sediul social Șos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 București. CUI 44089760, nr. reg. com. J2021006561401.',
 	},
 };
