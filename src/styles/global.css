@@ -313,7 +313,38 @@
 		color: var(--faint);
 	}
 
+	/* Both label sizes go up one step on a phone.
+	 *
+	 * 10px of mono with 0.18em of tracking fills 311 of the 335 pixels a 375px
+	 * phone has to spend on a line, which stops reading as a label and starts
+	 * reading as a thin grey ribbon. On a desktop the same line is a fraction
+	 * of the measure and the surrounding type is twice the size, so it holds.
+	 *
+	 * The step between the two is kept, because that step is what says one of
+	 * them is a label and the other is a note under it. And the measurement
+	 * that matters here is not the font size, it is the share of the line: the
+	 * tracking is what makes these long, not the letters. */
+	@media (max-width: 767px) {
+		/* Bigger letters and less air between them, which is the trade that
+		   matters: raising the size alone put the stamp onto two lines and
+		   left its dot beside the second one. At 11px with 0.1em the line is
+		   shorter than it was at 10px with 0.18em, because on a label this
+		   short the tracking is most of the width, not the letters. */
+		.spec {
+			font-size: 0.75rem;
+			letter-spacing: 0.1em;
+		}
+
+		.stamp {
+			font-size: 0.6875rem;
+			letter-spacing: 0.1em;
+		}
+	}
+
 	.stamp::before {
+		/* On the first line, not vertically centred against two of them. */
+		align-self: flex-start;
+		margin-top: 0.42em;
 		content: "";
 		width: 0.4rem;
 		height: 0.4rem;
