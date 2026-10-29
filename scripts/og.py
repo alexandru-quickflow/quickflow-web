@@ -58,6 +58,8 @@ SECTIONS = {
     'ro-servicii-aplicatii-interne': 'Aplicații interne',
     'bubble-performance-audit': 'Bubble performance audit',
     'ro-audit-performanta-bubble': 'Audit de performanță Bubble',
+    'services-course-platforms': 'Course platforms',
+    'ro-servicii-platforme-cursuri': 'Platforme de cursuri',
 }
 
 INK = (4, 8, 11)

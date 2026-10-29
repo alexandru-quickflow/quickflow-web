@@ -15,6 +15,7 @@ export type PageId =
 	| 'home'
 	| 'migration'
 	| 'marketplace'
+	| 'courses'
 	| 'internal'
 	| 'prototype'
 	| 'audit'
@@ -33,6 +34,10 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 	marketplace: {
 		en: '/services/marketplace-payments',
 		ro: '/ro/servicii/marketplace-plati',
+	},
+	courses: {
+		en: '/services/course-platforms',
+		ro: '/ro/servicii/platforme-cursuri',
 	},
 	internal: {
 		en: '/services/internal-apps',
@@ -56,23 +61,25 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 	escrow: { en: '/stripe-escrow-marketplace', ro: '/ro/stripe-escrow-marketplace' },
 };
 
-/** The pages in the header, in order, per language: the three services in
- *  their own hierarchy, then the one product with a price on the label, then
- *  the portfolio and the way to write. */
+/** The pages in the header, in order, per language: the four services, then
+ *  the portfolio and the way to write. Six items, and six is the ceiling: a
+ *  seventh fits at 1280 and collides with the language switcher at 1024. The
+ *  two products with a price on them, the audit and the prototype, are reached
+ *  from the home page and the footer instead. */
 export const nav: Record<Locale, { id: PageId; label: string }[]> = {
 	en: [
 		{ id: 'migration', label: 'Migration' },
 		{ id: 'marketplace', label: 'Marketplace' },
+		{ id: 'courses', label: 'Courses' },
 		{ id: 'internal', label: 'Internal apps' },
-		{ id: 'prototype', label: 'Prototype' },
 		{ id: 'work', label: 'Work' },
 		{ id: 'contact', label: 'Contact' },
 	],
 	ro: [
 		{ id: 'migration', label: 'Migrare' },
 		{ id: 'marketplace', label: 'Marketplace' },
+		{ id: 'courses', label: 'Cursuri' },
 		{ id: 'internal', label: 'Aplicații interne' },
-		{ id: 'prototype', label: 'Prototip' },
 		{ id: 'work', label: 'Portofoliu' },
 		{ id: 'contact', label: 'Contact' },
 	],
@@ -115,3 +122,68 @@ export function alternates(pathname: string): { locale: Locale; href: string }[]
 	if (!id) return [{ locale: localeOf(pathname), href: normalize(pathname) || '/' }];
 	return LOCALES.map((locale) => ({ locale, href: paths[id][locale] }));
 }
+
+/** The footer is an index, not a copy of the header. The header stops at six
+ *  items for a measured reason; the footer has room for all twelve pages and
+ *  groups them by what they are rather than by what fits. */
+export const footerNav: Record<
+	Locale,
+	{ title: string; items: { id: PageId; label: string }[] }[]
+> = {
+	en: [
+		{
+			title: 'Services',
+			items: [
+				{ id: 'migration', label: 'Bubble to code migration' },
+				{ id: 'marketplace', label: 'Marketplace with payments' },
+				{ id: 'courses', label: 'Course platforms' },
+				{ id: 'internal', label: 'Internal apps' },
+			],
+		},
+		{
+			title: 'Ways in',
+			items: [
+				{ id: 'audit', label: 'Performance audit, 350' },
+				{ id: 'prototype', label: 'Prototype, 1,800' },
+			],
+		},
+		{
+			title: 'Quick Flow',
+			items: [
+				{ id: 'work', label: 'Work' },
+				{ id: 'contact', label: 'Contact' },
+				{ id: 'privacy', label: 'Privacy' },
+			],
+		},
+	],
+	ro: [
+		{
+			title: 'Servicii',
+			items: [
+				{ id: 'migration', label: 'Migrare de pe Bubble pe cod' },
+				{ id: 'marketplace', label: 'Marketplace cu plăți' },
+				{ id: 'courses', label: 'Platforme de cursuri' },
+				{ id: 'internal', label: 'Aplicații interne' },
+			],
+		},
+		{
+			title: 'Intrări',
+			items: [
+				{ id: 'audit', label: 'Audit de performanță, 350' },
+				{ id: 'prototype', label: 'Prototip, 1.800' },
+			],
+		},
+		{
+			title: 'Quick Flow',
+			items: [
+				{ id: 'work', label: 'Portofoliu' },
+				{ id: 'contact', label: 'Contact' },
+				{ id: 'privacy', label: 'Confidențialitate' },
+			],
+		},
+	],
+};
+
+/** The one profile that is confirmed. The home page schema used to carry a
+ *  comment saying there would be no sameAs until there was a URL to put in it. */
+export const PROFILE = 'https://www.linkedin.com/in/alexandrutr/';

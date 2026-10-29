@@ -1,0 +1,330 @@
+---
+import Site from '../../../layouts/Site.astro';
+import { paths } from '../../../i18n/routes';
+
+// The signs are all the same sentence from three sides: access is being kept
+// in somebody's head instead of in the system.
+const signs = [
+	{
+		n: '01',
+		title: 'Cineva a plătit și i-ai deschis accesul de mână',
+		body: 'Merge la zece cursanți și cade în prima săptămână în care ești plecat. O plată care nu deschide accesul singură nu e o vânzare, e o sarcină.',
+	},
+	{
+		n: '02',
+		title: 'Nu poți spune azi cine mai are acces',
+		body: 'Nu aproximativ, exact. Dacă răspunsul presupune să deschizi un tabel și să îl compari cu email-urile de la plăți, numărul ăla e deja greșit.',
+	},
+	{
+		n: '03',
+		title: 'S-a dat un refund și cursul e tot deschis',
+		body: 'Banii se mișcă într-un sistem și accesul trăiește în altul, deci cele două sunt de acord doar cât timp își amintește cineva să le pună de acord.',
+	},
+];
+
+// What the platform has to do. Four, and none of them is a feature name.
+const does = [
+	{
+		title: 'Deschide accesul când ajung banii',
+		body: 'Nu când vezi tu emailul. Procesatorul spune că plata a trecut și accesul e deschis în aceeași secundă, la trei dimineața, fără să fie nimeni treaz.',
+	},
+	{
+		title: 'Îl închide când trebuie închis',
+		body: 'La șase luni de la cumpărare, la finalul unui abonament, la un refund. Fiecare e altă regulă și fiecare trebuie scrisă undeva în afara memoriei tale.',
+	},
+	{
+		title: 'Spune ce vede omul după ce s-a închis',
+		body: 'O listă de lecții blocate și un buton de cumpărat din nou, sau nimic. Răspunsul greșit aici te costă reînnoirea, și nimeni nu ia decizia asta până nu dă un cursant de ea.',
+	},
+	{
+		title: 'Îți spune cine unde e, fără să întrebi',
+		body: 'Cine a cumpărat, cine a început, cine s-a oprit la lecția trei, cui îi expiră accesul luna asta. Asta e diferența dintre un produs și un dosar cu filme.',
+	},
+];
+
+// The technical heart of the page, and it is a real defect pattern rather
+// than a feature list. Documented on the migration page too, from the other
+// side: there, as the thing a migration cannot see.
+const expiry = [
+	'Un job programat pentru o dată de peste șase luni trăiește în platformă, nu în datele tale. Nimic nu îl listează, nimic nu îl exportă, și nu poți număra ce nu poți lista.',
+	'Dacă unul cade, nimic nu o spune. Accesul pur și simplu nu se mai termină, iar tu afli când cineva care trebuia blocat îți scrie să îți mulțumească.',
+	'Schimbi platforma și coada nu vine cu tine. Datele sunt pe înregistrări, deci se poate reconstrui, dar numai de cineva care știe să se uite.',
+];
+
+// Four of the five projects in the portfolio are this. That is the strongest
+// proof position on the site and until now it had no page to stand on.
+const built = [
+	{
+		name: 'jemshitmavlyanov.com',
+		href: 'https://jemshitmavlyanov.com',
+		what: 'O academie video scoasă din Bubble în întregime: conturi, coș, plată, acces care expiră după șase luni, certificat și panou de administrare. Nouă limbi, cu audio și subtitrare în rusă pentru fiecare.',
+		proves: 'Acces care expiră, la scară, în nouă limbi',
+	},
+	{
+		name: 'elenaviscu.com',
+		href: 'https://elenaviscu.com',
+		what: 'Trei produse vândute aceleiași persoane, fiecare cu regula lui de acces: un curs cu acces limitat în timp, ședințe unu la unu cu programare, și un al treilea tip de ședință.',
+		proves: 'Trei reguli de acces sub un singur cont',
+	},
+	{
+		name: 'easonline.academy',
+		href: 'https://easonline.academy',
+		what: 'Cursuri de coafură predate până atunci doar într-o sală. Lecții video, conturi de cursant, plată, și acces deschis după plată.',
+		proves: 'Primul pas afară din sală',
+	},
+	{
+		name: 'angelalaur.ro',
+		href: 'https://angelalaur.ro',
+		what: 'Un curs și un catalog de produse vândute aceluiași public, înainte în două locuri separate și cu comenzile venind pe mesaj. Un singur site, un singur coș, conturi de cursant pentru curs.',
+		proves: 'Un curs și un magazin într-un coș',
+	},
+];
+
+const wont = [
+	{
+		title: 'Nu pot opri pe cineva să îți înregistreze ecranul',
+		body: 'Nimeni nu poate. Ce merită făcut e ca acel cont să merite păstrat: progres, certificat, cursul următor. Ce nu merită e să îți dai bugetul pe o broască pe lângă care trece o cameră de telefon.',
+	},
+	{
+		title: 'Nu îți construiesc un Teachable',
+		body: 'Dacă o platformă gata făcută se potrivește cu ce vinzi, folosește-o și ține banii. Asta merită construită când regulile de acces sunt ale tale, limbile sunt ale tale, sau comisionul de pe fiecare vânzare a început să doară.',
+	},
+];
+
+const title = 'Platforme de cursuri și membership, pe cod';
+const description =
+	'Platforme de cursuri unde plata deschide accesul, expirarea îl închide, și poți spune azi cine îl mai are. Patru livrate, de la 4.500 EUR după un audit de 600.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Platforme de cursuri și membership',
+	serviceType: 'Dezvoltare platforme de cursuri',
+	description,
+	inLanguage: 'ro',
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'RO',
+	offers: {
+		'@type': 'Offer',
+		name: 'Platformă de cursuri',
+		price: '4500',
+		priceCurrency: 'EUR',
+		description: 'De la 4.500 EUR, după un audit de două zile la 600 care se scade din preț.',
+	},
+};
+---
+
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recognition. The distinction in the first two lines is the whole
+	     service: a shop ships a thing once, this one keeps deciding. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Platforme de cursuri și membership</p>
+			<p class="spec">Patru livrate</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			Nu vinzi un lucru. Vinzi <em>cine are voie să îl vadă</em>.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Un magazin decide o dată și expediază. O platformă de cursuri decide de fiecare dată când
+			cineva deschide o pagină: a plătit, i-a expirat, și ce vede dacă i-a expirat.
+		</p>
+
+		<p class="stamp mt-7">De la 4.500 EUR, după un audit de două zile la 600</p>
+
+		<div class="mt-10 md:mt-12">
+			<a href={paths.contact.ro} class="btn btn-primary">Spune-mi ce vinzi</a>
+		</div>
+	</section>
+
+	<!-- 2. Three signs, all the same sentence from three sides. -->
+	<section class="bleed mt-32" aria-labelledby="semne">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">De obicei ajungi aici după una din astea</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="semne" class="display-lg mt-8 max-w-[24ch]">Accesul stă în capul cuiva.</h2>
+
+		<div class="mt-4">
+			{
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 3. What it has to do, on ink. Four jobs, none of them a feature name. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="face">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Ce trebuie să facă platforma</p>
+			<h2 id="face" class="display-lg mt-6 max-w-[22ch]">
+				Patru decizii, luate <em>fără tine</em>.
+			</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+				{
+					does.map((item, i) => (
+						<article class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<h3 class="display-md mt-4 max-w-[22ch]">{item.title}</h3>
+							<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{item.body}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. The hard part, named. Every page on this site has one of these and
+	     it is always the thing a feature list leaves out. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="expirare">
+		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Partea grea</p>
+				<h2 id="expirare" class="display-lg mt-6 max-w-[18ch]">
+					Expirarea nu e un câmp. E <em>o promisiune despre viitor</em>.
+				</h2>
+				<p class="prose-body mt-8 max-w-[44ch] text-[0.95rem]">
+					Accesul care se termină la șase luni de la cumpărare e lucrul pe care o platformă de
+					cursuri îl greșește cel mai des, și îl greșește în tăcere.
+				</p>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<ul class="flex flex-col gap-5">
+					{
+						expiry.map((item) => (
+							<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+								<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-hot" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+				<p class="prose-body mt-8 max-w-[52ch] text-[0.95rem]">
+					Construit în cod nu e deloc o coadă. Data stă pe cumpărare și întrebarea se pune când se
+					încarcă pagina, deci se poate lista, număra, corecta și muta. Toată clasa asta de defect
+					încetează să existe.
+				</p>
+				<a href={paths.migration.ro} class="link mt-7 inline-block text-sm font-medium">
+					Aceeași problemă, din partea migrării
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. The proof, and it is the strongest on the site. Four of the five
+	     projects in the portfolio are this service. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="livrate">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">Livrate, și încă în funcțiune</p>
+			<a href={paths.work.ro} class="spec transition-colors hover:text-paper">Toate proiectele</a>
+		</div>
+
+		<h2 id="livrate" class="display-lg mt-8 max-w-[26ch]">
+			Patru din cele cinci lucruri din portofoliu sunt <em>asta</em>.
+		</h2>
+
+		<div class="mt-8 md:mt-12">
+			{
+				built.map((b, i) => (
+					<article class="hair rise grid gap-5 py-10 md:grid-cols-12 md:gap-8 md:py-12">
+						<p class="spec md:col-span-1 md:pt-2">{String(i + 1).padStart(2, '0')}</p>
+
+						<div class="md:col-span-4">
+							<h3 class="display-md">{b.name}</h3>
+							<p class="spec mt-4 max-w-[22ch]">{b.proves}</p>
+						</div>
+
+						<div class="md:col-span-6 md:col-start-7">
+							<p class="prose-body max-w-[52ch] text-[0.95rem]">{b.what}</p>
+							<a
+								href={b.href}
+								rel="noopener"
+								target="_blank"
+								class="link mt-5 inline-block text-sm font-medium"
+							>
+								Vezi site-ul
+							</a>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 6. What I will not sell. The page that says no is the one believed
+	     when it says yes. -->
+	<section class="bleed mt-32" aria-labelledby="nu">
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+			<p class="spec">Înainte să întrebi</p>
+			<span class="state state-risk">Două nu-uri</span>
+		</div>
+		<h2 id="nu" class="display-lg mt-6 max-w-[24ch]">Două lucruri pe care nu ți le construiesc.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				wont.map((w) => (
+					<div class="hair grid gap-3 py-8 md:grid-cols-12 md:gap-8">
+						<h3 class="display-md md:col-span-5">{w.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{w.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 7. The price, on the same staircase as everything else. -->
+	<section class="bleed mt-32" aria-labelledby="pret">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">De unde începe</p>
+					<p class="figure mt-6">600 <span>EUR</span></p>
+					<p class="spec mt-4">Două zile, și se scad din proiect</p>
+					<a href={paths.contact.ro} class="btn btn-primary mt-9">Cere un audit</a>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="pret" class="display-md">Auditul decide restul.</h2>
+					<p class="prose-body mt-7 max-w-[52ch]">
+						Ce vinzi, câte reguli de acces înseamnă asta, ce se întâmplă la un refund, și dacă
+						merită construit sau închiriat. Iese planul pe faze și prețul. Platformele de felul
+						ăsta pornesc de la 4.500 EUR, iar auditul se scade din suma aia.
+					</p>
+					<p class="prose-body mt-5 max-w-[52ch] text-[0.95rem]">
+						Dacă răspunsul onest e că o platformă gata făcută ți se potrivește mai bine, asta scrie
+						în document, iar documentul rămâne al tău oricum.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. Closing, on ink, flowing into the footer. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Spune-mi ce vinzi și cine are voie să vadă, și pentru cât timp.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Spune-mi ce vinzi</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Răspuns în aceeași zi lucrătoare, în scris. Trei propoziții sunt de ajuns ca să începem.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

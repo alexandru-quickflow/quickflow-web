@@ -3,7 +3,7 @@ import Site from '../layouts/Site.astro';
 import PaymentFlow from '../components/PaymentFlow.astro';
 import ServiceMark from '../components/ServiceMark.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../content/proof';
-import { paths } from '../i18n/routes';
+import { PROFILE, paths } from '../i18n/routes';
 
 const weight = proof('en', 'bubble-weight');
 const escrow = proof('en', 'stripe-escrow');
@@ -72,8 +72,8 @@ const services = [
 		title: 'Course and membership platforms',
 		problem:
 			'You sell access, not products. At any moment you need to know who paid, until when, and what they see after it expires.',
-		cta: 'Write to me',
-		href: paths.contact.en,
+		cta: 'See how access is built',
+		href: paths.courses.en,
 	},
 	{
 		n: '04',
@@ -187,6 +187,7 @@ const schema = {
 		jobTitle: 'Software developer',
 		knowsLanguage: ['ro', 'ru', 'en'],
 	},
+	sameAs: [PROFILE],
 	knowsAbout: [
 		'Bubble to code migration',
 		'Stripe Connect',

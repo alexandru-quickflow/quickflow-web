@@ -1,0 +1,331 @@
+---
+import Site from '../../layouts/Site.astro';
+import { paths } from '../../i18n/routes';
+
+// The signs are all the same sentence from three sides: access is being kept
+// in somebody's head instead of in the system.
+const signs = [
+	{
+		n: '01',
+		title: 'Someone paid and you opened their access by hand',
+		body: 'It works at ten students and it fails at the first week you are away. A payment that does not open access on its own is not a sale, it is a task.',
+	},
+	{
+		n: '02',
+		title: 'You cannot say today who still has access',
+		body: 'Not roughly, exactly. If the answer involves opening a spreadsheet and cross-checking it against payment emails, that number is already wrong.',
+	},
+	{
+		n: '03',
+		title: 'A refund went through and the course is still open',
+		body: 'Money moves in one system and access lives in another, so the two agree only as long as somebody remembers to make them agree.',
+	},
+];
+
+// What the platform has to do. Four, and none of them is a feature name.
+const does = [
+	{
+		title: 'Open access when the money arrives',
+		body: 'Not when you see the email. The payment provider says it went through and the access is open in the same second, at three in the morning, with nobody awake.',
+	},
+	{
+		title: 'Close it when it is supposed to close',
+		body: 'Six months after purchase, at the end of a subscription, on a refund. Each of those is a different rule and each one has to be written down somewhere other than your memory.',
+	},
+	{
+		title: 'Say what someone sees after it closes',
+		body: 'A locked lesson list and a way to buy again, or nothing at all. The wrong answer here costs you the renewal, and it is a decision nobody makes until a student hits it.',
+	},
+	{
+		title: 'Tell you who is where, without you asking',
+		body: 'Who bought, who started, who stopped at lesson three, whose access ends this month. That is the difference between a product and a folder of videos.',
+	},
+];
+
+// The technical heart of the page, and it is a real defect pattern rather
+// than a feature list. Documented on the migration page too, from the other
+// side: there, as the thing a migration cannot see.
+const expiry = [
+	'A job scheduled for a date six months out lives in the platform, not in your data. Nothing lists it, nothing exports it, and you cannot count what you cannot list.',
+	'If one fails, nothing says so. Access simply never ends, and you find out when somebody who should have been locked out writes in to say thank you.',
+	'Move platforms and the queue does not come with you. The dates are on the records, so it can be rebuilt, but only by someone who knows to look.',
+];
+
+// Four of the five projects in the portfolio are this. That is the strongest
+// proof position on the site and until now it had no page to stand on.
+const built = [
+	{
+		name: 'jemshitmavlyanov.com',
+		href: 'https://jemshitmavlyanov.com',
+		what: 'A video academy moved off Bubble in full: accounts, cart, payment, access that expires after six months, a certificate and an admin panel. Nine languages, with Russian audio and subtitles for each.',
+		proves: 'Expiring access, at scale, in nine languages',
+	},
+	{
+		name: 'elenaviscu.com',
+		href: 'https://elenaviscu.com',
+		what: 'Three products sold to the same person, each with its own access rule: a course with time-limited access, one-to-one sessions with booking, and a third kind of session again.',
+		proves: 'Three access rules under one account',
+	},
+	{
+		name: 'easonline.academy',
+		href: 'https://easonline.academy',
+		what: 'Hairdressing courses that had only ever been taught in a room. Video lessons, student accounts, payment, and access opened after payment.',
+		proves: 'The first step out of the classroom',
+	},
+	{
+		name: 'angelalaur.ro',
+		href: 'https://angelalaur.ro',
+		what: 'A course and a product catalogue sold to the same audience, previously in two places with the orders arriving by message. One site, one cart, student accounts for the course.',
+		proves: 'A course and a shop in one basket',
+	},
+];
+
+const wont = [
+	{
+		title: 'I cannot stop someone recording your screen',
+		body: 'Nobody can. What is worth doing is making the account worth keeping: progress, certificates, the next course. What is not worth doing is spending your budget on a lock that a phone camera walks around.',
+	},
+	{
+		title: 'I will not build you a Teachable',
+		body: 'If a hosted platform fits what you sell, use it and keep the money. This is worth building when the access rules are yours, the languages are yours, or the fee on every sale has started to hurt.',
+	},
+];
+
+const title = 'Course and membership platforms, built on code | Quick Flow';
+const description =
+	'Course platforms where payment opens access, expiry closes it, and you can say today who still has it. Four delivered, from 4,500 EUR after a 600 EUR audit.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Course and membership platforms',
+	serviceType: 'Course platform development',
+	description,
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'Worldwide',
+	offers: {
+		'@type': 'Offer',
+		name: 'Course platform',
+		price: '4500',
+		priceCurrency: 'EUR',
+		description: 'From 4,500 EUR, after a two-day audit at 600 that comes off the price.',
+	},
+};
+---
+
+<Site lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Recognition. The distinction in the first two lines is the whole
+	     service: a shop ships a thing once, this one keeps deciding. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Course and membership platforms</p>
+			<p class="spec">Four delivered</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			You are not selling a thing. You are selling <em>who can see it</em>.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			A shop decides once and ships. A course platform decides every time somebody opens a page:
+			did they pay, has it run out, and what do they see if it has.
+		</p>
+
+		<p class="stamp mt-7">From 4,500 EUR, after a two-day audit at 600</p>
+
+		<div class="mt-10 md:mt-12">
+			<a href={paths.contact.en} class="btn btn-primary">Tell me what you sell</a>
+		</div>
+	</section>
+
+	<!-- 2. Three signs, all the same sentence from three sides. -->
+	<section class="bleed mt-32" aria-labelledby="signs">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">You usually get here after one of these</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="signs" class="display-lg mt-8 max-w-[24ch]">
+			Access is being kept in somebody's head.
+		</h2>
+
+		<div class="mt-4">
+			{
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 3. What it has to do, on ink. Four jobs, none of them a feature name. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="does">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">What the platform has to do</p>
+			<h2 id="does" class="display-lg mt-6 max-w-[22ch]">
+				Four decisions, made <em>without you</em>.
+			</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+				{
+					does.map((item, i) => (
+						<article class="hair pt-6">
+							<p class="spec">{String(i + 1).padStart(2, '0')}</p>
+							<h3 class="display-md mt-4 max-w-[22ch]">{item.title}</h3>
+							<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">{item.body}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. The hard part, named. Every page on this site has one of these and
+	     it is always the thing a feature list leaves out. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="expiry">
+		<div class="hair grid gap-10 pt-10 md:grid-cols-12 md:gap-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">The hard part</p>
+				<h2 id="expiry" class="display-lg mt-6 max-w-[18ch]">
+					Expiry is not a field. It is <em>a promise about the future</em>.
+				</h2>
+				<p class="prose-body mt-8 max-w-[44ch] text-[0.95rem]">
+					Access that ends six months after purchase is the single most common thing a course
+					platform gets wrong, and it goes wrong quietly.
+				</p>
+			</div>
+
+			<div class="md:col-span-6 md:col-start-7">
+				<ul class="flex flex-col gap-5">
+					{
+						expiry.map((item) => (
+							<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+								<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-hot" />
+								<span>{item}</span>
+							</li>
+						))
+					}
+				</ul>
+				<p class="prose-body mt-8 max-w-[52ch] text-[0.95rem]">
+					Built in code it is not a queue at all. The date sits on the purchase and the question is
+					asked when the page loads, which means it can be listed, counted, corrected and moved.
+					The whole class of defect stops existing.
+				</p>
+				<a href={paths.migration.en} class="link mt-7 inline-block text-sm font-medium">
+					The same problem, from the migration side
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. The proof, and it is the strongest on the site. Four of the five
+	     projects in the portfolio are this service. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="built">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">Delivered, and still running</p>
+			<a href={paths.work.en} class="spec transition-colors hover:text-paper">All projects</a>
+		</div>
+
+		<h2 id="built" class="display-lg mt-8 max-w-[26ch]">
+			Four of the five things in my portfolio are <em>this</em>.
+		</h2>
+
+		<div class="mt-8 md:mt-12">
+			{
+				built.map((b, i) => (
+					<article class="hair rise grid gap-5 py-10 md:grid-cols-12 md:gap-8 md:py-12">
+						<p class="spec md:col-span-1 md:pt-2">{String(i + 1).padStart(2, '0')}</p>
+
+						<div class="md:col-span-4">
+							<h3 class="display-md">{b.name}</h3>
+							<p class="spec mt-4 max-w-[22ch]">{b.proves}</p>
+						</div>
+
+						<div class="md:col-span-6 md:col-start-7">
+							<p class="prose-body max-w-[52ch] text-[0.95rem]">{b.what}</p>
+							<a
+								href={b.href}
+								rel="noopener"
+								target="_blank"
+								class="link mt-5 inline-block text-sm font-medium"
+							>
+								Visit the site
+							</a>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 6. What I will not sell. The page that says no is the one believed
+	     when it says yes. -->
+	<section class="bleed mt-32" aria-labelledby="wont">
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+			<p class="spec">Before you ask</p>
+			<span class="state state-risk">Two noes</span>
+		</div>
+		<h2 id="wont" class="display-lg mt-6 max-w-[24ch]">Two things I will not build you.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				wont.map((w) => (
+					<div class="hair grid gap-3 py-8 md:grid-cols-12 md:gap-8">
+						<h3 class="display-md md:col-span-5">{w.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{w.body}</p>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 7. The price, on the same staircase as everything else. -->
+	<section class="bleed mt-32" aria-labelledby="price">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">Where it starts</p>
+					<p class="figure mt-6">600 <span>EUR</span></p>
+					<p class="spec mt-4">Two days, and it comes off the project</p>
+					<a href={paths.contact.en} class="btn btn-primary mt-9">Ask for an audit</a>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="price" class="display-md">The audit decides the rest.</h2>
+					<p class="prose-body mt-7 max-w-[52ch]">
+						What you sell, how many access rules that is, what happens on a refund, and whether any
+						of it is worth building rather than renting. Out comes the plan by phase and the price.
+						Platforms of this kind start at 4,500 EUR and the audit comes off that number.
+					</p>
+					<p class="prose-body mt-5 max-w-[52ch] text-[0.95rem]">
+						If the honest answer is that a hosted platform fits you better, that is what the
+						document says, and you keep it either way.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. Closing, on ink, flowing into the footer. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Tell me what you sell and who is allowed to see it, and for how long.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Tell me what you sell</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Answered the same working day, in writing. Three sentences are enough to start.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>
