@@ -10,7 +10,6 @@ interface Ui {
 	navLabelMobile: string;
 	menu: string;
 	home: string;
-	verified: (date: string) => string;
 	switchTo: (language: string) => string;
 	footerWho: string;
 	footerLanguages: string;
@@ -27,7 +26,6 @@ export const ui: Record<Locale, Ui> = {
 		navLabelMobile: 'Main, mobile',
 		menu: 'Menu',
 		home: 'Quick Flow, home',
-		verified: (date) => `Sources checked ${date}`,
 		switchTo: (language) => `Read this page in ${language}`,
 		footerWho: 'Alexandru Trofaniuc, Bucharest',
 		footerLanguages: 'Romanian, Russian, English',
@@ -42,7 +40,6 @@ export const ui: Record<Locale, Ui> = {
 		navLabelMobile: 'Principal, mobil',
 		menu: 'Meniu',
 		home: 'Quick Flow, acasă',
-		verified: (date) => `Surse verificate ${date}`,
 		switchTo: (language) => `Citește pagina în ${language}`,
 		footerWho: 'Alexandru Trofaniuc, București',
 		footerLanguages: 'Română, rusă, engleză',

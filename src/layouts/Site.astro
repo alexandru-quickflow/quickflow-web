@@ -2,7 +2,6 @@
 // The site's only layout. Replaces Base.astro (the old dark system) and
 // Sheet.astro (the paper one) with the direction settled on 2026-10-28.
 import '../styles/global.css';
-import { VERIFIED_ON } from '../content/proof';
 import {
 	DEFAULT_LOCALE,
 	alternates,
@@ -124,53 +123,70 @@ const ogImage = new URL(
 			{t.skip}
 		</a>
 
-		<header class="relative z-10">
+	<!-- The header is the logo and the index on the left, the language on the
+	     right. The verified-sources stamp used to sit between the nav and the
+	     switcher and it had two faults, both measurable. It read as a seventh
+	     link: 24px from Contact while the six nav items were 36px from each
+	     other, in the same mono uppercase at the same colour and within a
+	     hundredth of a rem of the same size. And it filled the row, so at 1280
+	     every gap in here was at its minimum and no group could be separated
+	     from another. It states a date about sources, which belongs next to
+	     the sources: the proof sections on the home and migration pages carry
+	     it already, and the other nineteen pages show no source for it to
+	     date. -->
+		<header class="relative z-10 border-b border-[var(--line)]">
 			<div class="shell flex items-center justify-between gap-6 py-6">
-				<a href={paths.home[lang]} class="shrink-0" aria-label={t.home}>
-					<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-6 w-auto" />
-				</a>
+				<div class="flex items-center gap-10 xl:gap-12">
+					<a href={paths.home[lang]} class="shrink-0" aria-label={t.home}>
+						<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-6 w-auto" />
+					</a>
 
-				<nav aria-label={t.navLabel} class="hidden items-center gap-6 lg:flex xl:gap-9">
-					{
-						items.map((item) => (
-							<a
-								href={paths[item.id][lang]}
-								aria-current={here(paths[item.id][lang]) ? 'page' : undefined}
-								class:list={[
-									'spec whitespace-nowrap transition-colors hover:text-paper',
-									here(paths[item.id][lang]) && 'text-paper',
-								]}
-							>
-								{item.label}
-							</a>
-						))
-					}
-				</nav>
-
-				<!-- The stamp, not coordinates. An instrument states when it was
-				     last checked; a brochure states where it was made. -->
-				<div class="hidden items-center gap-6 lg:flex">
-					<span class="stamp hidden whitespace-nowrap xl:inline">{t.verified(VERIFIED_ON[lang])}</span>
-					<p class="spec flex items-center gap-2">
-						<span class="text-paper">{localeNames[lang].short}</span>
+					<nav aria-label={t.navLabel} class="hidden items-center gap-6 lg:flex xl:gap-9">
 						{
-							other && (
-								<>
-									<span aria-hidden="true">/</span>
-									<a
-										href={other.href}
-										hreflang={hreflang[other.locale]}
-										lang={other.locale}
-										class="transition-colors hover:text-paper"
-										aria-label={t.switchTo(localeNames[other.locale].full)}
-									>
-										{localeNames[other.locale].short}
-									</a>
-								</>
-							)
+							items.map((item) => (
+								<a
+									href={paths[item.id][lang]}
+									aria-current={here(paths[item.id][lang]) ? 'page' : undefined}
+									class:list={[
+										'spec whitespace-nowrap transition-colors hover:text-paper',
+										/* Contact is the only one of the six that is an action
+										   rather than a place, so it stands off from the five and
+										   keeps the paper colour. Not a pill: a filled button up
+										   here is the one move this site avoids everywhere else. */
+										item.id === 'contact' && 'ml-4 text-paper xl:ml-6',
+										/* Where you are and the one action are both paper white,
+										   so the current page takes a rule under it to tell the
+										   two apart on the page where they are the same item. */
+										here(paths[item.id][lang]) &&
+											'text-paper underline decoration-teal decoration-2 underline-offset-[0.6rem]',
+									]}
+								>
+									{item.label}
+								</a>
+							))
 						}
-					</p>
+					</nav>
 				</div>
+
+				<p class="spec hidden items-center gap-2 lg:flex">
+					<span class="text-paper">{localeNames[lang].short}</span>
+					{
+						other && (
+							<>
+								<span aria-hidden="true">/</span>
+								<a
+									href={other.href}
+									hreflang={hreflang[other.locale]}
+									lang={other.locale}
+									class="transition-colors hover:text-paper"
+									aria-label={t.switchTo(localeNames[other.locale].full)}
+								>
+									{localeNames[other.locale].short}
+								</a>
+							</>
+						)
+					}
+				</p>
 
 				<!-- No JavaScript. A details element is the whole mobile menu. -->
 				<details class="relative lg:hidden">
@@ -185,7 +201,14 @@ const ogImage = new URL(
 					>
 						{
 							items.map((item) => (
-								<a href={paths[item.id][lang]} class="block px-4 py-2.5 text-sm">
+								<a
+									href={paths[item.id][lang]}
+									aria-current={here(paths[item.id][lang]) ? 'page' : undefined}
+									class:list={[
+										'block px-4 py-2.5 text-sm',
+										here(paths[item.id][lang]) ? 'text-paper' : 'text-[var(--mute)]',
+									]}
+								>
 									{item.label}
 								</a>
 							))
