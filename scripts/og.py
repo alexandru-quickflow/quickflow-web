@@ -56,6 +56,8 @@ SECTIONS = {
     'services-internal-apps': 'Internal apps',
     'ro-prototip-in-cinci-zile': 'Prototip în cinci zile',
     'ro-servicii-aplicatii-interne': 'Aplicații interne',
+    'bubble-performance-audit': 'Bubble performance audit',
+    'ro-audit-performanta-bubble': 'Audit de performanță Bubble',
 }
 
 INK = (4, 8, 11)

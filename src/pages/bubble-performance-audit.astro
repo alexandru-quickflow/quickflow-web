@@ -1,0 +1,307 @@
+---
+import Site from '../layouts/Site.astro';
+import { proof, weightSnippet, VERIFIED_ON } from '../content/proof';
+import { paths } from '../i18n/routes';
+
+const weight = proof('en', 'bubble-weight');
+
+// The reader arrives suspecting the app is slow and not knowing whose fault
+// that is. Each sign is a version of the same gap: a complaint with no number
+// attached to it.
+const signs = [
+	{
+		n: '01',
+		title: 'Someone said it is slow and you have no number',
+		body: 'A user, an investor, your own patience on a bad connection. Slow is an opinion until it is measured, and an opinion cannot be fixed.',
+	},
+	{
+		n: '02',
+		title: 'The bill goes up and nothing you built changed',
+		body: 'Workload grows with how much the app is used, and some of that use is pages rendering for crawlers that asked for nothing.',
+	},
+	{
+		n: '03',
+		title: 'You are being told to rewrite it',
+		body: 'Possibly correct, and possibly expensive advice given without a measurement. One day of measuring costs less than finding out in month three.',
+	},
+];
+
+// The product. Two lists, and the second one is the point: it is the ceiling,
+// and naming it honestly is what makes the first list believable.
+const faster = [
+	'Searches that load a whole list in order to count it, and the ones that run again on every view',
+	'Repeating groups that query inside the row instead of once at the top',
+	'Workflows that fire on every page load because nobody put a condition on them',
+	'Plugins loaded on every page for the one screen that uses them',
+	'Images served at the size they were uploaded at',
+	'Pages that wait for data they do not show',
+];
+
+const floor = [
+	'The runtime. It arrives before your first word and no setting removes it',
+	'A public page renders by asking the database, so a crawler that asked for nothing still costs you',
+	'The bill follows how much the app is used, not what you built. Tuning moves the number, not what it is tied to',
+];
+
+const document_ = [
+	'The measurement as it is today: what loads, in what order, and how long before anything is readable',
+	'Every fix worth making, with what each one is worth, in order of what it returns',
+	'What cannot be moved at any price, with the number next to it',
+	'One of two verdicts, in a sentence, with the reason under it',
+];
+
+const limits = [
+	'It is a day of reading and measuring, not a day of fixing. The fixes are quoted separately or done by you.',
+	'I do not touch your app. I need a link and, for the parts behind a login, a test account.',
+	'It cannot make a Bubble app as fast as code. Nothing can, and the document says so in the same words as this page.',
+];
+
+const title = 'Bubble performance audit, 350 EUR | Quick Flow';
+const description =
+	'One day and 350 EUR to find out whether your Bubble app is slow because of the app or because of the platform. Deducted from the migration audit if you go on.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Bubble performance audit',
+	serviceType: 'Performance audit',
+	description,
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'Worldwide',
+	offers: {
+		'@type': 'Offer',
+		name: 'Bubble performance audit',
+		price: '350',
+		priceCurrency: 'EUR',
+		description: 'One day. What can be made faster inside Bubble, and what cannot be moved at all.',
+	},
+};
+---
+
+<Site lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. The offer, in the first two lines. One number and one unit of time,
+	     both before any argument for them. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Bubble performance audit</p>
+			<p class="spec">350 EUR, one day</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			Is it the app, or is it <em>the platform</em>?
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Part of what makes a Bubble app slow is the app, and part of it is the floor under the app. I
+			measure yours in a day and tell you which is which, in writing, with a number against every
+			line.
+		</p>
+
+		<div class="mt-10 flex flex-wrap gap-4">
+			<a href={paths.contact.en} class="btn btn-primary">Ask for the measurement</a>
+			<a href={paths.migration.en} class="btn btn-ghost">Or read about leaving Bubble</a>
+		</div>
+	</section>
+
+	<!-- 2. Three signs. Each one is a complaint with no number attached. -->
+	<section class="bleed mt-32" aria-labelledby="signs">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">You usually get here after one of these</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="signs" class="display-lg mt-8 max-w-[24ch]">Slow is an opinion until it is a number.</h2>
+
+		<div class="mt-4">
+			{
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 3. The two lists, which are the product. The honest half is on the
+	     right and it is the half that makes the left half believable. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="two">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">What a day of measuring separates</p>
+			<h2 id="two" class="display-lg mt-6 max-w-[22ch]">
+				Two lists. One you can act on, one <em>nobody can</em>.
+			</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">What the app does to itself</p>
+						<span class="state state-ok">Fixable</span>
+					</div>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							faster.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">What nobody can move</p>
+						<span class="state state-risk">The floor</span>
+					</div>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							floor.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-hot" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+					<p class="prose-body mt-9 max-w-[52ch] text-[0.95rem]">
+						The second list is why this page exists. An audit that only ever finds fixable things
+						is a sales document, and you would be right not to believe it.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. The floor, with its own number and the way to check it yourself. A
+	     page that hands you the measurement is harder to disbelieve than one
+	     that quotes it. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="runtime">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">The floor, measured</p>
+			<span class="stamp">Measured {VERIFIED_ON.en}</span>
+		</div>
+
+		<h2 id="runtime" class="display-lg mt-8 max-w-[24ch]">
+			You can take thirty seconds and check the worst of it yourself.
+		</h2>
+
+		<div class="mt-10 grid gap-x-16 gap-y-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="figure">
+					{weight.value}
+					<span>{weight.unit}</span>
+				</p>
+				<p class="prose-body mt-7 max-w-[46ch] text-[0.95rem]">{weight.claim}</p>
+				<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">
+					That number is the same on every public Bubble page there is. Nothing in your app put it
+					there and nothing in your app can take it away. Everything the audit finds sits on top of
+					it.
+				</p>
+				<div class="hair mt-7 flex flex-wrap items-baseline justify-between gap-3 pt-3">
+					<a href={weight.source.href} rel="noopener nofollow" target="_blank" class="link spec"
+						>{weight.source.label}</a
+					>
+					<span class="spec">Checked {weight.verifiedOn}</span>
+				</div>
+			</div>
+
+			<div class="min-w-0 md:col-span-6 md:col-start-7">
+				<p class="spec">Your browser console, on your own app</p>
+				<pre class="code mt-3">{weightSnippet}</pre>
+				<p class="prose-body mt-6 max-w-[46ch] text-[0.95rem]">{weight.howToCheck}</p>
+				<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">
+					If that is the only thing you ever take from this page, it was worth writing. The audit is
+					the other forty measurements, and what to do about each one.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. What arrives, and the two endings. The price block carries the
+	     ladder, because the thing that makes 350 easy to say yes to is that it
+	     is not lost if the answer is the expensive one. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="document">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">The whole price</p>
+					<p class="figure mt-6">350 <span>EUR</span></p>
+					<p class="spec mt-4">One working day</p>
+					<a href={paths.contact.en} class="btn btn-primary mt-9">Ask for the measurement</a>
+					<p class="prose-body mt-7 max-w-[34ch] text-[0.95rem]">
+						If it turns out the answer is to leave, the 350 comes off the 600 of the migration
+						audit. The staircase is 350, 600, the project, and nothing on it is paid twice.
+					</p>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="document" class="display-md">You get a document with:</h2>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							document_.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+
+					<div class="hair mt-9 pt-6">
+						<p class="spec">The two endings</p>
+						<p class="prose-body mt-4 text-[0.95rem]">
+							<strong>Fix these and stay.</strong> The app is doing things to itself and the platform
+							is not the problem yet. You get the list, in order of what it returns.
+						</p>
+						<p class="prose-body mt-3 text-[0.95rem]">
+							<strong>You are already at the floor.</strong> The app is as fast as Bubble allows and
+							the only thing left is to leave. Then we talk about the migration, and not before.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. The limits. The page that tells you what it is not is the one you
+	     believe about what it is. -->
+	<section class="bleed mt-32" aria-labelledby="limits">
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+			<p class="spec">Before you order it</p>
+			<span class="state state-risk">A day of reading</span>
+		</div>
+		<h2 id="limits" class="display-lg mt-6 max-w-[22ch]">An audit is not an optimisation.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				limits.map((item) => (
+					<p class="hair prose-body py-7 text-[0.95rem] md:max-w-[72ch]">{item}</p>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 7. Closing, on ink, flowing into the footer. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Send me the link to your app and one sentence about what feels slow.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Ask for the measurement</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Answered the same working day. If a minute of looking says the audit would not pay for
+						itself, I will tell you that instead of selling you one.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

@@ -17,6 +17,7 @@ export type PageId =
 	| 'marketplace'
 	| 'internal'
 	| 'prototype'
+	| 'audit'
 	| 'work'
 	| 'contact'
 	| 'privacy'
@@ -40,6 +41,13 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 	prototype: {
 		en: '/prototype-in-five-days',
 		ro: '/ro/prototip-in-cinci-zile',
+	},
+	// Deliberately outside the header. A seventh nav item fits at 1280 and
+	// collides with the language switcher at 1024, and this page is reached
+	// from the home page, the migration page and the footer instead.
+	audit: {
+		en: '/bubble-performance-audit',
+		ro: '/ro/audit-performanta-bubble',
 	},
 	work: { en: '/work', ro: '/ro/portofoliu' },
 	contact: { en: '/contact', ro: '/ro/contact' },

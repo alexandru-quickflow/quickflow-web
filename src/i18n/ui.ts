@@ -15,6 +15,7 @@ interface Ui {
 	footerLanguages: string;
 	footerContact: string;
 	footerPages: string;
+	footerAudit: string;
 	footerPrivacy: string;
 	footerBuilt: string;
 }
@@ -31,6 +32,7 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Romanian, Russian, English',
 		footerContact: 'Contact',
 		footerPages: 'Pages',
+		footerAudit: 'Performance audit',
 		footerPrivacy: 'Privacy',
 		footerBuilt: 'Built with no framework on the client',
 	},
@@ -45,6 +47,7 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Română, rusă, engleză',
 		footerContact: 'Contact',
 		footerPages: 'Pagini',
+		footerAudit: 'Audit de performanță',
 		footerPrivacy: 'Confidențialitate',
 		footerBuilt: 'Construit fără framework pe client',
 	},

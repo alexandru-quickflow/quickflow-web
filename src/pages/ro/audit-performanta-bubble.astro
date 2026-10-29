@@ -1,0 +1,310 @@
+---
+import Site from '../../layouts/Site.astro';
+import { proof, weightSnippet, VERIFIED_ON } from '../../content/proof';
+import { paths } from '../../i18n/routes';
+
+const weight = proof('ro', 'bubble-weight');
+
+// The reader arrives suspecting the app is slow and not knowing whose fault
+// that is. Each sign is a version of the same gap: a complaint with no number
+// attached to it.
+const signs = [
+	{
+		n: '01',
+		title: 'Ți-a spus cineva că merge greu și nu ai niciun număr',
+		body: 'Un utilizator, un investitor, răbdarea ta pe o conexiune proastă. „Greu" e o părere până e măsurat, iar o părere nu se repară.',
+	},
+	{
+		n: '02',
+		title: 'Factura crește și tu nu ai schimbat nimic',
+		body: 'Consumul urmează cât e folosită aplicația, iar o parte din folosire sunt pagini desenate pentru crawlere care nu au cerut nimic.',
+	},
+	{
+		n: '03',
+		title: 'Ți se spune să rescrii tot',
+		body: 'Posibil corect, și posibil un sfat scump dat fără nicio măsurătoare. O zi de măsurat costă mai puțin decât să afli în luna a treia.',
+	},
+];
+
+// The product. Two lists, and the second one is the point: it is the ceiling,
+// and naming it honestly is what makes the first list believable.
+const faster = [
+	'Căutări care încarcă toată lista ca să o numere, și cele care se refac la fiecare afișare',
+	'Repeating group-uri care interoghează înăuntrul rândului, în loc de o singură dată sus',
+	'Workflow-uri care pornesc la fiecare încărcare de pagină, pentru că nimeni nu le-a pus o condiție',
+	'Plugin-uri încărcate pe toate paginile pentru singurul ecran care le folosește',
+	'Imagini servite la dimensiunea la care au fost urcate',
+	'Pagini care așteaptă date pe care nu le arată',
+];
+
+const floor = [
+	'Runtime-ul. Ajunge înaintea primului tău cuvânt și nicio setare nu îl scoate',
+	'O pagină publică se desenează întrebând baza de date, deci un crawler care nu a cerut nimic te costă',
+	'Factura urmează cât e folosită aplicația, nu ce ai construit. Optimizarea mișcă numărul, nu de ce e legat',
+];
+
+const document_ = [
+	'Măsurătoarea de azi: ce se încarcă, în ce ordine, și cât trece până se poate citi ceva',
+	'Fiecare reparație care merită făcută, cu cât valorează, în ordinea a ce aduce înapoi',
+	'Ce nu se poate muta cu niciun preț, cu numărul lângă',
+	'Unul din două verdicte, într-o propoziție, cu motivul sub el',
+];
+
+const limits = [
+	'E o zi de citit și de măsurat, nu o zi de reparat. Reparațiile se cotează separat sau le faci tu.',
+	'Nu umblu în aplicația ta. Am nevoie de un link și, pentru ce e în spatele unui cont, de un cont de test.',
+	'Nu poate face o aplicație Bubble la fel de rapidă ca una în cod. Nimic nu poate, iar documentul spune asta cu aceleași cuvinte ca pagina asta.',
+];
+
+const title = 'Audit de performanță Bubble, 350 EUR';
+const description =
+	'O zi și 350 EUR ca să afli dacă aplicația ta Bubble merge greu din cauza aplicației sau a platformei. Se scad din auditul de migrare dacă mergi mai departe.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Service',
+	name: 'Audit de performanță Bubble',
+	serviceType: 'Audit de performanță',
+	description,
+	inLanguage: 'ro',
+	provider: { '@type': 'ProfessionalService', name: 'Quick Flow', url: 'https://quickflow.dev' },
+	areaServed: 'RO',
+	offers: {
+		'@type': 'Offer',
+		name: 'Audit de performanță Bubble',
+		price: '350',
+		priceCurrency: 'EUR',
+		description: 'O zi. Ce se poate face mai rapid în Bubble și ce nu se poate muta deloc.',
+	},
+};
+---
+
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. The offer, in the first two lines. One number and one unit of time,
+	     both before any argument for them. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Audit de performanță Bubble</p>
+			<p class="spec">350 EUR, o zi</p>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			E aplicația, sau e <em>platforma</em>?
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			O parte din ce face o aplicație Bubble să meargă greu e aplicația, și o parte e podeaua de
+			sub ea. O măsor pe a ta într-o zi și îți spun care cât, în scris, cu un număr lângă fiecare
+			rând.
+		</p>
+
+		<div class="mt-10 flex flex-wrap gap-4">
+			<a href={paths.contact.ro} class="btn btn-primary">Cere măsurătoarea</a>
+			<a href={paths.migration.ro} class="btn btn-ghost">Sau citește despre ieșirea din Bubble</a>
+		</div>
+	</section>
+
+	<!-- 2. Three signs. Each one is a complaint with no number attached. -->
+	<section class="bleed mt-32" aria-labelledby="semne">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">De obicei ajungi aici după una din astea</p>
+			<span class="spec">03</span>
+		</div>
+
+		<h2 id="semne" class="display-lg mt-8 max-w-[24ch]">
+			„Merge greu" e o părere până devine un număr.
+		</h2>
+
+		<div class="mt-4">
+			{
+				signs.map((s) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-8 md:py-11">
+						<p class="spec md:col-span-1 md:pt-2">{s.n}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{s.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 3. The two lists, which are the product. The honest half is on the
+	     right and it is the half that makes the left half believable. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="doua">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Ce separă o zi de măsurat</p>
+			<h2 id="doua" class="display-lg mt-6 max-w-[22ch]">
+				Două liste. Una pe care poți acționa, una pe care <em>nimeni nu poate</em>.
+			</h2>
+
+			<div class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">Ce își face aplicația singură</p>
+						<span class="state state-ok">Reparabil</span>
+					</div>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							faster.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+						<p class="spec">Ce nu poate muta nimeni</p>
+						<span class="state state-risk">Podeaua</span>
+					</div>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							floor.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-hot" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+					<p class="prose-body mt-9 max-w-[52ch] text-[0.95rem]">
+						A doua listă e motivul pentru care există pagina asta. Un audit care găsește numai
+						lucruri reparabile e un document de vânzare, și ai avea dreptate să nu îl crezi.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. The floor, with its own number and the way to check it yourself. A
+	     page that hands you the measurement is harder to disbelieve than one
+	     that quotes it. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="runtime">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<p class="spec">Podeaua, măsurată</p>
+			<span class="stamp">Măsurat {VERIFIED_ON.ro}</span>
+		</div>
+
+		<h2 id="runtime" class="display-lg mt-8 max-w-[24ch]">
+			Poți verifica singur partea cea mai grea, în treizeci de secunde.
+		</h2>
+
+		<div class="mt-10 grid gap-x-16 gap-y-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<p class="figure">
+					{weight.value}
+					<span>{weight.unit}</span>
+				</p>
+				<p class="prose-body mt-7 max-w-[46ch] text-[0.95rem]">{weight.claim}</p>
+				<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">
+					Numărul ăsta e același pe orice pagină publică Bubble. Nimic din aplicația ta nu l-a pus
+					acolo și nimic din aplicația ta nu îl poate scoate. Tot ce găsește auditul stă deasupra
+					lui.
+				</p>
+				<div class="hair mt-7 flex flex-wrap items-baseline justify-between gap-3 pt-3">
+					<a href={weight.source.href} rel="noopener nofollow" target="_blank" class="link spec"
+						>{weight.source.label}</a
+					>
+					<span class="spec">Verificat {weight.verifiedOn}</span>
+				</div>
+			</div>
+
+			<div class="min-w-0 md:col-span-6 md:col-start-7">
+				<p class="spec">Consola browserului, pe aplicația ta</p>
+				<pre class="code mt-3">{weightSnippet}</pre>
+				<p class="prose-body mt-6 max-w-[46ch] text-[0.95rem]">{weight.howToCheck}</p>
+				<p class="prose-body mt-5 max-w-[46ch] text-[0.95rem]">
+					Dacă ăsta e singurul lucru pe care îl iei de pe pagina asta, tot a meritat scrisă.
+					Auditul sunt celelalte patruzeci de măsurători, și ce e de făcut cu fiecare.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. What arrives, and the two endings. The price block carries the
+	     ladder, because the thing that makes 350 easy to say yes to is that it
+	     is not lost if the answer is the expensive one. -->
+	<section class="bleed mt-40 md:mt-52" aria-labelledby="document">
+		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">Prețul întreg</p>
+					<p class="figure mt-6">350 <span>EUR</span></p>
+					<p class="spec mt-4">O zi lucrătoare</p>
+					<a href={paths.contact.ro} class="btn btn-primary mt-9">Cere măsurătoarea</a>
+					<p class="prose-body mt-7 max-w-[34ch] text-[0.95rem]">
+						Dacă răspunsul e că trebuie să pleci, cei 350 se scad din cei 600 ai auditului de
+						migrare. Scara e 350, 600, proiectul, și nimic de pe ea nu se plătește de două ori.
+					</p>
+				</div>
+
+				<div class="md:col-span-6 md:col-start-7">
+					<h2 id="document" class="display-md">Primești un document cu:</h2>
+					<ul class="mt-7 flex flex-col gap-3">
+						{
+							document_.map((item) => (
+								<li class="flex gap-3 text-[0.95rem] leading-relaxed">
+									<span class="mt-[0.6rem] h-px w-4 shrink-0 bg-teal" />
+									<span>{item}</span>
+								</li>
+							))
+						}
+					</ul>
+
+					<div class="hair mt-9 pt-6">
+						<p class="spec">Cele două finaluri</p>
+						<p class="prose-body mt-4 text-[0.95rem]">
+							<strong>Repari astea și rămâi.</strong> Aplicația își face singură rău, iar platforma
+							încă nu e problema. Primești lista, în ordinea a ce aduce înapoi.
+						</p>
+						<p class="prose-body mt-3 text-[0.95rem]">
+							<strong>Ești deja la podea.</strong> Aplicația e atât de rapidă cât permite Bubble și
+							nu mai rămâne decât să pleci. Abia atunci vorbim de migrare, nu înainte.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 6. The limits. The page that tells you what it is not is the one you
+	     believe about what it is. -->
+	<section class="bleed mt-32" aria-labelledby="limite">
+		<div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+			<p class="spec">Înainte să îl comanzi</p>
+			<span class="state state-risk">O zi de citit</span>
+		</div>
+		<h2 id="limite" class="display-lg mt-6 max-w-[22ch]">Un audit nu e o optimizare.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				limits.map((item) => (
+					<p class="hair prose-body py-7 text-[0.95rem] md:max-w-[72ch]">{item}</p>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 7. Closing, on ink, flowing into the footer. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed pb-16 pt-20 md:pb-20 md:pt-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">
+					Trimite-mi linkul aplicației și o propoziție despre ce ți se pare lent.
+				</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Cere măsurătoarea</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">
+						Răspuns în aceeași zi lucrătoare. Dacă un minut de uitat îmi spune că auditul nu s-ar
+						plăti singur, îți spun asta în loc să ți-l vând.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

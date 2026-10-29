@@ -361,28 +361,50 @@ const schema = {
 		</div>
 	</section>
 
-	<!-- 4b. The smallest way in. All four above are projects, and a reader who
-	     is not ready for a project has nowhere to go from here. This is the one
-	     thing on the site with a price and a date on it. -->
-	<section class="bleed mt-32" aria-labelledby="prototype">
-		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
-			<div class="grid gap-10 md:grid-cols-12">
-				<div class="md:col-span-7">
-					<p class="spec">The smallest way in</p>
-					<h2 id="prototype" class="display-lg mt-6 max-w-[24ch]">
-						Or start with five days and <em>something that runs</em>.
-					</h2>
-					<p class="prose-body mt-7 max-w-[52ch]">
-						Those four are projects. If you are not there yet, there is a shorter version: one flow
-						of your product, built in five working days, deployed on a domain and handed over. Then
-						you decide whether the real thing is worth building.
-					</p>
-					<p class="stamp mt-7">Five working days, 1,800 EUR, fixed</p>
+	<!-- 4b. The two ways in. All four above are projects, and a reader who is
+	     not ready for one had a single door here. There are two now, because
+	     there are two questions a reader has before a project: whether it is
+	     worth it at all, and whether I can show them anything. -->
+	<section class="bleed mt-32" aria-labelledby="ways">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">The two ways in</p>
+			<span class="spec">02</span>
+		</div>
+
+		<h2 id="ways" class="display-lg mt-8 max-w-[26ch]">
+			Those four are projects. These two are <em>a day and a week</em>.
+		</h2>
+
+		<div class="mt-12 grid gap-x-16 gap-y-12 md:grid-cols-2">
+			<article class="rise rounded-2xl border border-[var(--line)] p-7 md:p-10">
+				<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+					<p class="spec">If you are not sure it is worth it</p>
+					<p class="spec">350 EUR</p>
 				</div>
-				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
-					<a href={paths.prototype.en} class="btn btn-primary">See the five days</a>
+				<h3 class="display-md mt-6 max-w-[20ch]">A day of measuring your Bubble app.</h3>
+				<p class="prose-body mt-5 max-w-[44ch] text-[0.95rem]">
+					What can be made faster inside Bubble, what cannot be moved at any price, and which of the
+					two your app is actually up against. Deducted from the migration audit if you go on.
+				</p>
+				<a href={paths.audit.en} class="link mt-7 inline-block text-sm font-medium">
+					See what the day covers
+				</a>
+			</article>
+
+			<article class="rise rounded-2xl border border-[var(--line)] p-7 md:p-10">
+				<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+					<p class="spec">If you need to see it running</p>
+					<p class="spec">1,800 EUR</p>
 				</div>
-			</div>
+				<h3 class="display-md mt-6 max-w-[20ch]">Five days to something that runs.</h3>
+				<p class="prose-body mt-5 max-w-[44ch] text-[0.95rem]">
+					One flow of your product, built, deployed on a domain and handed over. Then you decide
+					whether the real thing is worth building.
+				</p>
+				<a href={paths.prototype.en} class="link mt-7 inline-block text-sm font-medium">
+					See the five days
+				</a>
+			</article>
 		</div>
 	</section>
 

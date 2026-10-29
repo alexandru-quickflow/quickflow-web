@@ -265,6 +265,17 @@ const ogImage = new URL(
 									</li>
 								))
 							}
+							<!-- The audit page is not in the header, because a seventh nav
+							     item collides with the language switcher at 1024. The footer
+							     is not obliged to be the header, so it carries it. -->
+							<li>
+								<a
+									href={paths.audit[lang]}
+									class="text-[var(--mute)] transition-colors hover:text-paper"
+								>
+									{t.footerAudit}
+								</a>
+							</li>
 							<li>
 								<a
 									href={paths.privacy[lang]}

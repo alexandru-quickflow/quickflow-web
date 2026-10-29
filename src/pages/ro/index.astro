@@ -332,28 +332,51 @@ const work = [
 		</div>
 	</section>
 
-	<!-- 4b. Cea mai mică intrare. Toate patru de mai sus sunt proiecte, iar un
-	     cititor care nu e pregătit pentru un proiect nu are unde să meargă de
-	     aici. Asta e singurul lucru de pe site cu preț și cu dată pe el. -->
-	<section class="bleed mt-32" aria-labelledby="prototip">
-		<div class="rounded-2xl border border-[var(--line)] p-7 md:p-12">
-			<div class="grid gap-10 md:grid-cols-12">
-				<div class="md:col-span-7">
-					<p class="spec">Cea mai mică intrare</p>
-					<h2 id="prototip" class="display-lg mt-6 max-w-[24ch]">
-						Sau începi cu cinci zile și <em>ceva care funcționează</em>.
-					</h2>
-					<p class="prose-body mt-7 max-w-[52ch]">
-						Cele patru de mai sus sunt proiecte. Dacă nu ai ajuns încă acolo, există o variantă mai
-						scurtă: un flux din produsul tău, construit în cinci zile lucrătoare, pus pe un domeniu
-						și predat. Abia apoi decizi dacă merită construit lucrul adevărat.
-					</p>
-					<p class="stamp mt-7">Cinci zile lucrătoare, 1.800 EUR, fix</p>
+	<!-- 4b. The two ways in. All four above are projects, and a reader who is
+	     not ready for one had a single door here. There are two now, because
+	     there are two questions a reader has before a project: whether it is
+	     worth it at all, and whether I can show them anything. -->
+	<section class="bleed mt-32" aria-labelledby="intrari">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Cele două intrări</p>
+			<span class="spec">02</span>
+		</div>
+
+		<h2 id="intrari" class="display-lg mt-8 max-w-[26ch]">
+			Cele patru sunt proiecte. Astea două sunt <em>o zi și o săptămână</em>.
+		</h2>
+
+		<div class="mt-12 grid gap-x-16 gap-y-12 md:grid-cols-2">
+			<article class="rise rounded-2xl border border-[var(--line)] p-7 md:p-10">
+				<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+					<p class="spec">Dacă nu ești sigur că merită</p>
+					<p class="spec">350 EUR</p>
 				</div>
-				<div class="md:col-span-4 md:col-start-9 md:self-end md:justify-self-end">
-					<a href={paths.prototype.ro} class="btn btn-primary">Vezi cele cinci zile</a>
+				<h3 class="display-md mt-6 max-w-[20ch]">O zi de măsurat aplicația ta Bubble.</h3>
+				<p class="prose-body mt-5 max-w-[44ch] text-[0.95rem]">
+					Ce se poate face mai rapid în Bubble, ce nu se poate muta cu niciun preț, și cu care
+					dintre cele două are de-a face aplicația ta. Se scad din auditul de migrare dacă mergi
+					mai departe.
+				</p>
+				<a href={paths.audit.ro} class="link mt-7 inline-block text-sm font-medium">
+					Vezi ce acoperă ziua
+				</a>
+			</article>
+
+			<article class="rise rounded-2xl border border-[var(--line)] p-7 md:p-10">
+				<div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+					<p class="spec">Dacă ai nevoie să îl vezi mergând</p>
+					<p class="spec">1.800 EUR</p>
 				</div>
-			</div>
+				<h3 class="display-md mt-6 max-w-[20ch]">Cinci zile până la ceva care merge.</h3>
+				<p class="prose-body mt-5 max-w-[44ch] text-[0.95rem]">
+					Un flux din produsul tău, construit, pus pe un domeniu și predat. Abia apoi decizi dacă
+					merită construit lucrul adevărat.
+				</p>
+				<a href={paths.prototype.ro} class="link mt-7 inline-block text-sm font-medium">
+					Vezi cele cinci zile
+				</a>
+			</article>
 		</div>
 	</section>
 
