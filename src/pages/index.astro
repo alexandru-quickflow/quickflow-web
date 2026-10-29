@@ -170,12 +170,14 @@ const description =
 const schema = {
 	'@context': 'https://schema.org',
 	'@type': 'ProfessionalService',
+	// The Romanian home page carries the same node. Same business, same id.
+	'@id': 'https://quickflow.dev/#business',
 	name: 'Quick Flow',
 	url: 'https://quickflow.dev',
 	email: 'alexandru@quickflow.dev',
 	description,
 	areaServed: 'Worldwide',
-	availableLanguage: ['English', 'Romanian', 'Russian'],
+	availableLanguage: ['ro', 'ru', 'en'],
 	address: {
 		'@type': 'PostalAddress',
 		addressLocality: 'Bucharest',

@@ -3,7 +3,7 @@ import Site from '../../layouts/Site.astro';
 import PaymentFlow from '../../components/PaymentFlow.astro';
 import ServiceMark from '../../components/ServiceMark.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../../content/proof';
-import { paths } from '../../i18n/routes';
+import { PROFILE, paths } from '../../i18n/routes';
 
 const weight = proof('ro', 'bubble-weight');
 const escrow = proof('ro', 'stripe-escrow');
@@ -165,13 +165,55 @@ const work = [
 		unit: 'limbi',
 	},
 ];
+
+const title = 'Quick Flow, aplicații cu plăți și ieșire din no-code';
+const description =
+	'Migrare de pe Bubble, marketplace-uri cu plăți împărțite, platforme de cursuri și aplicații interne. Opt ani în Bubble, singur de la modelul de date până la payout.';
+
+// The Romanian home page carried no structured data at all while the English
+// one carried a full ProfessionalService. For the market where Romanian is the
+// advantage, that was the wrong way round.
+//
+// Both pages describe the same business, so both carry the same @id. Without
+// it a crawler is entitled to read two ProfessionalService nodes at two URLs
+// as two businesses, and the one with no reviews, no address and no profile
+// would be whichever it happened to see first.
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'ProfessionalService',
+	'@id': 'https://quickflow.dev/#business',
+	name: 'Quick Flow',
+	url: 'https://quickflow.dev',
+	email: 'alexandru@quickflow.dev',
+	description,
+	inLanguage: 'ro',
+	areaServed: 'RO',
+	availableLanguage: ['ro', 'ru', 'en'],
+	address: {
+		'@type': 'PostalAddress',
+		addressLocality: 'București',
+		addressCountry: 'RO',
+	},
+	founder: {
+		'@type': 'Person',
+		name: 'Alexandru Trofaniuc',
+		jobTitle: 'Dezvoltator software',
+		knowsLanguage: ['ro', 'ru', 'en'],
+	},
+	sameAs: [PROFILE],
+	knowsAbout: [
+		'Migrare de pe Bubble pe cod',
+		'Stripe Connect',
+		'Marketplace two-sided',
+		'Plăți împărțite',
+		'Platforme de cursuri',
+	],
+};
 ---
 
-<Site
-	lang="ro"
-	title="Quick Flow, aplicații cu plăți și ieșire din no-code"
-	description="Migrare de pe Bubble, marketplace-uri cu plăți împărțite, platforme de cursuri și aplicații interne. Opt ani în Bubble, singur de la modelul de date până la payout."
->
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
 	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The datum
 	     under the headline is this page measuring itself: the one claim where
 	     the site and the pitch are the same object. -->
