@@ -16,6 +16,7 @@ interface Ui {
 	footerContact: string;
 	footerBuilt: string;
 	legal: string;
+	salAlt: string;
 }
 
 export const ui: Record<Locale, Ui> = {
@@ -35,6 +36,7 @@ export const ui: Record<Locale, Ui> = {
 		// Romanian term and means nothing to an English reader, and abbreviated
 		// the register differently from its Romanian twin for no reason.
 		legal: 'Quick Flow SRL · Fiscal code 44089760 · Trade register J2021006561401',
+		salAlt: 'ANPC, alternative dispute resolution for consumers',
 	},
 	ro: {
 		skip: 'Sari la conținut',
@@ -48,5 +50,6 @@ export const ui: Record<Locale, Ui> = {
 		footerContact: 'Contact',
 		footerBuilt: 'Construit fără framework pe client',
 		legal: 'Quick Flow SRL · CUI 44089760 · Nr. reg. com. J2021006561401',
+		salAlt: 'ANPC, Soluționarea Alternativă a Litigiilor',
 	},
 };

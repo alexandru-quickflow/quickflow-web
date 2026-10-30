@@ -1,6 +1,6 @@
 ---
 import Site from '../layouts/Site.astro';
-import { VERIFIED_ON } from '../content/proof';
+import { RATE_LIMIT, VERIFIED_ON } from '../content/proof';
 
 // Pagina descrie ce face site-ul, nu ce e plănuit. Aceeași variabilă decide și
 // dacă beaconul se încarcă, în Site.astro, deci cele două nu pot ajunge să
@@ -26,7 +26,14 @@ const sections = [
 	{
 		title: 'Who processes the data',
 		body: [
-			'Alexandru Trofaniuc, trading as Quick Flow. Write to alexandru@quickflow.dev with any question about your data.',
+			'Quick Flow SRL, fiscal code 44089760, registered at Sos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 Bucharest, Romania. Write to alexandru@quickflow.dev with any question about your data.',
+		],
+	},
+	{
+		title: 'On what basis',
+		body: [
+			'Article 6(1)(b) of the GDPR: steps taken at your request before entering a contract. You write to find out whether we should work together, I process what you wrote so that I can answer you.',
+			'There is no consent box and you are not asked for one, because I do nothing with the data beyond answering you.',
 		],
 	},
 	{
@@ -46,14 +53,15 @@ const sections = [
 		title: 'Where it goes',
 		body: [
 			'The form sends its contents by email, through Resend, to my address. If the submission passes the anti-robot check, a single copy also goes to the address you wrote. The site has no database and stores nothing on the server.',
-			'The emails stay in my inbox for as long as the conversation makes sense. If you want them deleted, write to me and I delete them.',
+			'The emails stay in my inbox for as long as the conversation makes sense, and at most three years after the last message, which is how long an agreement can be disputed under Romanian law. If you want them deleted sooner, write to me and I delete them.',
 		],
 	},
 	{
 		title: 'Who else sees the data, as a provider',
 		body: [
-			'Cloudflare, which hosts the site and runs the form function. Cloudflare Turnstile checks whether the submission comes from a person, and to do that it processes the IP address and technical signals about the browser. A rule at the edge also counts submissions per IP address and blocks more than five an hour, which is what keeps the form from being a free mailer.',
-			'Resend, which delivers the email.',
+			`Cloudflare, which hosts the site and runs the form function. Cloudflare Turnstile checks whether the submission comes from a person, and to do that it processes the IP address and technical signals about the browser. A rule at the edge also counts submissions per IP address and blocks more than ${RATE_LIMIT.posts} in ${RATE_LIMIT.seconds} seconds, which is what keeps the form from being a free mailer.`,
+			'Resend, which delivers the email. It leaves from the European region of Resend, in Ireland.',
+			'Cloudflare and Resend are American companies, so the data can be processed outside the European Economic Area. Both do that under the standard contractual clauses approved by the European Commission.',
 			...(analytics
 				? ['Cloudflare Web Analytics, which counts page views. It stores no cookie and builds no profile.']
 				: []),
@@ -73,7 +81,7 @@ const sections = [
 	{
 		title: 'Your rights',
 		body: [
-			'You can ask to see what data I hold about you, to have it corrected, to have it deleted, or to object to the processing. Write to alexandru@quickflow.dev and I will deal with it. If you are not satisfied with how I dealt with it, you can complain to the Romanian data protection authority, ANSPDCP, or to the supervisory authority in your own country.',
+			'You can ask to see what data I hold about you, to have it corrected, to have it deleted, to receive it in a form you can take elsewhere, to restrict the processing, or to object to it. Write to alexandru@quickflow.dev and I will deal with it. If you are not satisfied with how I dealt with it, you can complain to the Romanian data protection authority, ANSPDCP, or to the supervisory authority in your own country.',
 		],
 	},
 	{

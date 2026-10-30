@@ -52,6 +52,20 @@ export const VERIFIED_ON: Record<Locale, string> = {
  *  is why it stays off: see docs/launch-checklist.md. */
 export const SELF_JS = '5 KB';
 
+/** The rate limiting rule on the contact endpoint, which lives in a Cloudflare
+ *  dashboard and not in this repository. It is here so that the two privacy
+ *  pages describe the same rule as each other and as the thing that is actually
+ *  running.
+ *
+ *  They did not. Both pages said five an hour until 30 October 2026, which was
+ *  the planned rate and never the real one: the plan refuses any period other
+ *  than ten seconds. Measured against the live domain on 30 October, the third
+ *  post in ten seconds is blocked at the edge with Cloudflare's 1015.
+ *
+ *  If the rule is ever changed, change it here in the same sitting.
+ *  docs/launch-checklist.md section 1.1 is the record. */
+export const RATE_LIMIT = { posts: 2, seconds: 10 } as const;
+
 /** Pasted into the reader's own console, on their own app. The one thing on
  *  the site that needs no translation.
  *

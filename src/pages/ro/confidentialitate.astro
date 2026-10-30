@@ -1,6 +1,6 @@
 ---
 import Site from '../../layouts/Site.astro';
-import { VERIFIED_ON } from '../../content/proof';
+import { RATE_LIMIT, VERIFIED_ON } from '../../content/proof';
 
 // Pagina descrie ce face site-ul, nu ce e plănuit. Aceeași variabilă decide și
 // dacă beaconul se încarcă, în Site.astro, deci cele două nu pot ajunge să
@@ -27,7 +27,14 @@ const sections = [
 	{
 		title: 'Cine prelucrează datele',
 		body: [
-			'Alexandru Trofaniuc, care operează Quick Flow. Scrie-mi la alexandru@quickflow.dev pentru orice întrebare legată de datele tale.',
+			'Quick Flow SRL, CUI 44089760, cu sediul în Șos. Mihai Bravu 39, bl. P15, sc. A, et. 3, ap. 11, Sector 2, 021305 București. Scrie-mi la alexandru@quickflow.dev pentru orice întrebare legată de datele tale.',
+		],
+	},
+	{
+		title: 'Pe ce temei',
+		body: [
+			'Articolul 6(1)(b) din GDPR: demersuri făcute la cererea ta înainte de încheierea unui contract. Tu scrii ca să afli dacă lucrăm împreună, eu prelucrez ca să îți pot răspunde.',
+			'Nu există consimțământ de bifat și nici nu ți se cere unul, pentru că nu fac nimic cu datele în afară de a-ți răspunde.',
 		],
 	},
 	{
@@ -47,14 +54,15 @@ const sections = [
 		title: 'Unde ajung',
 		body: [
 			'Formularul trimite conținutul pe email, prin Resend, la adresa mea. Dacă trimiterea trece verificarea anti-robot, pleacă și o singură copie la adresa pe care ai scris-o tu. Site-ul nu are bază de date și nu stochează nimic pe server.',
-			'Emailurile rămân în căsuța mea atât timp cât discuția are sens. Dacă vrei să le șterg, îmi scrii și le șterg.',
+			'Emailurile rămân în căsuța mea cât timp discuția are sens, și cel mult trei ani de la ultimul mesaj, cât ține termenul în care se poate contesta o înțelegere. Dacă vrei să le șterg mai devreme, îmi scrii și le șterg.',
 		],
 	},
 	{
 		title: 'Cine mai vede datele, ca furnizor',
 		body: [
-			'Cloudflare, care găzduiește site-ul și rulează funcția formularului. Cloudflare Turnstile verifică dacă trimiterea vine de la un om, iar pentru asta procesează adresa IP și semnale tehnice despre browser. O regulă la margine numără și trimiterile pe adresă IP și blochează peste cinci pe oră, ceea ce împiedică formularul să fie un expeditor gratuit pentru oricine.',
-			'Resend, care livrează emailul.',
+			`Cloudflare, care găzduiește site-ul și rulează funcția formularului. Cloudflare Turnstile verifică dacă trimiterea vine de la un om, iar pentru asta procesează adresa IP și semnale tehnice despre browser. O regulă la margine numără și trimiterile pe adresă IP și blochează mai mult de ${RATE_LIMIT.posts} în ${RATE_LIMIT.seconds} secunde, ceea ce împiedică formularul să fie un expeditor gratuit pentru oricine.`,
+			'Resend, care livrează emailul. Pleacă din regiunea europeană a Resend, Irlanda.',
+			'Cloudflare și Resend sunt companii americane, deci datele pot fi prelucrate și în afara Spațiului Economic European. Amândouă fac asta pe baza clauzelor contractuale standard aprobate de Comisia Europeană.',
 			...(analytics
 				? ['Cloudflare Web Analytics, care numără afișările de pagină. Nu pune niciun cookie și nu construiește niciun profil.']
 				: []),
@@ -74,7 +82,7 @@ const sections = [
 	{
 		title: 'Ce drepturi ai',
 		body: [
-			'Poți cere să vezi ce date am despre tine, să le corectez, să le șterg sau să te opui prelucrării. Îmi scrii la alexandru@quickflow.dev și rezolv. Dacă nu ești mulțumit de cum am rezolvat, te poți adresa Autorității Naționale de Supraveghere a Prelucrării Datelor cu Caracter Personal.',
+			'Poți cere să vezi ce date am despre tine, să le corectez, să le șterg, să le primești într-un format pe care îl poți duce altundeva, să restrângi prelucrarea sau să te opui ei. Îmi scrii la alexandru@quickflow.dev și rezolv. Dacă nu ești mulțumit de cum am rezolvat, te poți adresa Autorității Naționale de Supraveghere a Prelucrării Datelor cu Caracter Personal.',
 		],
 	},
 	{
