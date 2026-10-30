@@ -9,6 +9,7 @@ import { VERIFIED_ON } from '../content/proof';
 const analytics = Boolean(import.meta.env.PUBLIC_CF_BEACON_TOKEN);
 
 import { BOOKING } from '../content/booking';
+import { paths } from '../i18n/routes';
 
 const updated = VERIFIED_ON.en;
 
@@ -87,7 +88,7 @@ const sections = [
 	<section class="bleed pt-12 md:pt-16">
 		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
 			<p class="spec">Privacy</p>
-			<span class="stamp">Last updated {updated}</span>
+			<p class="spec">Updated {updated}</p>
 		</div>
 
 		<h1 class="display-xl mt-8 max-w-[16ch]">What happens to what you write here.</h1>
@@ -98,20 +99,38 @@ const sections = [
 		</p>
 	</section>
 
-	<section class="bleed mt-32">
-		{
-			sections.map((s) => (
-				<section class="hair grid gap-4 py-10 md:grid-cols-12 md:gap-8 md:py-12">
-					<h2 class="display-md md:col-span-4">{s.title}</h2>
-					<div class="md:col-span-7 md:col-start-6">
-						{s.body.map((p, i) => (
-							<p class:list={['prose-body', i > 0 && 'mt-5']}>{p}</p>
-						))}
-					</div>
-				</section>
-			))
-		}
+	<section class="bleed mt-32" aria-labelledby="policy">
+		<h2 id="policy" class="sr-only">The policy</h2>
 
-		<p class="spec mt-10">Last updated: {updated}</p>
+		<div class="flex flex-col">
+			{
+				sections.map((s, i) => (
+					<article class="hair rise grid gap-4 py-9 md:grid-cols-12 md:gap-10 md:py-12">
+						<p class="spec md:col-span-1 md:pt-2">{String(i + 1).padStart(2, '0')}</p>
+						<h3 class="display-md md:col-span-4">{s.title}</h3>
+						<div class="md:col-span-6 md:col-start-7">
+							{s.body.map((line, j) => (
+								<p class:list={['prose-body max-w-[54ch]', j > 0 && 'mt-4']}>{line}</p>
+							))}
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- The same closing plate the terms page has, because these two are
+	     the same kind of page. The action is the one a privacy page
+	     actually has: not "hire me", but "take it down". -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed py-20 md:py-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<h2 class="display-lg md:col-span-7">If you want what you wrote here deleted, say so and it is gone.</h2>
+				<div class="md:col-span-4 md:col-start-9 md:self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Write to me</a>
+					<p class="prose-body mt-6 max-w-[34ch] text-[0.95rem]">Answered the same working day. No form to fill in and no reason to give.</p>
+				</div>
+			</div>
+		</div>
 	</section>
 </Site>
