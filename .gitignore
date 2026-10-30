@@ -36,3 +36,9 @@ test-results/
 playwright-report/
 blob-report/
 .playwright/
+
+# The specification is a business document, not code. It lives in the dossier
+# at D:\Google Drive\work\Projects\quickflow, where it is versioned and current.
+# The copy that used to be here was one version behind and carried positioning,
+# pricing and market analysis into a public repository.
+docs/spec.md
