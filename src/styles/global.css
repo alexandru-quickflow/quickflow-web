@@ -107,6 +107,19 @@
 		/* The big faint numeral. A token rather than a literal, because it has
 		   to flip on the light band and a literal cannot. */
 		--ghost: rgba(233, 242, 240, 0.38);
+		/* Two radii, and the rule for choosing between them, written here
+		   because until it was checked it lived only in a commit message.
+		   Measured across all 29 pages: 134 things that hold something are at
+		   16 and 78 things a person touches are at 10, with no exceptions in
+		   either. It cost 32 corrections to make that true, 24 of them boxes
+		   in the drawn plates that had arrived at 8px and 12px, and a code
+		   block that had the touch radius without being touchable.
+
+		   The site has two more families the rule never named. A pill, fully
+		   rounded, for a badge or a dot: 72 of those. And a mark, 3 to 4px,
+		   for a swatch, a bar segment or a redaction, where the radius is
+		   proportionate to a shape that is a few pixels tall rather than to
+		   anything it contains. Neither belongs on this scale. */
 		--radius: 16px;
 		--radius-sm: 10px;
 
@@ -702,7 +715,8 @@
 		overflow-x: auto;
 		overscroll-behavior-x: contain;
 		border: 1px solid var(--line);
-		border-radius: var(--radius-sm);
+		/* A code block holds something; it is not something anyone taps. */
+		border-radius: var(--radius);
 		background-color: rgba(0, 0, 0, 0.4);
 		color: rgba(233, 242, 240, 0.72);
 		padding: 1rem 1.1rem;
