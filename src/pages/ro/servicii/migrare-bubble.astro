@@ -55,8 +55,12 @@ const phases = [
 
 const hurts = [
 	{
-		title: 'Parolele',
-		body: 'Parolele utilizatorilor nu ies din platformă. Cine îți promite altceva fie nu a făcut-o niciodată, fie nu îți spune tot. La faza 4, oamenii își resetează parola. Nu e un detaliu tehnic, e un email care trebuie scris bine și trimis în momentul potrivit, altfel pierzi utilizatori care nu s-au logat de trei luni.',
+		// Titlul era „Parolele" și corpul începea tot cu „Parolele", deci pe
+		// ecran cuvântul se citea de două ori la rând. Engleza pune „User" în
+		// față și nu se bâlbâie. Aici îl ia titlul, iar corpul pornește de la
+		// ce fac ele.
+		title: 'Parolele utilizatorilor',
+		body: 'Nu ies din platformă. Cine îți promite altceva fie nu a făcut-o niciodată, fie nu îți spune tot. La faza 4, oamenii își resetează parola. Nu e un detaliu tehnic, e un email care trebuie scris bine și trimis în momentul potrivit, altfel pierzi utilizatori care nu s-au logat de trei luni.',
 	},
 	{
 		title: 'Două sisteme în paralel',
@@ -119,7 +123,7 @@ const steps = [
 	'Dacă are sens și după discuție, îți trimit o propunere de audit, cu dată de început. Atât.',
 ];
 
-const title = 'Migrare de pe Bubble pe cod, pe faze';
+const title = 'Migrare de pe Bubble pe cod, pe faze | Quick Flow';
 const description =
 	'Scot aplicații din Bubble pe faze, fără să le opresc. O zi și 350 EUR ca să afli dacă merită, două zile și 600 EUR ca să planificăm mutarea.';
 

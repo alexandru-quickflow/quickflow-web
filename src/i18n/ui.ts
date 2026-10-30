@@ -30,7 +30,11 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Romanian, Russian, English',
 		footerContact: 'Contact',
 		footerBuilt: 'Built with no framework on the client',
-		legal: 'Quick Flow SRL · CUI 44089760 · Reg. J2021006561401',
+		// The same two identifiers the terms page gives, named the way that
+		// page names them. This line said "CUI" in English, which is the
+		// Romanian term and means nothing to an English reader, and abbreviated
+		// the register differently from its Romanian twin for no reason.
+		legal: 'Quick Flow SRL · Fiscal code 44089760 · Trade register J2021006561401',
 	},
 	ro: {
 		skip: 'Sari la conținut',
@@ -43,6 +47,6 @@ export const ui: Record<Locale, Ui> = {
 		footerLanguages: 'Română, rusă, engleză',
 		footerContact: 'Contact',
 		footerBuilt: 'Construit fără framework pe client',
-		legal: 'Quick Flow SRL · CUI 44089760 · Reg. com. J2021006561401',
+		legal: 'Quick Flow SRL · CUI 44089760 · Nr. reg. com. J2021006561401',
 	},
 };

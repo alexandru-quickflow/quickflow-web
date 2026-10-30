@@ -1,7 +1,8 @@
 # Anexa tehnică: stack și arhitectură
 
 Anexă la `03-spec.md` v1. Document intern, clientul nu îl citește.
-Dată: 2026-10-27
+Dată: 2026-10-27. Două rânduri corectate pe 30 octombrie, la auditul final: descriau
+ce s-a plănuit, nu ce s-a construit. Sunt marcate mai jos.
 
 Scop: decide cu ce se construiește, înainte de estimare. Fără asta, estimarea de la
 etapa 4 e o presupunere.
@@ -15,11 +16,11 @@ etapa 4 e o presupunere.
 | Stiluri | Tailwind v4 |
 | Iconițe | Phosphor Icons |
 | Framework de UI pe client | Niciunul |
-| i18n | Routing nativ Astro: română fără prefix, engleză pe `/en` |
+| i18n | Routing nativ Astro: engleză fără prefix, română pe `/ro/`, cu adresele traduse. **Corectat pe 30 octombrie:** aici scria invers, română fără prefix și engleză pe `/en`. S-a livrat engleza la rădăcină, iar branch-ul se numește `english-first` |
 | Formular | Cloudflare Pages Function pe `/api/contact` |
 | Anti-spam | Cloudflare Turnstile plus o regulă de rate limiting pe traseul formularului |
 | Email | Resend |
-| Imagini | Componenta `<Image>` din Astro, AVIF și WebP |
+| Imagini | `<img>` din `public/`, JPEG, cu `width`, `height` și `loading="lazy"`. **Corectat pe 30 octombrie:** aici scria componenta `<Image>` din Astro cu AVIF și WebP, care nu e folosită nicăieri. Cele șase rastere se servesc ca JPEG, iar cel mai greu, fotografia, e 225 KB. Rămâne deschis |
 | Analytics | Cloudflare Web Analytics, fără cookies |
 | Monitorizare erori | Logurile Cloudflare, fără Sentry |
 | Hosting | Cloudflare Pages, legat la git, cu preview deploys |
