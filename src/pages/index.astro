@@ -3,7 +3,16 @@ import Site from '../layouts/Site.astro';
 import PaymentFlow from '../components/PaymentFlow.astro';
 import ServiceMark from '../components/ServiceMark.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../content/proof';
+import {
+	BUBBLE_SINCE,
+	CODE_SINCE,
+	DESIGN_SINCE,
+	bubbleYears,
+	bubbleYearsInWords,
+} from '../content/experience';
 import { PROFILE, paths } from '../i18n/routes';
+
+const bubbleYearsWord = bubbleYearsInWords('en');
 
 const weight = proof('en', 'bubble-weight');
 const escrow = proof('en', 'stripe-escrow');
@@ -13,7 +22,7 @@ const escrow = proof('en', 'stripe-escrow');
 // now and the sentence under it only says why it matters.
 const facts = [
 	{
-		figure: '8',
+		figure: bubbleYears(),
 		unit: 'years inside Bubble',
 		what: 'Which is why I can tell you what will not survive the move.',
 	},
@@ -577,15 +586,16 @@ const schema = {
 
 			<div class="md:col-span-5 md:col-start-8 md:pt-16">
 				<p class="prose-body">
-					I came into tech in 2014, as a UI designer. Since 2017 I have been building in Bubble,
-					first at Zeroqode and Airdev, then on my own. Since 2025 I deliver on code. I sell the way
-					out of Bubble because I spent eight years inside it, not because I read about it.
+					I came into tech in {DESIGN_SINCE}, as a UI designer. Since {BUBBLE_SINCE} I have been
+					building in Bubble, first at Zeroqode and Airdev, then on my own. Since {CODE_SINCE} I
+					deliver on code. I sell the way out of Bubble because I spent {bubbleYearsWord} years
+					inside it, not because I read about it.
 				</p>
 				<p class="prose-body mt-5">
 					I do not type that code line by line. I build it with AI, I test it, and I answer for it.
 					Writing code stopped being the hard part. The hard part is knowing what has to be built,
-					in what order, and what breaks on the first refund, and that is what eight years inside
-					Bubble taught me.
+					in what order, and what breaks on the first refund, and that is what {bubbleYearsWord} years
+					inside Bubble taught me.
 				</p>
 				<p class="prose-body mt-5">
 					A design background means I will not hand you something that works but looks like a
@@ -595,15 +605,15 @@ const schema = {
 				<dl class="mt-10 grid grid-cols-3 gap-x-6 gap-y-6">
 					<div class="hair pt-4">
 						<dt class="spec">Design</dt>
-						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2014</dd>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">{DESIGN_SINCE}</dd>
 					</div>
 					<div class="hair pt-4">
 						<dt class="spec">Bubble</dt>
-						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2017</dd>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">{BUBBLE_SINCE}</dd>
 					</div>
 					<div class="hair pt-4">
 						<dt class="spec">Code</dt>
-						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2025</dd>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">{CODE_SINCE}</dd>
 					</div>
 				</dl>
 			</div>

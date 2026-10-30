@@ -3,7 +3,16 @@ import Site from '../../layouts/Site.astro';
 import PaymentFlow from '../../components/PaymentFlow.astro';
 import ServiceMark from '../../components/ServiceMark.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../../content/proof';
+import {
+	BUBBLE_SINCE,
+	CODE_SINCE,
+	DESIGN_SINCE,
+	bubbleYears,
+	bubbleYearsInWords,
+} from '../../content/experience';
 import { PROFILE, paths } from '../../i18n/routes';
+
+const bubbleAni = bubbleYearsInWords('ro');
 
 const weight = proof('ro', 'bubble-weight');
 const escrow = proof('ro', 'stripe-escrow');
@@ -13,7 +22,7 @@ const escrow = proof('ro', 'stripe-escrow');
 // now and the sentence under it only says why it matters.
 const facts = [
 	{
-		figure: '8',
+		figure: bubbleYears(),
 		unit: 'ani petrecuți în Bubble',
 		what: 'De aia îți pot spune ce nu supraviețuiește mutării.',
 	},
@@ -585,15 +594,16 @@ const schema = {
 
 			<div class="md:col-span-5 md:col-start-8 md:pt-16">
 				<p class="prose-body">
-					Am intrat în IT în 2014, ca UI designer. Din 2017 construiesc în Bubble, întâi la Zeroqode
-					și Airdev, apoi pe cont propriu. Din 2025 livrez pe cod. Vând ieșirea din Bubble pentru că
-					am petrecut opt ani înăuntru, nu pentru că am citit despre ea.
+					Am intrat în IT în {DESIGN_SINCE}, ca UI designer. Din {BUBBLE_SINCE} construiesc în Bubble,
+					întâi la Zeroqode și Airdev, apoi pe cont propriu. Din {CODE_SINCE} livrez pe cod. Vând
+					ieșirea din Bubble pentru că am petrecut {bubbleAni} ani înăuntru, nu pentru că am citit
+					despre ea.
 				</p>
 				<p class="prose-body mt-5">
 					Nu scriu codul ăla literă cu literă. Îl construiesc cu AI, îl testez și răspund pentru el.
 					Scrierea codului a încetat să fie partea grea. Partea grea e să știi ce trebuie construit,
-					în ce ordine, și ce se rupe la primul refund, iar asta am învățat-o în opt ani petrecuți
-					înăuntrul aplicațiilor pe Bubble.
+					în ce ordine, și ce se rupe la primul refund, iar asta am învățat-o în {bubbleAni} ani
+					petrecuți înăuntrul aplicațiilor pe Bubble.
 				</p>
 				<p class="prose-body mt-5">
 					Fundalul de design înseamnă că nu îți livrez ceva care funcționează dar arată ca un
@@ -603,15 +613,15 @@ const schema = {
 				<dl class="mt-10 grid grid-cols-3 gap-x-6 gap-y-6">
 					<div class="hair pt-4">
 						<dt class="spec">Design</dt>
-						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2014</dd>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">{DESIGN_SINCE}</dd>
 					</div>
 					<div class="hair pt-4">
 						<dt class="spec">Bubble</dt>
-						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2017</dd>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">{BUBBLE_SINCE}</dd>
 					</div>
 					<div class="hair pt-4">
 						<dt class="spec">Cod</dt>
-						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">2025</dd>
+						<dd class="mt-2 font-mono text-3xl font-medium tracking-tight">{CODE_SINCE}</dd>
 					</div>
 				</dl>
 			</div>

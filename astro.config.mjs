@@ -43,7 +43,9 @@ export default defineConfig({
 			// x view()`, which no browser accepts. The declaration is then
 			// dropped and every scroll-driven animation on the site silently
 			// stops existing, with no warning anywhere. Measured cost of
-			// leaving it unminified: see the launch checklist.
+			// leaving it unminified: 852 bytes on the wire, 9,821 gzipped
+			// against 8,969 with comments and whitespace stripped. See
+			// docs/launch-checklist.md, which carries the rest of the numbers.
 			cssMinify: false,
 		},
 	},

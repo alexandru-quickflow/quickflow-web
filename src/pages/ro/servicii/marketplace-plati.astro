@@ -2,6 +2,7 @@
 import Site from '../../../layouts/Site.astro';
 import PaymentFlow from '../../../components/PaymentFlow.astro';
 import { proof } from '../../../content/proof';
+import { BUBBLE_SINCE, CODE_SINCE } from '../../../content/experience';
 import { paths } from '../../../i18n/routes';
 
 const escrow = proof('ro', 'stripe-escrow');
@@ -127,8 +128,8 @@ const fields = [
 
 		<p class="lead mt-9 max-w-[56ch] text-lg">
 			Construiesc platforme în care vânzătorii trec verificarea de identitate, banii așteaptă
-			livrarea, iar împărțirea nu se rupe la primul refund. Din 2017 în no-code, din 2025 în cod,
-			singur de la modelul de date până la payout.
+			livrarea, iar împărțirea nu se rupe la primul refund. Din {BUBBLE_SINCE} în no-code, din
+			{' '}{CODE_SINCE} în cod, singur de la modelul de date până la payout.
 		</p>
 
 		<div class="mt-10 md:mt-14">

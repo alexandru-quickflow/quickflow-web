@@ -14,9 +14,14 @@ import { paths } from '../../i18n/routes';
 const updated = VERIFIED_ON.ro;
 
 // This page describes what the site actually does, so it changes when the site
-// does. Two open decisions touch it: the Cloudflare Web Analytics beacon, which
-// is in the technical annex but not yet on the site, and booking, which the
-// Romanian contact page no longer offers, so no booking processor is listed.
+// does, and neither of the two switches above is read anywhere else by hand.
+// Booking is on, so Calendly is listed here and the button is on both contact
+// pages; the note that used to sit here said the opposite and had been wrong
+// since the button came back. Analytics is off, and stays off: the beacon
+// measures 10,264 bytes on the wire against 5,612 for the whole site, which
+// would make the stamp on the home page false by a factor of nearly three.
+// Traffic is read from the Cloudflare dashboard instead, which is the host
+// already named below and adds no script, no cookie and no third party.
 
 const sections = [
 	{
@@ -41,7 +46,7 @@ const sections = [
 	{
 		title: 'Unde ajung',
 		body: [
-			'Formularul trimite conținutul pe email, prin Resend, la adresa mea, și o singură copie la adresa pe care ai scris-o tu. Site-ul nu are bază de date și nu stochează nimic pe server.',
+			'Formularul trimite conținutul pe email, prin Resend, la adresa mea. Dacă trimiterea trece verificarea anti-robot, pleacă și o singură copie la adresa pe care ai scris-o tu. Site-ul nu are bază de date și nu stochează nimic pe server.',
 			'Emailurile rămân în căsuța mea atât timp cât discuția are sens. Dacă vrei să le șterg, îmi scrii și le șterg.',
 		],
 	},

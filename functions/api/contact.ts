@@ -15,12 +15,24 @@
  *
  * Rate limiting is NOT done here. A Cloudflare rule caps /api/contact at 5
  * requests per hour per IP, which blocks before the request reaches this code.
- * See ADR-0003 and the launch checklist; the rule does not live in this repo.
+ * See ADR-0003 and docs/launch-checklist.md; the rule does not live in this
+ * repo, which is exactly why it has to be checked before every launch.
  *
  * Turnstile needs JavaScript, so a no-JS submission arrives without a token.
- * Those are accepted, protected by the honeypot field and the edge rate limit.
- * Rejecting them would break the form for everyone without JavaScript, which
- * the spec requires to keep working.
+ * Those are accepted, because rejecting them would break the form for everyone
+ * without JavaScript, which the spec requires to keep working.
+ *
+ * But accepted is not the same as trusted, and the difference is the copy sent
+ * to the visitor. That copy goes to whatever address was typed into the form,
+ * which makes this endpoint a mail relay for anyone who can POST to it: send
+ * text, name someone else's address, and the site delivers it. The honeypot
+ * stops a crawler filling every field it finds; it does not stop anybody who
+ * reads the HTML once. So the copy is sent only when Turnstile actually
+ * verified a human. A submission without a token still reaches the owner,
+ * which is the whole point of the form, and simply gets no copy of itself.
+ *
+ * That leaves the edge rule as a cap on volume rather than as the only thing
+ * between this endpoint and a stranger's inbox.
  */
 
 interface Env {
@@ -349,6 +361,10 @@ export const onRequestPost = async (context: {
 			: errorPage(c.missingSomething, f, 400, lang);
 	}
 
+	// Whether a human was actually verified, not merely whether the check was
+	// skipped. A missing token, a missing secret and a passing token are three
+	// different states, and only the last one earns the visitor a copy.
+	let verifiedHuman = false;
 	const token = text(form.get('cf-turnstile-response'));
 	if (token && env.TURNSTILE_SECRET_KEY) {
 		const ip = request.headers.get('CF-Connecting-IP') || '';
@@ -358,6 +374,7 @@ export const onRequestPost = async (context: {
 				? Response.json({ message: c.turnstileFailed }, { status: 400 })
 				: errorPage(c.turnstileFailed, f, 400, lang);
 		}
+		verifiedHuman = true;
 	}
 
 	if (!env.RESEND_API_KEY) {
@@ -383,14 +400,22 @@ export const onRequestPost = async (context: {
 			: errorPage(c.serviceDown, f, 502, lang);
 	}
 
-	// Exactly one copy to whoever typed the address, per submission, in their
-	// own language. The owner's copy already arrived, so a failure here is not
-	// worth failing the request.
-	await sendEmail(env.RESEND_API_KEY, {
-		to: f.email,
-		subject: c.senderSubject,
-		text: senderBody(f, c),
-	});
+	// At most one copy to whoever typed the address, per submission, in their
+	// own language, and only when Turnstile verified a human. This is the one
+	// place where the endpoint writes to an address a stranger chose, so it is
+	// the one place that has to be sure a person chose it. A submission that
+	// arrived without a token is already in the owner's inbox by now and is
+	// answered by hand like any other; it just does not get mailed back.
+	//
+	// The owner's copy has already arrived either way, so a failure here is
+	// not worth failing the request over.
+	if (verifiedHuman) {
+		await sendEmail(env.RESEND_API_KEY, {
+			to: f.email,
+			subject: c.senderSubject,
+			text: senderBody(f, c),
+		});
+	}
 
 	return wantsJson
 		? Response.json({ ok: true })

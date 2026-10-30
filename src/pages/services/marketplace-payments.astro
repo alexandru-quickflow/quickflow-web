@@ -2,6 +2,7 @@
 import Site from '../../layouts/Site.astro';
 import PaymentFlow from '../../components/PaymentFlow.astro';
 import { proof } from '../../content/proof';
+import { BUBBLE_SINCE, CODE_SINCE } from '../../content/experience';
 import { paths } from '../../i18n/routes';
 
 const escrow = proof('en', 'stripe-escrow');
@@ -122,8 +123,8 @@ const schema = {
 
 		<p class="lead mt-9 max-w-[56ch] text-lg">
 			I build platforms where sellers pass identity verification, the money waits for delivery, and
-			the split does not break on the first refund. In no-code since 2017, on code since 2025,
-			one person from the data model to the payout.
+			the split does not break on the first refund. In no-code since {BUBBLE_SINCE}, on code since
+			{' '}{CODE_SINCE}, one person from the data model to the payout.
 		</p>
 
 		<div class="mt-10 md:mt-14">
