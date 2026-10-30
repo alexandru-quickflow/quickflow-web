@@ -488,6 +488,16 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 		bad[0].focus();
 	}
 
+	/** The one thing to say when the send did not happen and nothing came back
+	 *  that says why. Same words the handler uses for its own outage, because
+	 *  from where the visitor sits it is the same event. */
+	function cannotSend() {
+		if (!banner) return;
+		banner.textContent =
+			'I could not send the request right now. Write directly to alexandru@quickflow.dev or try again in a few minutes.';
+		banner.removeAttribute('hidden');
+	}
+
 	form?.addEventListener('submit', async (event) => {
 		event.preventDefault();
 		clearErrors();
@@ -517,12 +527,18 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 				banner.textContent = data.message;
 				banner.removeAttribute('hidden');
 			}
+			// Nothing readable came back. The handler answers its own failures
+			// in JSON, so this is the case where it was never reached: a 404
+			// because the function is not deployed, or one of Cloudflare's own
+			// HTML error pages. `response.json()` throws on those, the catch
+			// below does not fire because the request itself succeeded, and
+			// until now both branches above were skipped and the visitor was
+			// told nothing at all. They pressed Send, the button blinked, and
+			// their message was gone as far as they could tell.
+			if (!data.fields && !data.message) cannotSend();
 		} catch {
-			if (banner) {
-				banner.textContent =
-					'I could not send the request right now. Write directly to alexandru@quickflow.dev or try again in a few minutes.';
-				banner.removeAttribute('hidden');
-			}
+			// The request never completed: offline, DNS, a dropped connection.
+			cannotSend();
 		} finally {
 			if (button) {
 				button.disabled = false;

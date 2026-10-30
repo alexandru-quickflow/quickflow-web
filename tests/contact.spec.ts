@@ -280,6 +280,38 @@ for (const page of PAGES) {
 			await expect(browserPage.locator('#submit-btn')).toBeEnabled();
 		});
 
+		test('a failure with nothing readable in it still says something', async ({
+			page: browserPage,
+		}) => {
+			// The handler answers its own failures in JSON. This is the other
+			// kind: it was never reached, so what comes back is somebody else's
+			// HTML. A 404 because the function is not deployed, or one of
+			// Cloudflare's own error pages.
+			//
+			// Found by pressing the button on a preview server, where
+			// /api/contact is a 404 and the page said nothing at all: the JSON
+			// parse threw, the catch did not fire because the request itself
+			// had succeeded, and both branches that show the banner were
+			// skipped. The visitor pressed send and their message was gone as
+			// far as they could tell.
+			await intercept(browserPage, (route) =>
+				route.fulfill({ status: 404, contentType: 'text/html', body: '<html>404</html>' })
+			);
+			await browserPage.goto(page.path);
+
+			await walkToTheEnd(browserPage);
+			await browserPage.click('#submit-btn');
+
+			const banner = browserPage.locator('#form-error');
+			await expect(banner).toBeVisible();
+			await expect(banner).toHaveAttribute('role', 'alert');
+			await expect(banner).toContainText('alexandru@quickflow.dev');
+			// Not the confirmation. Nothing was sent.
+			await expect(browserPage.locator('#form-success')).toBeHidden();
+			await expect(browserPage.locator('#contact-form')).toBeVisible();
+			await expect(browserPage.locator('#submit-btn')).toBeEnabled();
+		});
+
 		test('the form still posts with no JavaScript at all', async ({ browser }) => {
 			// The spec requires this and nothing else checks it. With the script
 			// off there is no fetch, no inline message and no success panel, so
