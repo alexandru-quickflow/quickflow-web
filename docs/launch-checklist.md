@@ -122,8 +122,12 @@ stay on the verified domain. Sending from the apex is refused with 403, which th
 function turns into the same answer it gives when the key is missing. A correct key
 then looks exactly like a missing one, which is how an afternoon goes.
 
-The zone has no DMARC record. Resend does not require one to verify. Adding
-`p=none` is a later improvement, not a launch blocker.
+`_dmarc.quickflow.dev` carries `v=DMARC1; p=none; rua=mailto:alexandru@quickflow.dev`,
+added 30 October 2026 and confirmed through Google Public DNS as well as through
+the Cloudflare API. Monitoring only: it enforces nothing, so it cannot bounce
+legitimate mail, and it covers `send.quickflow.dev` through the organisational
+policy. The aggregate reports arrive as daily XML attachments from the larger
+receivers; dropping the `rua` part stops them and leaves the record valid.
 
 ### 1.4 Web Analytics in the Pages project
 
