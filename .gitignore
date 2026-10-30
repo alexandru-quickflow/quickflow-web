@@ -30,3 +30,9 @@ pnpm-debug.log*
 .dev.vars
 .wrangler/
 .font-cache/
+
+# playwright
+test-results/
+playwright-report/
+blob-report/
+.playwright/

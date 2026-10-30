@@ -9,7 +9,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "npm run test:handler && npm run test:form",
+    "test:handler": "node --test \"tests/**/*.test.mjs\"",
+    "test:form": "playwright test"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

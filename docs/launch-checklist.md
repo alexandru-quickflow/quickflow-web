@@ -73,9 +73,17 @@ in the function is `noreply@quickflow.dev`.
 ## 2. Before every deploy
 
 ```bash
-cd /d/dev/quickflow-web && npm run build
+cd /d/dev/quickflow-web && npm test
+npm run build
 npx astro preview --host 0.0.0.0 --port 4322   # stop it with: npx astro preview stop
 ```
+
+`npm test` is two suites and takes about five seconds. `test:handler` calls the
+contact function directly, since nothing serves Pages Functions locally, and
+`test:form` drives both contact pages in a browser against the built site. If
+the second one starts its own preview server it builds first; if one is already
+running on 4322 it uses that, so run it before the scripts below rather than in
+the middle of them.
 
 Then the three scripts, in this order. What each one should say:
 
@@ -122,6 +130,11 @@ commit. Run `npm run build` again afterwards so `public/og` is copied into
 ## 3. What no script can see
 
 Each of these has already cost something.
+
+`npm test` now covers the wiring of the form, which used to be on this list:
+what it posts, what it does with every answer including the one where sending
+fails, and who receives email in each case. What is left here is everything
+that needs a real inbox, a real key, or a person looking.
 
 - **Read two or three pages on a phone, not in a probe.** Three of the five
   known blind spots were found this way and one of them cannot be found any
