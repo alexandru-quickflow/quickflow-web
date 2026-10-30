@@ -319,14 +319,17 @@ only if a whole year passes with no deploy.
 - That submission delivered both emails, the owner's copy and the sender's copy.
 - Zero third-party requests on the home page, measured in a browser rather than
   with `curl`. Section 1.4 is why that distinction is the whole point.
+- `robots.txt` and `sitemap-index.xml` both answer 200, and neither thank-you
+  page appears in the sitemap.
+- A submission carrying a deliberately invalid Turnstile token gets the
+  function's own 400 and its own message on the apex, identical to `pages.dev`.
+  That is the evidence behind the 422 in section 4.
 
 Still open:
 
 - Post to `/api/contact` faster than the rule in section 1.1 allows and confirm
   the block comes from the edge rather than from the function. Two posts per ten
   seconds is the real rate, not the five per hour this document once named.
-- Confirm `robots.txt` and `sitemap-index.xml` are served, and that the two
-  thank-you pages are absent from the sitemap.
 - Send one submission in English too. Only the Romanian path has been run end to
   end against production.
 
