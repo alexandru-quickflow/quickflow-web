@@ -25,16 +25,30 @@ Cloudflare Pages project is recreated. Nothing may be added to it quietly.
 
 ### 1.1 The rate limiting rule on the contact endpoint
 
-**Status on 30 October 2026: not created.** It has to exist before the form is
-reachable from the open internet.
+**Status on 30 October 2026: created, but not at the rate this document asked
+for.** The rate below is what the account's plan actually permits, and the
+difference is worth understanding before anyone "fixes" it.
 
 | Setting | Value |
 |---|---|
 | Path | `/api/contact` |
 | Method | `POST` |
-| Characteristic | IP address |
-| Rate | 5 requests per hour |
+| Characteristic | IP address, per colo |
+| Rate | 2 requests per 10 seconds |
+| Block duration | 10 seconds |
 | Action | Block |
+
+**Why not five per hour, as planned.** The API refuses any period other than 10
+seconds on this plan: *"not entitled to use the period 3600, can only use a
+period among [10]"*. Longer windows and longer block durations are a paid
+feature. So the rule stops someone hammering the endpoint, but it does not cap
+the number of submissions in an hour, which is what five-per-hour was for.
+
+What that leaves: a determined sender can still post roughly twelve times a
+minute from one address. Turnstile is what makes that expensive, not this rule.
+If the volume ever becomes a real problem, the options are a paid plan, or a
+counter in the function itself backed by KV. Neither is worth doing before
+there is traffic to measure.
 
 Why it matters, in one line: the endpoint emails a copy of the submission to
 whatever address was typed into the form, so without a cap it is a mail relay
