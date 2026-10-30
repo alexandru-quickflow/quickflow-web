@@ -38,7 +38,12 @@ AVIF = {'quality': 70, 'speed': 4}
 # files are fetched by whatever renders a link preview, and a chat window that
 # asks for og:image wants the PNG it was pointed at. Offering it an AVIF it
 # never requested is 29 files nobody downloads.
-SKIP = {'og'}
+#
+# public/anpc holds the official ANPC pictogram, published by the authority and
+# served exactly as published. Re-encoding somebody else's legal mark to save a
+# kilobyte is not ours to do, and a mark the authority cannot checksum back to
+# its own file is worth less than the kilobyte.
+SKIP = {'og', 'anpc'}
 
 SOURCES = sorted(
     p
