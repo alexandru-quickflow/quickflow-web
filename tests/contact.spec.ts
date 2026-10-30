@@ -259,7 +259,7 @@ for (const page of PAGES) {
 		});
 
 		test('a send that fails says so out loud', async ({ page: browserPage }) => {
-			await intercept(browserPage, (route) => json(route, 502, { message: page.serviceDown }));
+			await intercept(browserPage, (route) => json(route, 422, { message: page.serviceDown }));
 			await browserPage.goto(page.path);
 
 			await walkToTheEnd(browserPage);

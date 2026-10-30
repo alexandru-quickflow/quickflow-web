@@ -96,7 +96,7 @@ a second SPF record on the same name invalidates both and breaks ordinary mail.
 
 The `From` address in the function is `noreply@send.quickflow.dev` and has to
 stay on the verified domain. Sending from the apex is refused with 403, which the
-function turns into the same 502 it returns when the key is missing. A correct key
+function turns into the same answer it gives when the key is missing. A correct key
 then looks exactly like a missing one, which is how an afternoon goes.
 
 The zone has no DMARC record. Resend does not require one to verify. Adding
@@ -263,6 +263,32 @@ has its own Web Analytics switch that ignores the variable entirely. Read sectio
 pages, `SELF_JS` in `src/content/proof.ts`, and the comparison row on both
 migration pages. Both privacy pages change themselves; they read the same
 variable.
+
+### The mail service being down answers 422, not 502
+
+Decided 30 October 2026.
+
+502 describes the situation honestly and was useless. On the proxied domain
+Cloudflare replaces a 5xx from a Pages Function with its own bare error page, so
+the visitor got `error code: 502` instead of the function's own message telling
+them to write to the address directly. Exactly the moment that message matters
+most is the moment it disappeared. On `pages.dev` it was fine, which is why this
+survived every check until the site ran on its own domain.
+
+422 passes through, and is close enough to true: the submission was understood
+and valid, the mail service could not take it. It stays a failure, so anything
+watching status codes still sees one. 200 with an error body was rejected for
+that reason alone.
+
+Measured rather than assumed, in two directions. The handler test asserts 422
+when the key is absent. And a 4xx from this function does reach the visitor on
+the apex: a submission with a deliberately invalid Turnstile token returns the
+function's own 400 and its own message on `quickflow.dev`, byte for byte the same
+as on `pages.dev`. The 422 path itself cannot be exercised against production
+without taking the live key away, so that half rests on the 400.
+
+The status lives in one place, `MAIL_UNAVAILABLE` in `functions/api/contact.ts`,
+with the reasoning next to it.
 
 ### CSS minification stays off
 

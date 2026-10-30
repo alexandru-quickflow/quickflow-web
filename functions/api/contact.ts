@@ -45,6 +45,19 @@ const OWNER = 'alexandru@quickflow.dev';
 // on the apex is refused with 403, which reads to the visitor as an outage.
 const FROM = 'Quick Flow <noreply@send.quickflow.dev>';
 
+/** What the endpoint answers when the mail service will not take the message.
+ *
+ *  502 is the honest description and is useless here: on the proxied domain
+ *  Cloudflare replaces a 5xx from a Pages Function with its own bare error page,
+ *  so the one message that tells the visitor to write directly never reaches
+ *  them. It survives on pages.dev, which is why this was invisible until the
+ *  site ran on its own domain.
+ *
+ *  422 passes through. It is also close enough to true: the submission was
+ *  understood and valid, the mail service could not take it. And it stays a
+ *  failure, so anything watching status codes still sees one. */
+const MAIL_UNAVAILABLE = 422;
+
 type Locale = 'en' | 'ro';
 const DEFAULT_LOCALE: Locale = 'en';
 /** The language the owner's own copy is written in. */
@@ -381,8 +394,8 @@ export const onRequestPost = async (context: {
 
 	if (!env.RESEND_API_KEY) {
 		return wantsJson
-			? Response.json({ message: c.serviceDown }, { status: 502 })
-			: errorPage(c.serviceDown, f, 502, lang);
+			? Response.json({ message: c.serviceDown }, { status: MAIL_UNAVAILABLE })
+			: errorPage(c.serviceDown, f, MAIL_UNAVAILABLE, lang);
 	}
 
 	const owner = COPY[OWNER_LOCALE];
@@ -398,8 +411,8 @@ export const onRequestPost = async (context: {
 	// If the owner's copy failed, the request is lost. Say so, do not pretend.
 	if (!toOwner) {
 		return wantsJson
-			? Response.json({ message: c.serviceDown }, { status: 502 })
-			: errorPage(c.serviceDown, f, 502, lang);
+			? Response.json({ message: c.serviceDown }, { status: MAIL_UNAVAILABLE })
+			: errorPage(c.serviceDown, f, MAIL_UNAVAILABLE, lang);
 	}
 
 	// At most one copy to whoever typed the address, per submission, in their

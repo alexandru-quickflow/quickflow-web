@@ -162,6 +162,6 @@ test('with no Resend key the request fails loudly instead of quietly', async () 
 		}),
 		env: { RESEND_API_KEY: '', TURNSTILE_SECRET_KEY: 'test-secret' },
 	});
-	assert.equal(res.status, 502);
+	assert.equal(res.status, 422);
 	assert.deepEqual(sent, []);
 });
