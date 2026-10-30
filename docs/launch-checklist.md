@@ -124,6 +124,18 @@ no room", all two-character labels that have exactly the room they need, and
 around 530 pieces of text under 11.5px, which are `.spec` and `.stamp`, the
 label vocabulary. Do not fix them.
 
+### `python -I scripts/images.py`
+
+Redraws every raster the site serves as AVIF and WebP beside its original, and
+writes what each one measures to `src/content/images.json`, which is where
+`Shot.astro` reads the width and height from. Run it after adding or replacing
+any picture under `public/`, and commit what it writes: a picture with no AVIF
+beside it still loads, from the original, but a picture missing from the
+manifest fails the build on purpose rather than guessing a size.
+
+It leaves `public/og` alone. Those are fetched by whatever renders a link
+preview, which asks for the PNG it was pointed at.
+
 ### `python -I scripts/og.py`
 
 Redraws the 29 share images from the headlines in `dist/`. If `git status` shows

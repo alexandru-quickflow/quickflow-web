@@ -673,6 +673,15 @@
 		transform: translateY(2px) rotate(-135deg);
 	}
 
+	/* Every raster is offered as AVIF, then WebP, then the original, which puts
+	   a <picture> around each <img>. `display: contents` means that wrapper
+	   generates no box at all, so every rule written against `.shot img` or a
+	   grid child still lands on the image itself and nothing new appears
+	   between a figure and its picture. */
+	picture {
+		display: contents;
+	}
+
 	/* A screenshot in a frame. The picture breathes, the frame stays put. */
 	.shot {
 		position: relative;

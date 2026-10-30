@@ -1,0 +1,49 @@
+---
+// One picture, offered three ways, with the size it actually is.
+//
+// Two things used to be typed by hand at every one of the eight places an
+// image appears, and both were wrong somewhere. The format: every raster was
+// served as the JPEG it was exported as, while docs/anexa-tehnica.md had been
+// claiming AVIF and WebP since before either existed. And the size: all eight
+// declared 800x500, but two of the five screenshots are 790 wide, so their
+// frame grew by five pixels the moment the picture landed, which is the exact
+// layout shift that width and height exist to prevent.
+//
+// Both come from scripts/images.py now. It writes the AVIF and the WebP beside
+// each original and records what it measured in src/content/images.json, so
+// this reads the size rather than repeating it. A route missing from the
+// manifest is a loud failure here rather than a quiet guess, because a guess
+// is what was being made before.
+//
+// The JPEG stays as the last <source>'s fallback. Both other formats are
+// universal in browsers anyone still uses, but the fallback costs one line and
+// nothing until it is needed.
+import sizes from '../content/images.json';
+
+interface Props {
+	/** The path under public/, with its original extension. */
+	src: string;
+	alt: string;
+	/** Browsers that have not decoded it yet need this to reserve the room. */
+	loading?: 'lazy' | 'eager';
+	class?: string;
+}
+
+const { src, alt, loading = 'lazy', class: cls } = Astro.props;
+
+const size = (sizes as Record<string, { w: number; h: number }>)[src];
+if (!size) {
+	throw new Error(
+		`Shot: ${src} is not in src/content/images.json. Run python -I scripts/images.py, ` +
+			'which writes the manifest and the AVIF and WebP beside it.'
+	);
+}
+
+const base = src.replace(/\.(jpe?g|png)$/i, '');
+---
+
+<picture>
+	<source srcset={`${base}.avif`} type="image/avif" />
+	<source srcset={`${base}.webp`} type="image/webp" />
+	<img src={src} alt={alt} width={size.w} height={size.h} loading={loading} class={cls} />
+</picture>

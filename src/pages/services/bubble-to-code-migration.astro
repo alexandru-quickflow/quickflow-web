@@ -1,5 +1,6 @@
 ---
 import Site from '../../layouts/Site.astro';
+import Shot from '../../components/Shot.astro';
 import { proof, weightSnippet, VERIFIED_ON } from '../../content/proof';
 import { paths } from '../../i18n/routes';
 
@@ -311,13 +312,7 @@ const schema = {
 	<section class="bleed mt-16 md:mt-20" aria-labelledby="case">
 		<div class="grid items-center gap-10 md:grid-cols-12 md:gap-8 lg:gap-16">
 			<figure class="shot rise md:col-span-7">
-				<img
-					src="/work/jemshitmavlyanov.jpg"
-					alt="jemshitmavlyanov.com after the migration"
-					width="800"
-					height="500"
-					loading="lazy"
-				/>
+				<Shot src="/work/jemshitmavlyanov.jpg" alt="jemshitmavlyanov.com after the migration" />
 			</figure>
 
 			<div class="stagger md:col-span-5">

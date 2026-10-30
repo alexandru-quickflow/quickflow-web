@@ -1,5 +1,6 @@
 ---
 import Site from '../../layouts/Site.astro';
+import Shot from '../../components/Shot.astro';
 import PaymentFlow from '../../components/PaymentFlow.astro';
 import ServiceMark from '../../components/ServiceMark.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../../content/proof';
@@ -519,7 +520,7 @@ const schema = {
 				work.map((w) => (
 					<article class="work-row">
 						<figure class="shot rise">
-							<img src={w.img} alt={w.name} width="800" height="500" loading="lazy" />
+							<Shot src={w.img} alt={w.name} />
 						</figure>
 						<div class="meta stagger">
 							<p class="spec">{w.kind}</p>
@@ -582,12 +583,9 @@ const schema = {
 			<div class="md:col-span-5">
 				<p class="spec">Despre mine</p>
 				<h2 id="despre" class="display-lg mt-6">Sunt Alexandru Trofaniuc.</h2>
-				<img
+				<Shot
 					src="/brand/alexandru.jpg"
 					alt="Alexandru Trofaniuc"
-					width="640"
-					height="800"
-					loading="lazy"
 					class="mt-10 w-full max-w-xs object-cover grayscale"
 				/>
 			</div>

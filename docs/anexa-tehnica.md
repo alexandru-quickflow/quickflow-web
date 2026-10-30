@@ -20,7 +20,7 @@ etapa 4 e o presupunere.
 | Formular | Cloudflare Pages Function pe `/api/contact` |
 | Anti-spam | Cloudflare Turnstile plus o regulă de rate limiting pe traseul formularului |
 | Email | Resend |
-| Imagini | `<img>` din `public/`, JPEG, cu `width`, `height` și `loading="lazy"`. **Corectat pe 30 octombrie:** aici scria componenta `<Image>` din Astro cu AVIF și WebP, care nu e folosită nicăieri. Cele șase rastere se servesc ca JPEG, iar cel mai greu, fotografia, e 225 KB. Rămâne deschis |
+| Imagini | Componenta `Shot.astro`: `<picture>` cu AVIF, WebP și originalul, cu `width` și `height` citite din `src/content/images.json`, pe care îl scrie `scripts/images.py`. **Corectat pe 30 octombrie:** aici scria componenta `<Image>` din Astro, care nu e folosită nicăieri, iar cele șase rastere se serveau ca JPEG. Nu componenta din Astro face asta, ci scriptul plus `Shot.astro`, dar rândul ăsta descria rezultatul corect și livrarea rămăsese în urmă |
 | Analytics | Cloudflare Web Analytics, fără cookies |
 | Monitorizare erori | Logurile Cloudflare, fără Sentry |
 | Hosting | Cloudflare Pages, legat la git, cu preview deploys |
