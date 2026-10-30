@@ -203,19 +203,22 @@
 		z-index: 1;
 	}
 
-	/* A closing band carries its own bottom padding, so on twenty-five pages
-	   the distance to the footer is that padding plus the footer's. Contact and
-	   privacy end on a plain section, which carries none, and measured 129 and
-	   168 against 210 everywhere else. This gives them the same bottom a band
-	   would have given them, so no page can be short by forgetting to end on
-	   one. */
-	main > section:last-child:not(.band) {
-		padding-bottom: 4rem;
+	/* Every page ends with room under it, and this used to exclude a closing
+	   band because a band carried its own bottom padding and ran edge to edge.
+	   Once the band became a plate that stopped being true: the plate's bottom
+	   edge and the footer's top edge measured zero pixels apart on all
+	   twenty-four pages that have one, and both surfaces are the same colour,
+	   so the call to action read as the first line of the footer.
+	   Margin rather than padding, because on a plate the space has to be
+	   outside the object: the page showing under it is what makes it an
+	   object. On a section with no ground of its own the two are the same. */
+	main > section:last-child {
+		margin-bottom: 4rem;
 	}
 
 	@media (min-width: 768px) {
-		main > section:last-child:not(.band) {
-			padding-bottom: 5rem;
+		main > section:last-child {
+			margin-bottom: 5rem;
 		}
 	}
 }
