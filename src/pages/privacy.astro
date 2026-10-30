@@ -1,6 +1,7 @@
 ---
 import Site from '../layouts/Site.astro';
-import { RATE_LIMIT, VERIFIED_ON } from '../content/proof';
+import { RATE_LIMIT } from '../content/proof';
+import { LEGAL_UPDATED } from '../content/legal';
 
 // Pagina descrie ce face site-ul, nu ce e plănuit. Aceeași variabilă decide și
 // dacă beaconul se încarcă, în Site.astro, deci cele două nu pot ajunge să
@@ -11,7 +12,7 @@ const analytics = Boolean(import.meta.env.PUBLIC_CF_BEACON_TOKEN);
 import { BOOKING } from '../content/booking';
 import { paths } from '../i18n/routes';
 
-const updated = VERIFIED_ON.en;
+const updated = LEGAL_UPDATED.privacy.en;
 
 // This page describes what the site actually does, so it changes when the site
 // does, and neither of the two switches above is read anywhere else by hand.
