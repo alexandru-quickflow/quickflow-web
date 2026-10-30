@@ -61,6 +61,15 @@ the other.
 
 ### 1.2 Environment variables in the Cloudflare Pages project
 
+**Status on 30 October 2026: the three required ones are set on Production and
+verified through the API, which lists a secret by name and type and never by
+value. Preview is deliberately empty.**
+
+Variables apply at build time, so a deployment built before they existed cannot
+see them however correct the project looks. The deployment serving the site had
+`env_vars: []` while the project already listed all three. Check the deployment,
+not the project.
+
 | Name | Required | What goes missing without it |
 |---|---|---|
 | `RESEND_API_KEY` | yes | the form refuses to send and says so, in both languages |
@@ -78,9 +87,46 @@ local work.
 
 ### 1.3 Resend
 
-The sending domain has to be verified before anything leaves, which means SPF,
-DKIM and DMARC records for `quickflow.dev` in Cloudflare DNS. The `From` address
-in the function is `noreply@quickflow.dev`.
+**The verified domain is `send.quickflow.dev`, not the apex.** Resend's current
+setup puts three records under that subdomain: a DKIM TXT at
+`resend._domainkey.send.quickflow.dev`, and two CNAMEs, `send` and `rsend`,
+pointing at `forge.rmta.net`. Nothing is added at the apex, which matters more
+than it looks: the apex already carries one SPF record for Google Workspace, and
+a second SPF record on the same name invalidates both and breaks ordinary mail.
+
+The `From` address in the function is `noreply@send.quickflow.dev` and has to
+stay on the verified domain. Sending from the apex is refused with 403, which the
+function turns into the same 502 it returns when the key is missing. A correct key
+then looks exactly like a missing one, which is how an afternoon goes.
+
+The zone has no DMARC record. Resend does not require one to verify. Adding
+`p=none` is a later improvement, not a launch blocker.
+
+### 1.4 Web Analytics in the Pages project
+
+Two switches, almost the same name, and only one of them is the one the site
+controls.
+
+| Where | What it does |
+|---|---|
+| `PUBLIC_CF_BEACON_TOKEN` | the site adds the beacon itself, and both privacy pages rewrite themselves to match |
+| Pages project, Settings, Web Analytics | Cloudflare injects the beacon into every response, whatever the site says |
+
+**The second one was on for about an hour on 30 October 2026.** It injected
+`static.cloudflareinsights.com/beacon.min.js` into every page, on the custom
+domain and on `pages.dev` alike, while both privacy pages went on saying the site
+has no analytics script at all. It is off now and the pages are true again.
+
+Two things made it hard to see, and both are worth remembering:
+
+- `curl` never showed it. The injection only applies to requests that look like a
+  browser, so every check made with `curl` came back clean while a real browser
+  loaded the beacon on the same URL.
+- Clearing the setting was not enough. The running deployment kept injecting
+  until a new one replaced it, confirmed with a `cache: 'no-store'` fetch that
+  returned `cf-cache-status: DYNAMIC` and the beacon still in the HTML.
+
+So the check is: a real browser, on the real domain, after a new deployment.
 
 ---
 
@@ -209,6 +255,10 @@ Traffic is read from the Cloudflare dashboard instead. That is the host already
 named on both privacy pages, and it adds no script, no cookie and no third
 party.
 
+Leaving `PUBLIC_CF_BEACON_TOKEN` unset is only half of this. The Pages project
+has its own Web Analytics switch that ignores the variable entirely. Read section
+1.4 before believing the site ships no third-party script.
+
 **If this ever reverses**, three things change together: the stamp on both home
 pages, `SELF_JS` in `src/content/proof.ts`, and the comparison row on both
 migration pages. Both privacy pages change themselves; they read the same
@@ -236,15 +286,23 @@ only if a whole year passes with no deploy.
 
 ## 5. After the first deploy
 
-- Request the live pages once and confirm the Turnstile widget renders on both
-  contact pages. It is absent from any build made without the site key, which
-  is how the audited build looked.
-- Send one real submission in each language and confirm both emails arrive.
-- POST to `/api/contact` six times in an hour from one address and confirm the
-  sixth is blocked at the edge, not by the function. That is the only way to
-  know the rule in section 1.1 is actually on.
-- Check `robots.txt` and `sitemap-index.xml` are served, and that the two
-  thank-you pages are not in the sitemap.
+**Worked through on 30 October 2026.** Done:
+
+- The site key is in the HTML on both contact pages, and a real submission in
+  Romanian produced a token and went through, so the widget renders and verifies.
+- That submission delivered both emails, the owner's copy and the sender's copy.
+- Zero third-party requests on the home page, measured in a browser rather than
+  with `curl`. Section 1.4 is why that distinction is the whole point.
+
+Still open:
+
+- Post to `/api/contact` faster than the rule in section 1.1 allows and confirm
+  the block comes from the edge rather than from the function. Two posts per ten
+  seconds is the real rate, not the five per hour this document once named.
+- Confirm `robots.txt` and `sitemap-index.xml` are served, and that the two
+  thank-you pages are absent from the sitemap.
+- Send one submission in English too. Only the Romanian path has been run end to
+  end against production.
 
 ---
 
