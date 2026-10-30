@@ -27,7 +27,7 @@ export const ui: Record<Locale, Ui> = {
 		menu: 'Menu',
 		home: 'Quick Flow, home',
 		switchTo: (language) => `Read this page in ${language}`,
-		switchToHome: (language) => `This page is only in Romanian. Go to the ${language} home page`,
+		switchToHome: (language) => `This page is not translated. Go to the ${language} home page`,
 		footerWho: 'Alexandru Trofaniuc, Bucharest',
 		footerLanguages: 'Romanian, Russian, English',
 		footerContact: 'Contact',
@@ -45,11 +45,29 @@ export const ui: Record<Locale, Ui> = {
 		menu: 'Meniu',
 		home: 'Quick Flow, acasă',
 		switchTo: (language) => `Citește pagina în ${language}`,
-		switchToHome: (language) => `Pagina asta e doar în română. Mergi la pagina principală în ${language}`,
+		switchToHome: (language) => `Pagina asta nu e tradusă. Mergi la pagina principală în ${language}`,
 		footerWho: 'Alexandru Trofaniuc, București',
 		footerLanguages: 'Română, rusă, engleză',
 		footerContact: 'Contact',
 		legal: 'Quick Flow SRL · CUI 44089760 · Nr. reg. com. J2021006561401',
 		salAlt: 'ANPC, Soluționarea Alternativă a Litigiilor',
+	},
+	// One page is written in Russian, so this is the chrome around one page.
+	// The identification line is not translated: it is a company name and two
+	// registry numbers, and a reader who needs to check them checks them against
+	// the registry, which writes them this way.
+	ru: {
+		skip: 'Перейти к содержанию',
+		navLabel: 'Основное',
+		navLabelMobile: 'Основное, мобильное',
+		menu: 'Меню',
+		home: 'Quick Flow, главная',
+		switchTo: (language) => `Читать страницу на ${language}`,
+		switchToHome: (language) => `Эта страница не переведена. Перейти на главную на ${language}`,
+		footerWho: 'Александру Трофанюк, Бухарест',
+		footerLanguages: 'Румынский, русский, английский',
+		footerContact: 'Контакты',
+		legal: 'Quick Flow SRL · CUI 44089760 · Nr. reg. com. J2021006561401',
+		salAlt: 'ANPC, альтернативное разрешение споров в Румынии',
 	},
 };

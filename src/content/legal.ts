@@ -14,6 +14,9 @@
 
 import type { Locale } from '../i18n/routes';
 
+// No Russian entry: the privacy and terms pages are not written in Russian, and
+// a date for a page that does not exist would be the kind of claim this file was
+// created to stop.
 export const LEGAL_UPDATED: Record<'privacy' | 'terms', Record<Locale, string>> = {
 	privacy: { en: '30 October 2026', ro: '30 octombrie 2026' },
 	terms: { en: '27 October 2026', ro: '27 octombrie 2026' },

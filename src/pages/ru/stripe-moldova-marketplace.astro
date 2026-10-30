@@ -1,0 +1,346 @@
+---
+import Site from '../../layouts/Site.astro';
+import { VERIFIED_ON } from '../../content/proof';
+import { paths } from '../../i18n/routes';
+
+// The one page on this site written in Russian, and the reason the locale
+// exists at all. Roughly half the commercial searches in Moldova are in
+// Russian, the competition on them is close to nothing, and the question this
+// page answers is asked in Russian as often as in Romanian.
+//
+// It is not a translation of the Romanian page. The phrases people type are
+// "подключить stripe молдова" and "приём платежей онлайн молдова", so those are
+// in the body rather than in the meta tags alone.
+//
+// Header and footer carry no menu here: a row of links to pages that are not
+// written in the language the reader asked for would be a promise the site
+// cannot keep. The line under the headline says where the rest of it is.
+const verifiedOn = VERIFIED_ON.ru;
+
+const setup = [
+	{ what: 'Срок', value: 'от 3 до 5 рабочих дней' },
+	{ what: 'Подача онлайн', value: 'от 615 до 680 леев' },
+	{ what: 'Минимальный уставный капитал', value: '500 леев, Закон 239/2025, с 18 декабря 2025' },
+	{ what: 'Электронная подпись', value: 'от 39 EUR плюс НДС, нужна для подачи онлайн' },
+];
+
+const options = [
+	{
+		n: '01',
+		title: 'Компания в поддерживаемой стране',
+		body: 'Румыния есть в обоих списках, и как платформа, и как страна продавца. Компания в Румынии с реальной работой из Молдовы решает приём платежей и выплаты румынским продавцам. Стоит бухгалтерии и имеет налоговые последствия, которые обсуждают с бухгалтером, а не со мной.',
+	},
+	{
+		n: '02',
+		title: 'Локальный процессинг плюс отдельные выплаты',
+		body: 'Принимаете локально, продавцам платите отдельно, учёт ведёте в платформе. Работает, но перевод продавцу больше не автоматический, значит нужен человек, который его делает. Это вариант, когда ваши продавцы в Молдове.',
+	},
+	{
+		n: '03',
+		title: 'Смешанный вариант',
+		body: 'Продавцы из поддерживаемых стран через Stripe, остальные по локальному потоку. Сложнее в разработке, но единственный вариант, когда продавцы есть по обе стороны.',
+	},
+];
+
+const faq = [
+	{
+		q: 'Можно ли пользоваться Stripe с компанией из Молдовы?',
+		a: 'Нет. Молдовы нет ни в списке стран, где можно открыть счёт платформы, ни в списке стран, из которых можно подключать продавцов. Нет настройки, документа или посредника, который это меняет.',
+	},
+	{
+		q: 'Решает ли проблему компания в Румынии?',
+		a: 'Наполовину. Решает приём платежей, потому что Румыния входит в список из 57 стран со счётом платформы. Не решает молдавских продавцов, потому что Молдовы нет в списке из 43 стран для связанных счетов.',
+	},
+	{
+		q: 'Сколько стоит и сколько занимает открыть SRL в Румынии?',
+		a: 'От трёх до пяти рабочих дней и от 615 до 680 леев при подаче онлайн, плюс электронная подпись от 39 EUR. Это если у вас румынское гражданство. Без него компания открывается так же, но банковский счёт это шаг, о сроках которого ни один источник не говорит.',
+	},
+];
+
+const title = 'Stripe в Молдове: что делать маркетплейсу | Quick Flow';
+const description =
+	'Stripe не работает с Молдовой: ни как платформа, ни для продавцов. Проверено в октябре 2026. Три рабочих варианта и во что они обходятся.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	inLanguage: 'ru',
+	mainEntity: faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a },
+	})),
+};
+---
+
+<Site lang="ru" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. The fact in the first sentence. The reader searched "stripe молдова"
+	     and has found only forum threads guessing at it. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Платежи для маркетплейса</p>
+			<span class="stamp">Списки проверены {verifiedOn}</span>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[20ch]">
+			Stripe не работает с Молдовой. Ни как платформа, ни для продавцов.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Это не отказ, который можно переписать и подать заново. Молдовы нет ни в одном из двух
+			списков, и документами это не решается. Ниже то, что остаётся сделать, в порядке, в котором
+			это стоит обсуждать.
+		</p>
+
+		<!-- The whole menu for this language, in one sentence. There is one page
+		     in Russian, so a header full of Romanian links would be worse than
+		     saying plainly where the rest of the site is. -->
+		<p class="prose-body mt-8 max-w-[56ch]">
+			Остальная часть сайта на <a href={paths.home.ro} class="link" hreflang="ro" lang="ro"
+				>румынском</a
+			> и <a href={paths.home.en} class="link" hreflang="en" lang="en">английском</a>. Эта страница
+			на русском, потому что половина коммерческих запросов в Молдове идёт на русском, а ответа на
+			них нет.
+		</p>
+	</section>
+
+	<!-- 2. Three sentences, not three paragraphs. -->
+	<section class="bleed mt-32" aria-labelledby="fakty">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Факты, не мнения</p>
+				<h2 id="fakty" class="display-lg mt-6">Что это значит на практике.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<ul class="flex flex-col gap-4">
+					<li class="prose-body">
+						Маркетплейс на молдавскую компанию не может принимать платежи через Stripe.
+					</li>
+					<li class="prose-body">
+						Продавцов с компанией в Молдове нельзя подключить к Stripe даже через румынскую
+						платформу.
+					</li>
+					<li class="prose-body">
+						Нет настройки, документа или посредника, который это меняет.
+					</li>
+				</ul>
+				<p class="prose-body mt-6">То же самое касается Украины.</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3. The fork. It comes before any solution, because the answer to
+	     everything below depends on it. -->
+	<section class="bleed mt-32" aria-labelledby="grazhdanstvo">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Вопрос, который делит страницу</p>
+				<h2 id="grazhdanstvo" class="display-lg mt-6">У вас есть румынское гражданство?</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Этот вопрос идёт первым, потому что от ответа зависит всё остальное, и без него
+					половина читателей прочитает ответ, который к ним не относится.
+				</p>
+				<p class="prose-body mt-5">
+					Сотни тысяч молдаван восстановили румынское гражданство по статье 11 Закона 21/1991.
+					Исследование Фонда Сороса насчитывает 323 049 решённых дел с 1991 по 2012 год. Порядок
+					величины понятен, даже если точная цифра нет: очень большая часть тех, кто читает эту
+					страницу, уже граждане ЕС.
+				</p>
+			</div>
+		</div>
+
+		<div class="hair mt-12 grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h3 class="display-md md:col-span-5">С румынским гражданством вы не нерезидент.</h3>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">Открываете SRL как любой гражданин Румынии.</p>
+
+				<div class="mt-8 overflow-x-auto">
+					<table class="w-full border-collapse text-left">
+						<tbody>
+							{
+								setup.map((row) => (
+									<tr>
+										<th
+											scope="row"
+											class="spec border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
+										>
+											{row.what}
+										</th>
+										<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
+											{row.value}
+										</td>
+									</tr>
+								))
+							}
+						</tbody>
+					</table>
+				</div>
+
+				<p class="prose-body mt-8">
+					Без румынского гражданства компания открывается так же законно, но появляется шаг,
+					который ни один источник не описывает внятно. Прочитайте дальше, прежде чем начинать.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. The part that actually costs time, and that nobody writes down. -->
+	<section class="bleed mt-32" aria-labelledby="bank">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h2 id="bank" class="display-md md:col-span-5">
+				Компания открывается за пять дней. Банковский счёт это другая история.
+			</h2>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Я не нашёл ни одного заслуживающего доверия источника о том, что румынский банк
+					требует, чтобы открыть счёт румынской компании с администратором нерезидентом из
+					Молдовы. Поиск выдаёт только правила с молдавской стороны: Национальный банк Молдовы
+					регулирует открытие счетов за рубежом резидентами, а Государственная налоговая служба
+					выдаёт подтверждение резидентства за три рабочих дня, документ, который румынский банк
+					может запросить.
+				</p>
+				<p class="prose-body mt-5">
+					Ни один источник не говорит, сколько это занимает и какие банки соглашаются. Это,
+					скорее всего, и есть болезненный шаг.
+				</p>
+				<p class="prose-body mt-5">
+					И он не опциональный. Документация Stripe указывает для Румынии тип счёта IBAN. Я не
+					смог подтвердить, принимает ли Stripe IBAN SEPA другой страны для румынской платформы,
+					поэтому пока исходите из того, что нужен румынский IBAN.
+				</p>
+				<p class="prose-body mt-5">
+					Если вы через это прошли, <a href={paths.contact.ro} class="link" hreflang="ro" lang="ro"
+						>напишите мне</a
+					>, какой банк согласился и сколько это заняло. Я обновлю страницу и поставлю дату.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. The precision that separates this page from a forum thread: a
+	     Romanian company moves the charge, not the payout to sellers. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="polovina">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">То, чего никто не пишет</p>
+			<h2 id="polovina" class="display-lg mt-6 max-w-[26ch]">
+				Что решает и чего не решает компания в Румынии.
+			</h2>
+
+			<div class="mt-12 grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">Решает</p>
+					<p class="mt-4 text-lg leading-snug">Сторону платформы.</p>
+					<p class="prose-body mt-5">
+						Румыния входит в список из 57 стран, где можно открыть счёт платформы, значит
+						принимать платежи вы сможете.
+					</p>
+				</div>
+				<div class="md:col-span-5 md:col-start-7">
+					<p class="spec">Не решает</p>
+					<p class="mt-4 text-lg leading-snug">Молдавских продавцов.</p>
+					<p class="prose-body mt-5">
+						Молдовы нет в списке из 43 стран, из которых можно подключать связанные счета под
+						румынской платформой. Если ваши продавцы из Молдовы, компания в Румынии для них
+						ничего не меняет.
+					</p>
+				</div>
+			</div>
+
+			<p class="mt-12 max-w-[64ch] text-lg leading-snug">
+				Другими словами: румынская компания переносит приём платежей, а не выплаты продавцам. Если
+				обе стороны в Молдове, вы решили половину задачи, и вам нужен второй вариант.
+			</p>
+		</div>
+	</section>
+
+	<!-- 6. The three options, in the order they are worth discussing. -->
+	<section class="bleed mt-32" aria-labelledby="varianty">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Что можно сделать</p>
+			<span class="spec">03</span>
+		</div>
+		<h2 id="varianty" class="display-lg mt-8 max-w-[26ch]">Три рабочих варианта.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				options.map((o) => (
+					<article class="hair grid gap-4 py-8 md:grid-cols-12 md:gap-8">
+						<p class="spec md:col-span-1 md:pt-2">{o.n}</p>
+						<h3 class="display-md md:col-span-4">{o.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{o.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 7. What is not known. A page that claims to know all of this is caught
+	     out on the reader's first call to a bank. -->
+	<section class="bleed mt-32" aria-labelledby="neizvestno">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h2 id="neizvestno" class="display-md md:col-span-5">Чего я ещё не знаю.</h2>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">Две вещи меняют рекомендацию выше, и обе я проверяю:</p>
+				<ul class="mt-5 flex flex-col gap-4">
+					<li class="prose-body">
+						Что именно требуют румынские банки от администратора нерезидента.
+					</li>
+					<li class="prose-body">
+						Принимает ли Stripe нерумынский IBAN для платформы из Румынии.
+					</li>
+				</ul>
+				<p class="prose-body mt-6">
+					Остальные цифры на странице обновляются, но по сути не меняются.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. The questions, written to be readable without the page, and to be
+	     read by Google. -->
+	<section class="bleed mt-32" aria-labelledby="faq">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Чаще всего спрашивают</p>
+			<span class="spec">03</span>
+		</div>
+		<h2 id="faq" class="display-lg mt-8 max-w-[26ch]">Три вопроса, коротко.</h2>
+
+		<dl class="mt-12 flex flex-col">
+			{
+				faq.map((f) => (
+					<div class="hair grid gap-4 py-8 md:grid-cols-12 md:gap-8">
+						<dt class="display-md md:col-span-5">{f.q}</dt>
+						<dd class="prose-body md:col-span-6 md:col-start-7">{f.a}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</section>
+
+	<!-- 9. The close, on ink. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed py-20 md:py-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<h2 class="display-lg">Напишите, как у вас двигаются деньги.</h2>
+					<p class="prose-body mt-7">
+						Я не юрист и не бухгалтер. Что я могу сказать точно, это что технически позволяет
+						каждый вариант, сколько стоит его построить и сколько это займёт. Кто платит, кто
+						получает, кто берёт комиссию. Отвечаю в тот же рабочий день, письменно.
+					</p>
+					<p class="stamp mt-9">Списки Stripe прочитаны в источнике {verifiedOn}</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
+					<a href={paths.contact.ro} class="btn btn-primary" hreflang="ro" lang="ro">Написать мне</a>
+					<p class="mt-6 text-sm text-paper/70">
+						Форма на румынском. Пишите на русском, я отвечу на русском.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

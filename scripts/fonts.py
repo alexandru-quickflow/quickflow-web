@@ -29,6 +29,9 @@ import subprocess
 import sys
 import urllib.request
 
+STRIP_CODE = re.compile(r'<(script|style)\b[^>]*>.*?</\1>', re.S | re.I)
+STRIP_TAGS = re.compile(r'<[^>]+>')
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DIST = ROOT / 'dist'
 OUT = ROOT / 'public' / 'fonts'
@@ -36,30 +39,57 @@ CACHE = ROOT / '.font-cache'
 
 UPSTREAM = 'https://github.com/google/fonts/raw/main/ofl'
 
-# source file, axis limits, output name. The limits mirror global.css: display
-# type asks for weights 300 to 500 and optical sizes 18 to 60, body for 400 to
-# 600, mono for 400 to 500. Widen a range here before using it in the CSS, or
-# the browser clamps and the weight silently stops changing.
+# source file, axis limits, output name, script. The limits mirror global.css:
+# display type asks for weights 300 to 500 and optical sizes 18 to 60, body for
+# 400 to 600, mono for 400 to 500. Widen a range here before using it in the
+# CSS, or the browser clamps and the weight silently stops changing.
+#
+# The script decides which characters a face has to carry, and it is here
+# because Newsreader and Plus Jakarta Sans have no Cyrillic at all. Before the
+# Russian page there was one charset and every face had to cover it. Now a face
+# is held to the pages written in its own script, and both scripts get the
+# Latin margin, since the Russian page still writes Stripe, IBAN, EUR and
+# digits.
 FAMILIES = [
     (
         'newsreader/Newsreader%5Bopsz,wght%5D.ttf',
         {'opsz': (18, 60), 'wght': (300, 500)},
         'newsreader-roman.woff2',
+        'latin',
     ),
     (
         'newsreader/Newsreader-Italic%5Bopsz,wght%5D.ttf',
         {'opsz': (18, 60), 'wght': (300, 400)},
         'newsreader-italic.woff2',
+        'latin',
     ),
     (
         'plusjakartasans/PlusJakartaSans%5Bwght%5D.ttf',
         {'wght': (400, 600)},
         'jakarta.woff2',
+        'latin',
     ),
     (
         'jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf',
         {'wght': (400, 500)},
         'jetbrains-mono.woff2',
+        'latin',
+    ),
+    # The Russian page only, and only because the two faces above cannot set
+    # it. Literata takes the display type and Manrope the body: chosen against
+    # the site's own faces rather than picked for coverage, and compared side
+    # by side before the choice was made.
+    (
+        'literata/Literata%5Bopsz,wght%5D.ttf',
+        {'opsz': (18, 60), 'wght': (300, 500)},
+        'literata.woff2',
+        'cyrillic',
+    ),
+    (
+        'manrope/Manrope%5Bwght%5D.ttf',
+        {'wght': (400, 600)},
+        'manrope.woff2',
+        'cyrillic',
     ),
 ]
 
@@ -74,14 +104,23 @@ MARGIN |= set('„”«»…–—‑·•©®°€£$§¶†‡‰№±×÷≈�
 MARGIN |= set('ÁÀÄÉÈËÍÌÏÓÒÖÚÙÜÑÇáàäéèëíìïóòöúùüñç')
 
 
-def charset_from_build() -> set[str]:
+def charsets_from_build() -> dict:
+    """What each script's pages actually contain, keyed the way FAMILIES is.
+
+    A page under /ru/ is Russian, everything else is Latin. Splitting them is
+    the whole point: subsetting every face to the union would ask Newsreader for
+    Cyrillic it does not have, and the coverage check would then fail over a
+    page that face never renders.
+    """
     if not DIST.is_dir():
         sys.exit('dist/ not found. Run npm run build first: the charset is read from it.')
-    used: set[str] = set()
+    used = {'latin': set(), 'cyrillic': set()}
     for page in DIST.rglob('*.html'):
         html = page.read_text(encoding='utf-8')
-        html = re.sub(r'<(script|style)\b[^>]*>.*?</\1>', ' ', html, flags=re.S | re.I)
-        used |= set(re.sub(r'<[^>]+>', ' ', html))
+        html = STRIP_CODE.sub(' ', html)
+        text = set(STRIP_TAGS.sub(' ', html))
+        script = 'cyrillic' if page.relative_to(DIST).parts[0] == 'ru' else 'latin'
+        used[script] |= text
     return used
 
 
@@ -101,54 +140,64 @@ def main() -> None:
     from fontTools import ttLib
     from fontTools.varLib import instancer
 
-    used = charset_from_build()
-    charset = {c for c in (used | MARGIN) if c.isprintable() and not c.isspace()}
-    charset |= {' ', ' '}
-    unicodes = ','.join(f'U+{ord(c):04X}' for c in sorted(charset))
-    print(f'{len([c for c in used if c.isprintable()])} characters in the build, '
-          f'{len(charset)} in the subset')
+    used = charsets_from_build()
+    wanted = {}
+    unicodes = {}
+    for script, chars in used.items():
+        keep = {c for c in (chars | MARGIN) if c.isprintable() and not c.isspace()}
+        keep |= {' ', chr(0xA0)}
+        wanted[script] = keep
+        unicodes[script] = ','.join('U+%04X' % ord(c) for c in sorted(keep))
+        seen = len([c for c in chars if c.isprintable()])
+        print('%-9s %4d characters in the build, %4d in the subset'
+              % (script, seen, len(keep)))
 
     OUT.mkdir(parents=True, exist_ok=True)
     total = 0
-    for path, limits, out_name in FAMILIES:
+    for path, limits, out_name, script in FAMILIES:
         src = fetch(path)
-        pinned = CACHE / f'pinned-{out_name}.ttf'
+        pinned = CACHE / ('pinned-' + out_name + '.ttf')
         instancer.instantiateVariableFont(ttLib.TTFont(src), limits, inplace=False).save(pinned)
 
         dst = OUT / out_name
         result = subprocess.run(
             [
                 sys.executable, '-m', 'fontTools.subset', str(pinned),
-                f'--unicodes={unicodes}',
+                '--unicodes=' + unicodes[script],
                 '--layout-features=kern,liga,calt,tnum,case,ccmp,locl,mark,mkmk',
                 '--flavor=woff2',
                 '--desubroutinize',
                 '--no-hinting',
                 '--drop-tables+=DSIG',
-                f'--output-file={dst}',
+                '--output-file=' + str(dst),
             ],
             capture_output=True,
             text=True,
         )
         if result.returncode != 0:
-            sys.exit(f'subset failed for {out_name}:\n{result.stderr[-800:]}')
+            sys.exit('subset failed for ' + out_name + ':' + result.stderr[-800:])
 
         size = dst.stat().st_size
         total += size
-        print(f'  {out_name:24} {src.stat().st_size / 1024:7.1f} KB -> {size / 1024:6.1f} KB')
+        print('  %-24s %7.1f KB -> %6.1f KB  (%s)'
+              % (out_name, src.stat().st_size / 1024, size / 1024, script))
 
         # Coverage, checked rather than assumed. A character with no glyph does
         # not raise anything: it renders as a box, or falls back to Georgia in
         # the middle of a word, and the first person to notice is a reader.
-        covered: set[str] = set()
+        #
+        # Checked against its own script only. Asking Newsreader for Cyrillic
+        # would fail over a page it never renders, and asking Literata for the
+        # Romanian pages would fail over pages it never renders either.
+        covered = set()
         for table in ttLib.TTFont(dst)['cmap'].tables:
             covered |= {chr(c) for c in table.cmap}
-        missing = {c for c in used if c.isprintable() and not c.isspace()} - covered
+        missing = {c for c in used[script] if c.isprintable() and not c.isspace()} - covered
         if missing:
-            sys.exit(f'{out_name} is missing glyphs for: {sorted(missing)}')
+            sys.exit(out_name + ' is missing glyphs for: ' + repr(sorted(missing)))
 
-    print(f'  {"total":24} {" " * 11}{total / 1024:6.1f} KB')
-    print('  every character in the build has a glyph in every face')
+    print('  %-24s %11s%6.1f KB' % ('total', '', total / 1024))
+    print('  every character in the build has a glyph in the faces that render it')
 
 
 if __name__ == '__main__':

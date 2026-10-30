@@ -4,7 +4,6 @@
 import '../styles/global.css';
 import {
 	DEFAULT_LOCALE,
-	LOCALES,
 	PROFILE,
 	alternates,
 	footerNav,
@@ -12,6 +11,7 @@ import {
 	inLocale,
 	localeNames,
 	nav,
+	otherLocales,
 	paths,
 	switcherTarget,
 	type Locale,
@@ -48,7 +48,11 @@ const withHref = <T extends { id: PageId }>(list: T[]) =>
 	inLocale(list, lang).map((item) => ({ ...item, href: paths[item.id][lang] as string }));
 
 const items = withHref(nav[lang]);
-const columns = footerNav[lang].map((column) => ({ ...column, items: withHref(column.items) }));
+// A column whose every item is missing from this language is dropped rather
+// than drawn as a heading over nothing.
+const columns = footerNav[lang]
+	.map((column) => ({ ...column, items: withHref(column.items) }))
+	.filter((column) => column.items.length > 0);
 // Written out per column rather than composed with conditions. Two col-span
 // classes on one element is a coin toss over which the stylesheet emits last,
 // and the third column lost it: it wrapped under the first.
@@ -61,12 +65,12 @@ const columnSpans = [
 	'lg:col-span-2 lg:col-start-11',
 ];
 const twins = alternates(Astro.url.pathname);
-// Always a link, never a missing control: on a page written in one language
-// only, this points at the other language's home page rather than vanishing.
-const other = switcherTarget(
-	Astro.url.pathname,
-	LOCALES.find((l) => l !== lang) ?? DEFAULT_LOCALE,
-);
+// Every language this page is not written in, each a link that goes somewhere
+// real: the twin where there is one, that language's home page where there is
+// not. Never a missing control, and never a dead one.
+const others = otherLocales(lang)
+	.map((l) => switcherTarget(Astro.url.pathname, l))
+	.filter((o) => o !== undefined);
 // x-default is the English page, which is the one a reader with no matching
 // language should land on.
 const fallback = twins.find((a) => a.locale === 'en');
@@ -203,24 +207,24 @@ const ogImage = new URL(
 				<p class="spec hidden items-center gap-2 lg:flex">
 					<span class="text-paper">{localeNames[lang].short}</span>
 					{
-						other && (
+						others.map((o) => (
 							<>
 								<span aria-hidden="true">/</span>
 								<a
-									href={other.href}
-									hreflang={hreflang[other.locale]}
-									lang={other.locale}
+									href={o.href}
+									hreflang={hreflang[o.locale]}
+									lang={o.locale}
 									class="transition-colors hover:text-paper"
 									aria-label={
-										other.translated
-											? t.switchTo(localeNames[other.locale].full)
-											: t.switchToHome(localeNames[other.locale].full)
+										o.translated
+											? t.switchTo(localeNames[o.locale].full)
+											: t.switchToHome(localeNames[o.locale].full)
 									}
 								>
-									{localeNames[other.locale].short}
+									{localeNames[o.locale].short}
 								</a>
 							</>
-						)
+						))
 					}
 				</p>
 
@@ -250,21 +254,21 @@ const ogImage = new URL(
 							))
 						}
 						{
-							other && (
+							others.map((o) => (
 								<a
-									href={other.href}
-									hreflang={hreflang[other.locale]}
-									lang={other.locale}
+									href={o.href}
+									hreflang={hreflang[o.locale]}
+									lang={o.locale}
 									class="hair mt-2 block px-4 py-2.5 text-sm"
 									aria-label={
-										other.translated
-											? t.switchTo(localeNames[other.locale].full)
-											: t.switchToHome(localeNames[other.locale].full)
+										o.translated
+											? t.switchTo(localeNames[o.locale].full)
+											: t.switchToHome(localeNames[o.locale].full)
 									}
 								>
-									{localeNames[other.locale].full}
+									{localeNames[o.locale].short}
 								</a>
-							)
+							))
 						}
 					</nav>
 				</details>

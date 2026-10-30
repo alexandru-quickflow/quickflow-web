@@ -28,6 +28,7 @@ export interface Proof {
 export const VERIFIED_ON: Record<Locale, string> = {
 	en: '27 October 2026',
 	ro: '27 octombrie 2026',
+	ru: '27 октября 2026',
 };
 
 /** What this page itself ships, measured the way the snippet below measures it,
@@ -107,6 +108,10 @@ console.table({
   load: ms + ' ms',
 });`;
 
+/** No Russian entry, and that is not an oversight. Russian is one page on this
+ *  site, the Moldova page, and it carries its own date rather than the proof
+ *  inventory the home and migration pages are built around. Anything that needs
+ *  a proof in a language passes 'en' or 'ro'. */
 export const proofs: Record<Locale, Proof[]> = {
 	en: [
 		{

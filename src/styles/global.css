@@ -41,6 +41,28 @@
 	font-display: swap;
 }
 
+/* The Russian page, and only it. Newsreader has no Cyrillic at all and Plus
+   Jakarta Sans carries only the extended block, so neither can set a page in
+   Russian: every line would fall back to a system face. These two were chosen
+   against the site's own faces rather than for coverage alone. A browser
+   downloads a face only when something uses it, so declaring them here costs
+   the other thirty pages nothing. */
+@font-face {
+	font-family: "Literata";
+	src: url("/fonts/literata.woff2") format("woff2");
+	font-weight: 300 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Manrope";
+	src: url("/fonts/manrope.woff2") format("woff2");
+	font-weight: 400 600;
+	font-style: normal;
+	font-display: swap;
+}
+
 /* The site's one stylesheet.
  *
  * The direction was settled on 2026-10-28 from the questionnaire and a
@@ -85,6 +107,16 @@
 	--font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
 	--ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* One page on this site is written in Russian. It swaps the two faces that
+   cannot set it and keeps everything else: the same scale, the same spacing,
+   the same mono for labels, because JetBrains Mono does carry Cyrillic.
+   Scoped by the lang attribute the layout already writes, so a page declares
+   its script once and the type follows. */
+html[lang="ru"] {
+	--font-display: "Literata", Georgia, "Times New Roman", serif;
+	--font-sans: "Manrope", system-ui, -apple-system, sans-serif;
 }
 
 @layer base {

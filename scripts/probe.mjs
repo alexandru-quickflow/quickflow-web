@@ -80,9 +80,12 @@ function readRoutes() {
 	const block = src.match(/export const paths[^=]*=\s*\{([\s\S]*?)\n\};/);
 	if (!block) throw new Error('routes.ts: could not find the paths map');
 
-	/* A page may be missing from a language on purpose, so an entry is read for
-	 * whichever locales it has rather than required to have both. One with
-	 * neither is a typo, and saying so here is cheaper than a 404 in the audit. */
+	/* A page may be missing from a language on purpose, and may exist in one the
+	 * rest of the site does not use at all. So an entry is read for whichever
+	 * locales it has: the en and ro pair when it has both, because that pair is
+	 * what the text-count comparison is about, and every other language as a
+	 * route to audit on its own. One with no language at all is a typo, and
+	 * saying so here is cheaper than a 404 in the middle of the audit. */
 	const pairs = [];
 	const solo = [];
 	const entry = /(\w+):\s*\{([^}]*)\}/g;
@@ -90,10 +93,14 @@ function readRoutes() {
 		const id = m[1];
 		const en = m[2].match(/en:\s*'([^']+)'/)?.[1];
 		const ro = m[2].match(/ro:\s*'([^']+)'/)?.[1];
+		const rest = [...m[2].matchAll(/(\w+):\s*'([^']+)'/g)]
+			.filter(([, loc]) => loc !== 'en' && loc !== 'ro')
+			.map(([, locale, url]) => ({ id, locale, url }));
 		if (en && ro) pairs.push({ id, en, ro });
 		else if (en) solo.push({ id, locale: 'en', url: en });
 		else if (ro) solo.push({ id, locale: 'ro', url: ro });
-		else throw new Error(`routes.ts: ${id} has no path in any language`);
+		else if (rest.length === 0) throw new Error(`routes.ts: ${id} has no path in any language`);
+		solo.push(...rest);
 	}
 	if (pairs.length === 0) throw new Error('routes.ts: the paths map parsed to nothing');
 	return { pairs, solo };
@@ -527,11 +534,15 @@ async function main() {
 	for (const page of solo) routes.push({ id: page.id, locale: page.locale, url: page.url });
 	routes.push({ id: '404', locale: 'en', url: '/404' });
 
-	/* A page that exists in one language only puts one more link in that
-	 * language's footer, on every page of it. That offset is known, so it is
-	 * subtracted once here rather than reported as drift on all fourteen pairs.
-	 * Anything beyond it is still a real difference. */
-	const footerOffset = solo.reduce((n, page) => n + (page.locale === 'ro' ? 1 : -1), 0);
+	/* A page missing from one of the two compared languages puts one more link
+	 * in the other one's footer, on every page of it. That offset is known, so
+	 * it is subtracted once here rather than reported as drift on all fourteen
+	 * pairs. A page in a third language moves neither footer and counts for
+	 * nothing. Anything beyond the offset is still a real difference. */
+	const footerOffset = solo.reduce(
+		(n, page) => n + (page.locale === 'ro' ? 1 : page.locale === 'en' ? -1 : 0),
+		0
+	);
 
 	const browser = await chromium.launch();
 	const context = await browser.newContext({

@@ -33,6 +33,9 @@ export function yearsSince(year: number): number {
 // numeral mid-sentence reads as a statistic, and these sentences are not
 // statistics. Written out to 2032, after which the numeral is the honest
 // fallback and the gap is loud enough to notice in a proof-read.
+// English and Romanian only: every page that spells a number out exists in
+// those two. The Moldova page, the one page in Russian, prints its figures as
+// figures.
 const WORDS: Record<Locale, Record<number, string>> = {
 	en: {
 		8: 'eight',

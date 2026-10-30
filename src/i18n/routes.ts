@@ -7,7 +7,13 @@
 // because the phrase people type into Google is English even when the page
 // they want to read is not.
 
-export const LOCALES = ['en', 'ro'] as const;
+/** Russian is here for one page. Roughly half the commercial searches in
+ *  Moldova are in Russian, the competition on them is close to nothing, and the
+ *  question that page answers is asked in Russian as often as in Romanian. It
+ *  buys a locale rather than a translation of the site: `paths` holds what each
+ *  page has, and a page missing from a language is missing from its menus too,
+ *  so nothing else had to be written three times. */
+export const LOCALES = ['en', 'ro', 'ru'] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = 'en';
 
@@ -80,7 +86,7 @@ export const paths: Record<PageId, Partial<Record<Locale, string>>> = {
 	escrow: { en: '/stripe-escrow-marketplace', ro: '/ro/stripe-escrow-marketplace' },
 	// Romanian only. Stripe does not operate in Moldova, which is a fact worth a
 	// page in the language the question is asked in and worth nothing in English.
-	moldova: { ro: '/ro/stripe-moldova-marketplace' },
+	moldova: { ro: '/ro/stripe-moldova-marketplace', ru: '/ru/stripe-moldova-marketplace' },
 };
 
 /** The path to a page in a language, or undefined when the page does not exist
@@ -119,17 +125,22 @@ export const nav: Record<Locale, { id: PageId; label: string }[]> = {
 		{ id: 'work', label: 'Portofoliu' },
 		{ id: 'contact', label: 'Contact' },
 	],
+	// Empty on purpose. One page exists in Russian, so a header menu would be a
+	// row of links to pages that are not written in the language the reader
+	// asked for. The page says where the rest of the site is, in a sentence.
+	ru: [],
 };
 
 /** What the switcher says, and what a screen reader hears. */
 export const localeNames: Record<Locale, { short: string; full: string }> = {
 	en: { short: 'EN', full: 'English' },
 	ro: { short: 'RO', full: 'Română' },
+	ru: { short: 'RU', full: 'Русский' },
 };
 
 /** Google wants a region-less code for English and a specific one for the
  *  Romanian, which is written for Romania. */
-export const hreflang: Record<Locale, string> = { en: 'en', ro: 'ro-RO' };
+export const hreflang: Record<Locale, string> = { en: 'en', ro: 'ro-RO', ru: 'ru' };
 
 /** Astro gives the path with or without a trailing slash depending on how the
  *  link was written, so every comparison goes through this first. */
@@ -139,7 +150,18 @@ function normalize(pathname: string): string {
 }
 
 export function localeOf(pathname: string): Locale {
-	return normalize(pathname) === '/ro' || pathname.startsWith('/ro/') ? 'ro' : 'en';
+	const here = normalize(pathname);
+	const prefixed = LOCALES.find(
+		(l) => l !== DEFAULT_LOCALE && (here === `/${l}` || pathname.startsWith(`/${l}/`)),
+	);
+	return prefixed ?? DEFAULT_LOCALE;
+}
+
+/** The languages this page is not written in, in the order they are shown. The
+ *  switcher used to ask for "the other one", which stopped being a question
+ *  with an answer the day a third language arrived. */
+export function otherLocales(lang: Locale): Locale[] {
+	return LOCALES.filter((l) => l !== lang);
 }
 
 export function pageIdOf(pathname: string): PageId | undefined {
@@ -165,21 +187,27 @@ export function alternates(pathname: string): { locale: Locale; href: string }[]
 	});
 }
 
-/** Where the switcher sends a reader who asks for a language this page is not
- *  written in: that language's home page.
+/** Where the switcher sends a reader who asks for another language: the twin
+ *  page if this one has one, otherwise that language's home page.
  *
- *  The alternative was to hide the switcher, which is worse. A reader who lands
- *  on a Romanian-only page from a search result would have no way back to the
- *  English site at all, and a control that disappears on one page out of
- *  twenty-seven reads as a bug rather than as an answer. `translated` says which
- *  of the two it is, so the link can say so. */
+ *  Hiding the switcher on a page with no twin would be worse. A reader who
+ *  lands on a Romanian-only page from a search result would have no way back to
+ *  the English site at all, and a control that disappears on one page out of
+ *  thirty reads as a bug rather than as an answer. `translated` says which of
+ *  the two kinds of link it is, so the label can say so too.
+ *
+ *  Undefined when there is neither: Russian is one page, not a version of the
+ *  site, so offering RU on the contact page would promise a Russian site that
+ *  does not exist. A language shows up in the switcher where it has something
+ *  to show. */
 export function switcherTarget(
 	pathname: string,
 	to: Locale,
-): { locale: Locale; href: string; translated: boolean } {
+): { locale: Locale; href: string; translated: boolean } | undefined {
 	const twin = alternates(pathname).find((a) => a.locale === to);
 	if (twin) return { ...twin, translated: true };
-	return { locale: to, href: paths.home[to] as string, translated: false };
+	const home = paths.home[to];
+	return home === undefined ? undefined : { locale: to, href: home, translated: false };
 }
 
 /** The footer is an index, not a copy of the header. The header stops at six
@@ -260,6 +288,10 @@ export const footerNav: Record<
 			],
 		},
 	],
+	// Empty for the same reason as the header. What the Russian footer keeps is
+	// what is not a link to a page: the address to write to, the identification
+	// line Legea 365/2002 asks for, and the ANPC mark.
+	ru: [],
 };
 
 /** The one profile that is confirmed. The home page schema used to carry a
