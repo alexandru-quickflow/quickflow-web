@@ -41,7 +41,9 @@ interface Env {
 }
 
 const OWNER = 'alexandru@quickflow.dev';
-const FROM = 'Quick Flow <noreply@quickflow.dev>';
+// The domain verified in Resend is send.quickflow.dev, not the apex. A sender
+// on the apex is refused with 403, which reads to the visitor as an outage.
+const FROM = 'Quick Flow <noreply@send.quickflow.dev>';
 
 type Locale = 'en' | 'ro';
 const DEFAULT_LOCALE: Locale = 'en';
@@ -414,6 +416,8 @@ export const onRequestPost = async (context: {
 			to: f.email,
 			subject: c.senderSubject,
 			text: senderBody(f, c),
+			// So a reply to this copy reaches a person, not the noreply address.
+			reply_to: OWNER,
 		});
 	}
 
