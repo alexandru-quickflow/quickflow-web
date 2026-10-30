@@ -9,8 +9,11 @@
 //      contrast and still be two pixels of content wide. That is a known blind
 //      spot, written down twice and never measured until now.
 //   3. Tap targets. A 14px link is a miss on a phone and nothing here checks.
-//   4. Children wider than their parent, which is the overflow that does not
-//      reach the viewport edge and so never trips an overflow check.
+//   4. Children out past their parent, which is the overflow that does not
+//      reach the viewport edge and so never trips an overflow check. This
+//      compared widths until 30 October and therefore missed the version of
+//      it that matters most: a child narrower than its parent, laid out
+//      beyond the parent's edge anyway.
 import { createRequire } from 'node:module';
 const require = createRequire('D:/dev/quickflow-web/package.json');
 const { chromium } = require('playwright');
@@ -63,14 +66,33 @@ function audit(isMobile) {
 			out.overflow.push(`${where(el)} ${Math.round(r.left)}..${Math.round(r.right)} in ${vw}`);
 		}
 
-		// 4. Wider than the box that is supposed to contain it.
+		// 4. Out past the box that is supposed to contain it.
+		//
+		// This compared widths until 30 October, and a width is the wrong
+		// question. A child narrower than its parent can still sit beyond the
+		// parent's right edge, and seven of them did: a twelve-column grid
+		// whose eleven 64px gaps needed 704px inside a 688px plate collapsed
+		// every track to zero and laid the right-hand column out past its own
+		// grid. At 768 the text ran off the screen on both audit pages. The
+		// width check could not see it, because 320 inside 590 is not wider
+		// than anything. Edges can see it, and edges are what a reader sees.
+		//
+		// A box parked entirely off-canvas is hidden, not escaping: the
+		// honeypot field sits at left: -9999px on purpose, and measuring edges
+		// rather than widths is what made it start to look like an escape. It
+		// has to reach into the viewport before it can offend, which is the
+		// same test the viewport check above already applies.
 		const parent = el.parentElement;
-		if (parent && parent !== document.body) {
+		const onCanvas = r.right > 0 && r.left < vw;
+		if (onCanvas && parent && parent !== document.body) {
 			const pr = parent.getBoundingClientRect();
 			const ps = getComputedStyle(parent);
 			const clipped = ['hidden', 'clip', 'auto', 'scroll'].includes(ps.overflowX);
-			if (!clipped && pr.width > 0 && r.width - pr.width > 2) {
-				out.escapes.push(`${where(el)} ${Math.round(r.width)} inside ${where(parent)} ${Math.round(pr.width)}`);
+			const out_by = Math.max(r.right - pr.right, pr.left - r.left);
+			if (!clipped && pr.width > 0 && out_by > 2) {
+				out.escapes.push(
+					`${where(el)} ${Math.round(r.left)}..${Math.round(r.right)} inside ${where(parent)} ${Math.round(pr.left)}..${Math.round(pr.right)}`
+				);
 			}
 		}
 	}
@@ -149,7 +171,7 @@ console.log(`\n\n${routes.length} pages x ${WIDTHS.length} widths = ${checked} m
 
 const LABEL = {
 	overflow: 'PAST THE VIEWPORT EDGE',
-	escapes: 'WIDER THAN ITS PARENT',
+	escapes: 'OUT PAST ITS PARENT',
 	squeezed: 'TEXT WITH NO ROOM',
 	taps: 'TAP TARGET UNDER 24px',
 	tiny: 'TEXT UNDER 11.5px',

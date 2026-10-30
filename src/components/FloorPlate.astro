@@ -34,21 +34,38 @@ const copy = {
 
 // Widths are not data. They are the shape of the argument: five things of
 // different sizes, all of them smaller than the thing under them.
+//
+// Which is why each bar can be a percentage of the track beside its label
+// rather than of the whole row. It used to be of the whole row, with the
+// label after it, so a long label and a long bar added up to more than the
+// row: at 320 the widest pair measured 305 inside 300 and "Searches" sat five
+// pixels past the edge of the box holding it. Nothing saw that for weeks,
+// because the check for it compared widths and a 67px label inside a 280px
+// row is not wider than anything. The five proportions are untouched.
 const widths = [72, 58, 46, 34, 24];
 ---
 
 <figure class={`m-0 ${cls}`}>
 	<p class="spec">{copy.above}</p>
 
-	<div class="mt-6 flex flex-col gap-2.5">
+	<!-- The label sits beside the bar where there is room for both, and under it
+	     where there is not. Beside, the bar is a percentage of the row and the
+	     label takes what is left, so a long label eats into its own bar: at 320
+	     the second bar came out at 130 and the third at 129, which drew 58 and
+	     46 as the same length and made the figure say something it does not
+	     mean. Under, every bar is a percentage of the same full row and the
+	     five proportions are exact. Nothing overflowed in either arrangement;
+	     this one is about the argument staying true, not about the layout
+	     holding. -->
+	<div class="mt-6 flex flex-col gap-4 sm:gap-2.5">
 		{
 			copy.stack.map((label, i) => (
-				<div class="flex items-center gap-4">
+				<div class="flex flex-col items-start gap-1.5 sm:flex-row sm:items-center sm:gap-4">
 					<span
-						class="h-7 shrink-0 rounded-[4px] border border-teal/40 bg-teal/15"
+						class="h-7 min-w-0 rounded-[4px] border border-teal/40 bg-teal/15"
 						style={`width:${widths[i]}%`}
 					/>
-					<span class="spec">{label}</span>
+					<span class="spec shrink-0">{label}</span>
 				</div>
 			))
 		}

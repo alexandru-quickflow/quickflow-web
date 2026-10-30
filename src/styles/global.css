@@ -515,9 +515,25 @@
 	 * machinery once rendered the migration page's four safe phases in the
 	 * alarm colour and its one risky phase in the safe one, and nothing but a
 	 * person looking at it would have caught that either. */
+	/* The gutter is the section's, not the plate's. The plate is a `.bleed`,
+	   which carries the measure and nothing else, so until it was measured it
+	   ran from zero to the viewport edge at every width up to and including
+	   1280: 42 plates per page, with their left and right borders sitting
+	   exactly on the screen edge where nobody can see them and their corners
+	   cut off by it. Only past 1280 did `max-width` start to bite and leave a
+	   margin, which is why it looked right on the machine it was drawn on and
+	   wrong on every phone and most laptops.
+	   A plate has to have page around it or it is not a plate, it is a band
+	   again, which is the thing this stopped being on 29 October. So the
+	   section holds the page gutter and the plate sits inside it. The two
+	   values are the ones .shell and .bleed already use, because the plate's
+	   edge lines up with the text of the sections above and below it.
+	   Nothing moves at 1440 and 1920: there the measure was already narrower
+	   than the room, so the gutter it gets here is the margin it had. */
 	.band {
 		position: relative;
 		z-index: 1;
+		padding-inline: 1.25rem;
 	}
 
 	.band > .bleed {
@@ -528,6 +544,10 @@
 	}
 
 	@media (min-width: 768px) {
+		.band {
+			padding-inline: 2.5rem;
+		}
+
 		.band > .bleed {
 			padding-inline: 3rem;
 		}

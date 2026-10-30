@@ -109,8 +109,15 @@ overflow, both languages level`.
 ### `node scripts/responsive.mjs`
 
 29 pages across 12 widths, 348 measurements. The three actionable categories all
-have to be **0**: past the viewport edge, wider than its parent, tap target
-under 24px.
+have to be **0**: past the viewport edge, out past its parent, tap target under
+24px.
+
+The middle one compared widths until 30 October and so could not see the shape
+of the defect that mattered most: a child narrower than its parent, laid out
+beyond the parent's edge anyway. Five twelve-column grids whose eleven 64px
+gaps needed 704px inside a 688px plate had collapsed every track to zero and
+were putting the right-hand column off the side of the screen at 768 and 834,
+on eight pages, in both languages. It compares edges now.
 
 Two categories are not zero and are not defects: around 45 boxes of "text with
 no room", all two-character labels that have exactly the room they need, and
