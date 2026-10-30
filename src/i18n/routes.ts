@@ -134,7 +134,15 @@ export function alternates(pathname: string): { locale: Locale; href: string }[]
 
 /** The footer is an index, not a copy of the header. The header stops at six
  *  items for a measured reason; the footer has room for all twelve pages and
- *  groups them by what they are rather than by what fits. */
+ *  groups them by what they are rather than by what fits.
+ *
+ *  Twelve is every page with content on it: the fourteen ids below, less the
+ *  home page, which the mark links to, and the thank-you page, which is
+ *  noindex. It said twelve while listing eleven until 30 October, because the
+ *  escrow page was missing from it. That page is reached from seven others, so
+ *  it was never orphaned, but it was the one piece of content the index did
+ *  not index. Anything added to `paths` belongs in a column here or has a
+ *  reason written down for why it does not. */
 export const footerNav: Record<
 	Locale,
 	{ title: string; items: { id: PageId; label: string }[] }[]
@@ -148,6 +156,7 @@ export const footerNav: Record<
 				{ id: 'courses', label: 'Course platforms' },
 				{ id: 'internal', label: 'Internal apps' },
 				{ id: 'websites', label: 'Landing page and site' },
+				{ id: 'escrow', label: 'Stripe and escrow' },
 			],
 		},
 		{
@@ -176,6 +185,7 @@ export const footerNav: Record<
 				{ id: 'courses', label: 'Platforme de cursuri' },
 				{ id: 'internal', label: 'Aplicații interne' },
 				{ id: 'websites', label: 'Landing page și site' },
+				{ id: 'escrow', label: 'Stripe și escrow' },
 			],
 		},
 		{

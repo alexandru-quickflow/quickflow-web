@@ -60,19 +60,27 @@ const steps = [
 /** Separate charges and transfers, which is the shape that actually holds the
  *  money until delivery. Amounts are in minor units, so 100000 is 1,000.00,
  *  and 85000 is the seller's 850 from the drawing at the top of the page.
- *  Kept under 58 characters a line so it never scrolls sideways on a phone. */
-const stripeShape = `// 01  The buyer pays. It lands in the platform balance.
-const payment = await stripe.paymentIntents.create({
-  amount: 100000,
-  currency: 'ron',
-  transfer_group: order.id,
-});
+ *  Under 32 characters a line, which is what fits: the block draws at 12px in
+ *  JetBrains Mono inside 243px of room on a 320px phone, so 33 characters.
+ *  This said 58 and scrolled, like the one in content/proof.ts, and for the
+ *  same reason: 58 characters need a phone 457px wide. */
+const stripeShape = `// 01  The buyer pays. It lands
+//     in the platform balance.
+const payment = await stripe
+  .paymentIntents.create({
+    amount: 100000,
+    currency: 'ron',
+    transfer_group: order.id,
+  });
 
-// 02  Delivery is confirmed. Only now does the share leave.
+// 02  Delivery is confirmed.
+//     Only now does the share
+//     leave.
 await stripe.transfers.create({
   amount: 85000,
   currency: 'ron',
-  destination: seller.stripeAccountId,
+  destination:
+    seller.stripeAccountId,
   transfer_group: order.id,
 });`;
 

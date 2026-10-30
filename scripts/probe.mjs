@@ -527,9 +527,16 @@ async function main() {
 
 	try {
 		if (SELF_TEST) {
-			const planted = await selfTest(page, BASE);
+			// The count is contrast failures on the page the defects were
+			// planted in, which is one: the invisible paragraph. It used to be
+			// printed as "(1 failures on a page with them)" right after the
+			// word "three", which reads like the probe caught one of three.
+			// It caught all three or selfTest would have thrown.
+			const failures = await selfTest(page, BASE);
 			console.log(
-				`self-test  the probe reported the three planted defects (${planted} failures on a page with them)\n`
+				`self-test  all three planted defects caught: the invisible paragraph, ` +
+					`the 493px box and the stretched rule. ` +
+					`${failures} contrast failure${failures === 1 ? '' : 's'} on that page, as expected\n`
 			);
 		}
 

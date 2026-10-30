@@ -60,20 +60,28 @@ const steps = [
 /** Separate charges and transfers, aceeași formă ca pe pagina engleză. Sumele
  *  sunt în subunități, deci 100000 e 1.000,00 lei, iar 85000 e cei 850 din
  *  desenul de sus. Identificatorii din API rămân în engleză, comentariile sunt
- *  text pe care îl citește cineva. Maximum 58 de caractere pe linie, ca să nu
- *  se scroleze lateral pe telefon. */
-const stripeShape = `// 01  Cumpărătorul plătește. Banii intră la platformă.
-const payment = await stripe.paymentIntents.create({
-  amount: 100000,
-  currency: 'ron',
-  transfer_group: order.id,
-});
+ *  text pe care îl citește cineva. Maximum 32 de caractere pe linie, care e cât
+ *  încape: blocul se desenează la 12px în JetBrains Mono, într-un loc de 243 de
+ *  pixeli pe un telefon de 320, adică 33 de caractere. Aici scria 58 și se
+ *  scrola, ca și cel din content/proof.ts, din același motiv: 58 de caractere
+ *  cer un telefon de 457 de pixeli. */
+const stripeShape = `// 01  Cumpărătorul plătește.
+//     Banii intră la platformă.
+const payment = await stripe
+  .paymentIntents.create({
+    amount: 100000,
+    currency: 'ron',
+    transfer_group: order.id,
+  });
 
-// 02  Livrarea e confirmată. Abia acum pleacă partea lui.
+// 02  Livrarea e confirmată.
+//     Abia acum pleacă partea
+//     lui.
 await stripe.transfers.create({
   amount: 85000,
   currency: 'ron',
-  destination: seller.stripeAccountId,
+  destination:
+    seller.stripeAccountId,
   transfer_group: order.id,
 });`;
 

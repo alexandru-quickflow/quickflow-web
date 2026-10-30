@@ -38,19 +38,45 @@ export const VERIFIED_ON: Record<Locale, string> = {
  *  Analytics beacon in the technical annex would add to it again. */
 export const SELF_JS = '6 KB';
 
-/** Pasted into the reader's own console, on their own app. Kept under 58
- *  characters a line so it never needs sideways scrolling on a phone. The one
- *  thing on the site that needs no translation. */
-export const weightSnippet = `const r = performance.getEntriesByType('resource');
-const n = performance.getEntriesByType('navigation')[0];
-const kb = x => Math.round(x / 1024) + ' KB';
-const sum = a => a.reduce((t, x) => t + x.encodedBodySize, 0);
-const js = r.filter(x => /\\.js(\\?|$)/.test(x.name));
+/** Pasted into the reader's own console, on their own app. The one thing on
+ *  the site that needs no translation.
+ *
+ *  Every line is under 32 characters, and that number is the measurement, not
+ *  a preference. The block renders at 12px in JetBrains Mono, which is 7.27px
+ *  a character, and on a 320px phone it has 243px of room inside its padding:
+ *  33 characters. The comment here used to say "under 58 characters a line so
+ *  it never needs sideways scrolling on a phone", which was wrong twice. One
+ *  line was 62. And 58 would have needed a phone 457px wide, so even the rule
+ *  it set itself would not have fitted. The reader saw 41 of up to 62
+ *  characters and had to drag the one piece of proof the page hands them.
+ *
+ *  It costs more lines than it would take written out, and it is worth it
+ *  here: this is the block the page tells a reader to copy, and the argument
+ *  for measuring rather than looking is badly made in a box that has to be
+ *  dragged sideways. Re-measure if the type size or the padding changes. */
+export const weightSnippet = `const kb = n =>
+  Math.round(n / 1024) + ' KB';
+const size = a => a.reduce(
+  (t, x) =>
+    t + x.encodedBodySize,
+  0
+);
+
+const all = performance
+  .getEntries()
+  .filter(x =>
+    x.encodedBodySize);
+const js = all.filter(x =>
+  /\\.js(\\?|$)/.test(x.name));
+const nav = all.find(x =>
+  x.entryType === 'navigation');
+const ms =
+  Math.round(nav.loadEventEnd);
 
 console.table({
-  total: kb(sum(r) + n.encodedBodySize),
-  javascript: kb(sum(js)),
-  load: Math.round(n.loadEventEnd) + ' ms',
+  total: kb(size(all)),
+  javascript: kb(size(js)),
+  load: ms + ' ms',
 });`;
 
 export const proofs: Record<Locale, Proof[]> = {
