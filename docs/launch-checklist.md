@@ -317,6 +317,30 @@ without taking the live key away, so that half rests on the 400.
 The status lives in one place, `MAIL_UNAVAILABLE` in `functions/api/contact.ts`,
 with the reasoning next to it.
 
+### The ANPC mark is SAL only, never SOL
+
+Decided 30 October 2026, after checking rather than copying what other Romanian
+sites carry.
+
+The European ODR platform was switched off on 20 July 2025 and Regulation
+524/2013 repealed with it. `ec.europa.eu/consumers/odr` now serves a relocation
+notice. Ordinul ANPC 449/2022 was amended by 270/2026 for exactly that reason,
+and asks for the SAL pictogram alone.
+
+So: if anyone ever offers to "add the missing SOL icon", the answer is no. It
+would be a link to nothing, on the one part of the site whose whole job is to
+point a complaint somewhere real.
+
+The file in `public/anpc/sal.png` is the one ANPC publishes, 201x50 and 4,520
+bytes, sha256 `22c8a456...`. It is served unretouched and `scripts/images.py`
+skips the folder, so no AVIF or WebP of it is ever generated. Re-encoding
+somebody else's legal mark is not ours to do.
+
+Two things this is not sure about, both worth a minute before an inspection:
+the order is reported to describe a 250x50 pictogram while the file ANPC serves
+is 201x50, and the order asks for the home page menu bar while the mark here is
+in the footer of every page.
+
 ### CSS minification stays off
 
 Lightning CSS folds `animation` and `animation-timeline` into a shorthand no
