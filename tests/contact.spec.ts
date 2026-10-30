@@ -22,6 +22,12 @@ import { test, expect, type Page, type Route } from '@playwright/test';
  * Both languages, because the two pages have drifted apart twice before and
  * the probe's pair check compares element counts, which attributes and wiring
  * slip straight past.
+ *
+ * Since the form became three steps, most of what is checked here is that the
+ * steps are only a way of showing one form. The thing that would make them a
+ * lie is a field going missing from the POST because the step it lives on was
+ * not on screen, so that is asserted field by field, from all three steps, on
+ * the one submission that goes through.
  */
 
 const PAGES = [
@@ -86,6 +92,25 @@ async function intercept(page: Page, answer: (route: Route) => Promise<void>) {
 const json = (route: Route, status: number, body: unknown) =>
 	route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
 
+/** Which step is on screen, by index, or -1 if the script never ran. */
+const stepOn = (p: Page) =>
+	p.evaluate(() => [...document.querySelectorAll('[data-step]')].findIndex((s) => !s.hasAttribute('hidden')));
+
+/**
+ * Fills what each step needs and walks to the last one, leaving the form ready
+ * to submit. Deliberately writes something on every step, so the submission a
+ * test then makes carries a field from each of the three.
+ */
+async function walkToTheEnd(p: Page) {
+	await p.fill('#proiect', 'A marketplace with split payments.');
+	await p.fill('#acum', 'a Bubble app, app.example.com');
+	await p.click('#form-next');
+	await p.selectOption('#buget', { index: 1 });
+	await p.click('#form-next');
+	await p.fill('#nume', 'Ana Test');
+	await p.fill('#email', 'ana@example.com');
+}
+
 for (const page of PAGES) {
 	test.describe(`contact form, ${page.lang}`, () => {
 		test('a successful submission hands the form over to the confirmation', async ({
@@ -94,9 +119,7 @@ for (const page of PAGES) {
 			const seen = await intercept(browserPage, (route) => json(route, 200, { ok: true }));
 			await browserPage.goto(page.path);
 
-			await browserPage.fill('#nume', 'Ana Test');
-			await browserPage.fill('#email', 'ana@example.com');
-			await browserPage.fill('#proiect', 'A marketplace with split payments.');
+			await walkToTheEnd(browserPage);
 			await browserPage.click('#submit-btn');
 
 			const success = browserPage.locator('#form-success');
@@ -110,8 +133,22 @@ for (const page of PAGES) {
 			expect(seen[0].method).toBe('POST');
 			// The handler decides what to answer with from this header alone.
 			expect(seen[0].accept).toContain('application/json');
-			expect(seen[0].fields.nume).toBe('Ana Test');
-			expect(seen[0].fields.email).toBe('ana@example.com');
+
+			// One POST carrying all three steps, which is the whole claim the
+			// steps make. A field dropping out because its step was not on
+			// screen is the way this breaks, so each step is named here.
+			expect(seen[0].fields.proiect).toBe('A marketplace with split payments.'); // step 1
+			expect(seen[0].fields.acum).toBe('a Bubble app, app.example.com'); // step 1
+			expect(seen[0].fields.subiect).toBeTruthy(); // step 1, left at its default
+			expect(seen[0].fields.buget).toBeTruthy(); // step 2
+			expect(seen[0].fields.cand).toBeTruthy(); // step 2, never touched
+			expect(seen[0].fields.nume).toBe('Ana Test'); // step 3
+			expect(seen[0].fields.email).toBe('ana@example.com'); // step 3
+			// The four payment fields live inside a closed details on step 2
+			// and are submitted from it, empty, without anyone opening it.
+			for (const name of ['plateste', 'incaseaza', 'comision', 'livrare']) {
+				expect(seen[0].fields[name]).toBe('');
+			}
 			// The hidden locale field is what sends the visitor to the
 			// thank-you page in their own language, and it has been wrong
 			// before.
@@ -121,17 +158,62 @@ for (const page of PAGES) {
 			expect(seen[0].fields.website ?? '').toBe('');
 		});
 
+		test('a step will not move on while something it needs is empty', async ({
+			page: browserPage,
+		}) => {
+			await browserPage.goto(page.path);
+			expect(await stepOn(browserPage)).toBe(0);
+
+			await browserPage.click('#form-next');
+
+			// Still on the first step, with the field that stopped it focused
+			// and saying so.
+			expect(await stepOn(browserPage)).toBe(0);
+			await expect(browserPage.locator('#proiect')).toBeFocused();
+			await expect(browserPage.locator('#proiect')).toHaveAttribute('aria-invalid', 'true');
+			await expect(browserPage.locator('#error-proiect')).toBeVisible();
+
+			await browserPage.fill('#proiect', 'A marketplace with split payments.');
+			await browserPage.click('#form-next');
+			expect(await stepOn(browserPage)).toBe(1);
+		});
+
+		test('the last step is the only one that can send', async ({ page: browserPage }) => {
+			await browserPage.goto(page.path);
+
+			await expect(browserPage.locator('#submit-btn')).toBeHidden();
+			await expect(browserPage.locator('#form-back')).toBeHidden();
+			await expect(browserPage.locator('#form-next')).toBeVisible();
+
+			await walkToTheEnd(browserPage);
+
+			expect(await stepOn(browserPage)).toBe(2);
+			await expect(browserPage.locator('#submit-btn')).toBeVisible();
+			await expect(browserPage.locator('#form-next')).toBeHidden();
+			// Back stays, so the last step is not a trap.
+			await expect(browserPage.locator('#form-back')).toBeVisible();
+
+			await browserPage.click('#form-back');
+			expect(await stepOn(browserPage)).toBe(1);
+			// What was typed is still there after walking away from it.
+			await browserPage.click('#form-next');
+			await expect(browserPage.locator('#nume')).toHaveValue('Ana Test');
+		});
+
 		test('empty required fields come back onto the fields themselves', async ({
 			page: browserPage,
 		}) => {
 			await intercept(browserPage, (route) => json(route, 400, { fields: page.errors }));
 			await browserPage.goto(page.path);
 
+			await walkToTheEnd(browserPage);
 			await browserPage.click('#submit-btn');
 
+			// The handler named a field on every step, including two behind the
+			// one that was on screen. Each message has to be attached to its own
+			// field wherever that field lives.
 			for (const [field, message] of Object.entries(page.errors)) {
 				const error = browserPage.locator(`#error-${field}`);
-				await expect(error).toBeVisible();
 				await expect(error).toHaveText(message);
 				// Tied to the input, not merely sitting under it. Without this
 				// the message is read out to nobody.
@@ -142,9 +224,12 @@ for (const page of PAGES) {
 				await expect(browserPage.locator(`#${field}`)).toHaveAttribute('aria-invalid', 'true');
 			}
 
-			// Focus lands on the first field that needs fixing, and the form is
-			// still there to fix it in.
-			await expect(browserPage.locator('#nume')).toBeFocused();
+			// And the page goes back to the step the first bad field is on,
+			// which is step one, or the message would be announced on a screen
+			// that does not show it.
+			expect(await stepOn(browserPage)).toBe(0);
+			await expect(browserPage.locator('#error-proiect')).toBeVisible();
+			await expect(browserPage.locator('#proiect')).toBeFocused();
 			await expect(browserPage.locator('#contact-form')).toBeVisible();
 			await expect(browserPage.locator('#form-success')).toBeHidden();
 		});
@@ -156,12 +241,14 @@ for (const page of PAGES) {
 			);
 			await browserPage.goto(page.path);
 
+			await walkToTheEnd(browserPage);
 			await browserPage.click('#submit-btn');
-			await expect(browserPage.locator('#error-nume')).toBeVisible();
+			await expect(browserPage.locator('#error-proiect')).toBeVisible();
 
-			await browserPage.fill('#nume', 'Ana Test');
-			await browserPage.fill('#email', 'ana@example.com');
-			await browserPage.fill('#proiect', 'A marketplace with split payments.');
+			// Thrown back to step one by the first error, so the walk starts
+			// again from there.
+			expect(await stepOn(browserPage)).toBe(0);
+			await walkToTheEnd(browserPage);
 			await browserPage.click('#submit-btn');
 
 			await expect(browserPage.locator('#form-success')).toBeVisible();
@@ -175,9 +262,7 @@ for (const page of PAGES) {
 			await intercept(browserPage, (route) => json(route, 502, { message: page.serviceDown }));
 			await browserPage.goto(page.path);
 
-			await browserPage.fill('#nume', 'Ana Test');
-			await browserPage.fill('#email', 'ana@example.com');
-			await browserPage.fill('#proiect', 'A marketplace with split payments.');
+			await walkToTheEnd(browserPage);
 			await browserPage.click('#submit-btn');
 
 			const banner = browserPage.locator('#form-error');
@@ -215,6 +300,23 @@ for (const page of PAGES) {
 			await expect(noScript.locator('input[name="locale"]')).toHaveValue(page.lang);
 			for (const field of ['nume', 'email', 'proiect']) {
 				await expect(noScript.locator(`#${field}`)).toHaveAttribute('required', '');
+			}
+
+			// And the steps are not steps: every fieldset open, in order, with
+			// nothing to click between them and the submit button at the end.
+			// This is the half of the form that has to keep working when the
+			// other half does not arrive.
+			const steps = noScript.locator('[data-step]');
+			await expect(steps).toHaveCount(3);
+			for (let i = 0; i < 3; i++) await expect(steps.nth(i)).toBeVisible();
+			await expect(noScript.locator('#form-next')).toBeHidden();
+			await expect(noScript.locator('#form-back')).toBeHidden();
+			await expect(noScript.locator('#form-step-count')).toBeHidden();
+			await expect(noScript.locator('#submit-btn')).toBeVisible();
+			// Every field the handler reads is on the page at once, so a plain
+			// POST carries all of them.
+			for (const name of ['nume', 'email', 'subiect', 'proiect', 'acum', 'buget', 'cand', 'sursa']) {
+				await expect(noScript.locator(`[name="${name}"]`)).toHaveCount(1);
 			}
 
 			await context.close();

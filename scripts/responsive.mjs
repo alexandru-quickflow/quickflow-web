@@ -151,6 +151,18 @@ for (const width of WIDTHS) {
 	for (const route of routes) {
 		await page.goto(BASE + route, { waitUntil: 'load' });
 		await page.evaluate(() => document.fonts.ready);
+		// Every step of the contact form, not just the one on screen. The form
+		// shows one of three and hides the rest, which would quietly take two
+		// thirds of the fields on the only page with a form out of everything
+		// below: no tap target measured, no squeezed label, no overflow. A
+		// reader sees all three, one after another, so all three are measured.
+		// Same reason this runs under reduced motion: the state a reader ends
+		// up looking at is the state worth measuring.
+		await page.evaluate(() => {
+			for (const step of document.querySelectorAll('[data-step][hidden]')) {
+				step.removeAttribute('hidden');
+			}
+		});
 		const r = await page.evaluate(audit, width <= MOBILE);
 		checked += 1;
 		for (const kind of Object.keys(r)) {

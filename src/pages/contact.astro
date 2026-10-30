@@ -60,6 +60,23 @@ const flowFields = [
 // different from each other the first time.
 const field = 'field';
 const errorText = 'mt-2 text-sm text-hot';
+// Six of the nine fields are optional and nothing said so: a reader saw nine
+// obligations and had three. The mark goes on the optional ones rather than on
+// the required ones, because it gives permission, which is the half worth
+// reading.
+//
+// Lower case, not fainter. `.spec` is already on --faint, so another colour
+// would have changed nothing, and there is nothing under it to use: --ghost
+// measures 3.28:1 at this size and that is exactly how the placeholders
+// failed. The letter case does the work the contrast cannot.
+const optional = 'ml-2 font-normal normal-case tracking-normal';
+
+// While the script runs, the form is filled in three steps. This is what it
+// says when somebody tries to go on with a required field still empty. It does
+// not repeat the messages in functions/api/contact.ts and has no reason to:
+// those explain a send that did not happen, this stops a step. Two different
+// moments, two different sentences.
+const stepPrompt = 'Fill this in before the next step.';
 
 import { BOOKING, BOOKING_URL } from '../content/booking';
 ---
@@ -89,13 +106,27 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 				<h2 id="form" class="sr-only">Contact form</h2>
 
 				<!-- Works as a plain POST without JavaScript. The script below only
-				     upgrades it with inline messages and no page reload. -->
+				     upgrades it with inline messages and no page reload.
+
+				     The three steps are the same upgrade. Without the script every
+				     fieldset is open and the form is the one page it has always
+				     been, in the same order, with the submit at the bottom. With
+				     it, one step shows at a time. Nothing moves between them: it
+				     is one form, one POST, one email, and the handler never learns
+				     that the page asked in three parts.
+
+				     Turnstile and the submit sit outside the steps on purpose.
+				     Turnstile renders badly when it starts inside display:none,
+				     and it needs the time anyway; the submit is hidden by the
+				     script until the last step, which costs nothing when there is
+				     no script. -->
 				<form
 					id="contact-form"
 					action="/api/contact"
 					method="POST"
 					novalidate
 					class="card flex flex-col gap-7"
+					data-step-prompt={stepPrompt}
 				>
 					<input type="hidden" name="locale" value="en" />
 					<!-- role="alert" because this is the only way the visitor learns
@@ -109,129 +140,167 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 					>
 					</p>
 
+					<!-- Hidden until the script runs, because without it there are no
+					     steps to count. -->
+					<p id="form-step-count" hidden class="spec"></p>
+
 					<!-- Each field error carries an id and the input points at it, so
 					     the message is read out with the field when the script moves
 					     focus there. Without that a screen reader hears the label
 					     again and nothing about what is wrong with it. -->
-					<div>
-						<label for="nume" class="spec block">Name</label>
-						<input
-							id="nume"
-							name="nume"
-							type="text"
-							required
-							autocomplete="name"
-							aria-describedby="error-nume"
-							class={field}
-						/>
-						<p id="error-nume" data-error-for="nume" hidden class={errorText}></p>
-					</div>
 
-					<div>
-						<label for="email" class="spec block">Email</label>
-						<input
-							id="email"
-							name="email"
-							type="email"
-							required
-							autocomplete="email"
-							aria-describedby="error-email"
-							class={field}
-						/>
-						<p id="error-email" data-error-for="email" hidden class={errorText}></p>
-					</div>
+					<!-- 01. What you are building, asked first, because it is the
+					     question the headline asks and the only one that needs
+					     thinking about. -->
+					<fieldset data-step class="flex flex-col gap-7 border-0 p-0">
+						<legend tabindex="-1" class="display-md mb-7 block w-full">The project</legend>
 
-					<div>
-						<label for="subiect" class="spec block">What this is about</label>
-						<select id="subiect" name="subiect" class={field}>
-							{subjects.map((s) => <option value={s}>{s}</option>)}
-						</select>
-					</div>
-
-					<div>
-						<label for="proiect" class="spec block">What you want to build</label>
-						<textarea
-							id="proiect"
-							name="proiect"
-							rows="5"
-							required
-							aria-describedby="error-proiect"
-							class={field}></textarea>
-						<p id="error-proiect" data-error-for="proiect" hidden class={errorText}></p>
-					</div>
-
-					<!-- The most useful field on the form. For a Bubble app this is the
-					     link I need to run the measurement before answering, which is
-					     what the audit on the migration page promises. -->
-					<div>
-						<label for="acum" class="spec block">
-							What you have now, and a link if there is one
-						</label>
-						<input
-							id="acum"
-							name="acum"
-							type="text"
-							placeholder="a Bubble app, app.example.com"
-							class={field}
-						/>
-					</div>
-
-					<div>
-						<label for="buget" class="spec block">Approximate budget</label>
-						<select id="buget" name="buget" class={field}>
-							{budgets.map((b) => <option value={b}>{b}</option>)}
-						</select>
-					</div>
-
-					<div>
-						<label for="cand" class="spec block">When you want it</label>
-						<select id="cand" name="cand" class={field}>
-							{whens.map((w) => <option value={w}>{w}</option>)}
-						</select>
-					</div>
-
-					<!-- Closed by default. Most people writing in are not asking about a
-					     payment flow, and four more inputs on a form that already has
-					     nine is a wall. A details element costs no JavaScript, and the
-					     inputs inside a closed one are still submitted. -->
-					<details class="accordion hair pt-7">
-						<summary class="spec">Only if it is about payments</summary>
-						<p class="prose-body mt-5 text-sm">
-							Four short answers are enough for me to tell you first time whether the flow gets
-							approved.
-						</p>
-						<div class="mt-5 flex flex-col gap-5">
-							{
-								flowFields.map((f) => (
-									<div>
-										<label for={f.name} class="spec block">
-											{f.label}
-										</label>
-										<input
-											id={f.name}
-											name={f.name}
-											type="text"
-											placeholder={f.placeholder}
-											class={field}
-										/>
-									</div>
-								))
-							}
+						<div>
+							<label for="subiect" class="spec block">What this is about</label>
+							<select id="subiect" name="subiect" class={field}>
+								{subjects.map((s) => <option value={s}>{s}</option>)}
+							</select>
 						</div>
-					</details>
 
-					<!-- The only attribution there is. The analytics are cookieless,
-					     so they count visitors without ever saying where one came from. -->
-					<div>
-						<label for="sursa" class="spec block">How you got here</label>
-						<input
-							id="sursa"
-							name="sursa"
-							type="text"
-							placeholder="a search, someone sent the link, Upwork"
-							class={field}
-						/>
-					</div>
+						<div>
+							<label for="proiect" class="spec block">What you want to build</label>
+							<textarea
+								id="proiect"
+								name="proiect"
+								rows="5"
+								required
+								aria-describedby="error-proiect"
+								class={field}></textarea>
+							<p id="error-proiect" data-error-for="proiect" hidden class={errorText}></p>
+						</div>
+
+						<!-- The most useful field on the form. For a Bubble app this is
+						     the link I need to run the measurement before answering,
+						     which is what the audit on the migration page promises. -->
+						<div>
+							<label for="acum" class="spec block">
+								What you have now, and a link if there is one
+								<span class={optional}>optional</span>
+							</label>
+							<input
+								id="acum"
+								name="acum"
+								type="text"
+								placeholder="a Bubble app, app.example.com"
+								class={field}
+							/>
+						</div>
+					</fieldset>
+
+					<!-- 02. The frame around it. Everything here is optional and every
+					     select already has a real answer sitting in it, so this step
+					     can be walked through without a keystroke. -->
+					<fieldset data-step class="flex flex-col gap-7 border-0 p-0">
+						<legend tabindex="-1" class="display-md mb-7 block w-full">Budget and timing</legend>
+
+						<div>
+							<label for="buget" class="spec block">
+								Approximate budget
+								<span class={optional}>optional</span>
+							</label>
+							<select id="buget" name="buget" class={field}>
+								{budgets.map((b) => <option value={b}>{b}</option>)}
+							</select>
+						</div>
+
+						<div>
+							<label for="cand" class="spec block">
+								When you want it
+								<span class={optional}>optional</span>
+							</label>
+							<select id="cand" name="cand" class={field}>
+								{whens.map((w) => <option value={w}>{w}</option>)}
+							</select>
+						</div>
+
+						<!-- Closed by default. Most people writing in are not asking about
+						     a payment flow, and four more inputs is a wall even on a step
+						     this short. A details element costs no JavaScript, and the
+						     inputs inside a closed one are still submitted. -->
+						<details class="accordion hair pt-7">
+							<summary class="spec">Only if it is about payments</summary>
+							<p class="prose-body mt-5 text-sm">
+								Four short answers are enough for me to tell you first time whether the flow gets
+								approved.
+							</p>
+							<div class="mt-5 flex flex-col gap-5">
+								{
+									flowFields.map((f) => (
+										<div>
+											<label for={f.name} class="spec block">
+												{f.label}
+											</label>
+											<input
+												id={f.name}
+												name={f.name}
+												type="text"
+												placeholder={f.placeholder}
+												class={field}
+											/>
+										</div>
+									))
+								}
+							</div>
+						</details>
+					</fieldset>
+
+					<!-- 03. Who to answer. Last, because by here the person has already
+					     written the thing they came to write, and because the two
+					     fields the handler refuses without are the two that take no
+					     thought at all. -->
+					<fieldset data-step class="flex flex-col gap-7 border-0 p-0">
+						<legend tabindex="-1" class="display-md mb-7 block w-full">How I reach you</legend>
+
+						<div>
+							<label for="nume" class="spec block">Name</label>
+							<input
+								id="nume"
+								name="nume"
+								type="text"
+								required
+								autocomplete="name"
+								aria-describedby="error-nume"
+								class={field}
+							/>
+							<p id="error-nume" data-error-for="nume" hidden class={errorText}></p>
+						</div>
+
+						<div>
+							<label for="email" class="spec block">Email</label>
+							<input
+								id="email"
+								name="email"
+								type="email"
+								required
+								autocomplete="email"
+								aria-describedby="error-email"
+								class={field}
+							/>
+							<p id="error-email" data-error-for="email" hidden class={errorText}></p>
+						</div>
+
+						<!-- The only attribution there is. The analytics are cookieless,
+						     so they count visitors without ever saying where one came
+						     from. -->
+						<div>
+							<label for="sursa" class="spec block">
+								How you got here
+								<span class={optional}>optional</span>
+							</label>
+							<input
+								id="sursa"
+								name="sursa"
+								type="text"
+								placeholder="a search, someone sent the link, Upwork"
+								class={field}
+							/>
+						</div>
+					</fieldset>
 
 					<!-- Honeypot. Hidden from people, filled in by most bots. -->
 					<div class="absolute left-[-9999px]" aria-hidden="true">
@@ -245,8 +314,17 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 						)
 					}
 
+					<!-- All three controls on one row, so the last step reads "Back,
+					     Send" side by side instead of stacked. Back and Next start
+					     hidden: with no script there is nowhere for them to go, and
+					     what is left is the submit button this form has always ended
+					     with. -->
 					<div>
-						<button type="submit" id="submit-btn" class="btn btn-primary">Send</button>
+						<div class="flex flex-wrap items-center gap-4">
+							<button type="button" id="form-back" hidden class="btn btn-ghost">Back</button>
+							<button type="button" id="form-next" hidden class="btn btn-primary">Next</button>
+							<button type="submit" id="submit-btn" class="btn btn-primary">Send</button>
+						</div>
 						<p id="form-note" class="prose-body mt-4 text-sm">
 							You get a copy by email too, so you keep what you wrote.
 						</p>
@@ -310,6 +388,65 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 	const button = document.getElementById('submit-btn') as HTMLButtonElement | null;
 	const note = document.getElementById('form-note');
 
+	/* The three steps ------------------------------------------------------
+	 * Everything here only ever hides what the page already rendered. The form
+	 * is whole underneath: one POST, every field in it, whichever step was on
+	 * screen when the button was pressed.
+	 *
+	 * Which is also why the server can send back an error about a field two
+	 * steps behind. When it does, `goTo` is handed the step that field sits
+	 * in, so nobody is told something is wrong on a screen that does not show
+	 * it. */
+	const steps = [...document.querySelectorAll<HTMLElement>('[data-step]')];
+	const back = document.getElementById('form-back');
+	const next = document.getElementById('form-next');
+	const count = document.getElementById('form-step-count');
+	const prompt = form?.dataset.stepPrompt ?? '';
+	let at = 0;
+
+	function goTo(i: number, focus = true) {
+		at = Math.max(0, Math.min(i, steps.length - 1));
+		steps.forEach((step, n) => step.toggleAttribute('hidden', n !== at));
+		const last = at === steps.length - 1;
+		button?.toggleAttribute('hidden', !last);
+		next?.toggleAttribute('hidden', last);
+		back?.toggleAttribute('hidden', at === 0);
+		if (count) count.textContent = `Step ${at + 1} of ${steps.length}`;
+		// The legend, not the first field: a screen reader hears what this step
+		// is before it hears what to type, and nobody is dropped into a text
+		// box with no idea which of three screens they are on.
+		if (focus) steps[at].querySelector('legend')?.focus();
+	}
+
+	/** Required fields on this step only, so step one never complains about
+	 *  step three. The message is the form's own, not the handler's: this one
+	 *  stops a step, the handler's explain a send that did not happen. */
+	function stepIsFilled() {
+		let ok = true;
+		for (const el of steps[at].querySelectorAll<HTMLInputElement>('[required]')) {
+			const error = document.querySelector(`[data-error-for="${el.id}"]`);
+			if (el.value.trim()) continue;
+			ok = false;
+			el.setAttribute('aria-invalid', 'true');
+			if (error) {
+				error.textContent = prompt;
+				error.removeAttribute('hidden');
+			}
+			el.focus();
+			break;
+		}
+		return ok;
+	}
+
+	if (steps.length > 1 && next && back) {
+		count?.removeAttribute('hidden');
+		next.addEventListener('click', () => {
+			if (stepIsFilled()) goTo(at + 1);
+		});
+		back.addEventListener('click', () => goTo(at - 1));
+		goTo(0, false);
+	}
+
 	function clearErrors() {
 		banner?.setAttribute('hidden', '');
 		document.querySelectorAll('[data-error-for]').forEach((el) => {
@@ -320,7 +457,7 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 	}
 
 	function showFieldErrors(errors: Record<string, string>) {
-		let first: HTMLElement | null = null;
+		const bad: HTMLElement[] = [];
 		for (const [field, message] of Object.entries(errors)) {
 			const el = document.querySelector(`[data-error-for="${field}"]`);
 			if (!el) continue;
@@ -331,9 +468,24 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 			// field rather than sit next to it unannounced.
 			const input = document.getElementById(field);
 			input?.setAttribute('aria-invalid', 'true');
-			if (!first) first = input;
+			if (input) bad.push(input);
 		}
-		first?.focus();
+		if (!bad.length) return;
+		// The earliest step holding anything wrong, which is not the same as the
+		// step of the first key the handler happened to put in the object. It
+		// sends name and email before the project, and those are on the last
+		// step, so going by key order left somebody on step three reading that
+		// something on step one was wrong. Fixing these runs forwards.
+		if (steps.length > 1) {
+			const stepOf = (el: HTMLElement) => steps.findIndex((s) => s.contains(el));
+			const earliest = Math.min(...bad.map(stepOf).filter((n) => n > -1));
+			if (Number.isFinite(earliest)) {
+				goTo(earliest, false);
+				bad.find((el) => stepOf(el) === earliest)?.focus();
+				return;
+			}
+		}
+		bad[0].focus();
 	}
 
 	form?.addEventListener('submit', async (event) => {

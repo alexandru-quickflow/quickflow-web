@@ -557,6 +557,17 @@ async function main() {
 				// rather than for the network: a fallback face has different
 				// metrics and reports overflow that the real face does not.
 				await page.evaluate(() => document.fonts.ready);
+				// Every step of the contact form, not just the one on screen.
+				// Hidden text is not painted and so is not measured, and the
+				// contact form hides two thirds of itself: without this, the
+				// colour of most of the only form on the site is never read.
+				// Both languages are opened the same way, so the pair counts
+				// below stay comparable.
+				await page.evaluate(() => {
+					for (const step of document.querySelectorAll('[data-step][hidden]')) {
+						step.removeAttribute('hidden');
+					}
+				});
 
 				const result = await page.evaluate(audit);
 				counts.set(`${route.id}:${route.locale}`, result.elements);
