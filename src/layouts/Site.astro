@@ -306,49 +306,48 @@ const ogImage = new URL(
 				     for an IBAN and it belongs on an invoice, not on a page
 				     anybody can open. -->
 				<div class="hair mt-16 pt-8">
-					<div class="flex flex-wrap items-center justify-between gap-4">
-						<span class="spec">Quick Flow, {new Date().getFullYear()}</span>
-						<span class="spec">{t.footerBuilt}</span>
-					</div>
+					<span class="spec">Quick Flow, {new Date().getFullYear()}</span>
 
-					<!-- Last on the page and quieter than the line above it. It is
-					     there to be found rather than read, which is what article 5
-					     asks for: easy, direct, permanent and free, not prominent.
-					     Still not in mono uppercase, because a registration number
-					     read in capitals with tracking is a puzzle, and still at a
-					     size the contrast check measures as text rather than
-					     decoration. -->
-					<p class="mt-8 max-w-[78ch] text-[0.75rem] leading-relaxed text-[var(--faint)]">
-						{t.legal}
-					</p>
+					<!-- The identification line and the ANPC mark are the same errand:
+					     who this is, and where a complaint goes. They share a row, text
+					     left and mark right, so the colophon reads as one block rather
+					     than three stacked afterthoughts.
 
-					<!-- Ordinul ANPC 449/2022, as amended by 270/2026, asks a trader
-					     selling online to carry the official SAL pictogram linking to
-					     the complaints platform. The 2026 amendment exists because the
-					     European ODR platform was switched off on 20 July 2025 and
-					     Regulation 524/2013 repealed with it, so the SOL pictogram that
-					     half the Romanian web still carries now points at nothing. Only
-					     SAL is here, and only the file ANPC itself publishes.
+					     The line is quieter than the one above it. It is there to be
+					     found rather than read, which is what Legea 365/2002 article 5
+					     asks for: easy, direct, permanent and free, not prominent. Not
+					     in mono uppercase, because a registration number read in
+					     capitals with tracking is a puzzle, and at a size the contrast
+					     check measures as text rather than decoration.
 
-					     Sitewide rather than on the home page alone: the order asks for
-					     the home page as a minimum, and a reader looking for it will
-					     look in a footer. Unretouched and at its own size, because it is
+					     The mark is asked for by Ordinul ANPC 449/2022 as amended by
+					     270/2026, which exists because the European ODR platform was
+					     switched off on 20 July 2025 and Regulation 524/2013 repealed
+					     with it. The SOL pictogram half the Romanian web still carries
+					     now points at nothing, so only SAL is here, and only the file
+					     ANPC itself publishes. Unretouched and at its own size: it is
 					     somebody else's mark and dimming it to taste is not ours to do. -->
-					<a
-						href="https://reclamatiisal.anpc.ro/"
-						rel="noopener nofollow"
-						target="_blank"
-						class="mt-8 inline-block"
-					>
-						<img
-							src="/anpc/sal.png"
-							alt={t.salAlt}
-							width="201"
-							height="50"
-							loading="lazy"
-							decoding="async"
-						/>
-					</a>
+					<div class="mt-8 flex flex-wrap items-end justify-between gap-x-10 gap-y-8">
+						<p class="max-w-[78ch] text-[0.75rem] leading-relaxed text-[var(--faint)]">
+							{t.legal}
+						</p>
+
+						<a
+							href="https://reclamatiisal.anpc.ro/"
+							rel="noopener nofollow"
+							target="_blank"
+							class="shrink-0"
+						>
+							<img
+								src="/anpc/sal.png"
+								alt={t.salAlt}
+								width="201"
+								height="50"
+								loading="lazy"
+								decoding="async"
+							/>
+						</a>
+					</div>
 				</div>
 			</div>
 		</footer>

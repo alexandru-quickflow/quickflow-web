@@ -14,7 +14,6 @@ interface Ui {
 	footerWho: string;
 	footerLanguages: string;
 	footerContact: string;
-	footerBuilt: string;
 	legal: string;
 	salAlt: string;
 }
@@ -30,7 +29,6 @@ export const ui: Record<Locale, Ui> = {
 		footerWho: 'Alexandru Trofaniuc, Bucharest',
 		footerLanguages: 'Romanian, Russian, English',
 		footerContact: 'Contact',
-		footerBuilt: 'Built with no framework on the client',
 		// The same two identifiers the terms page gives, named the way that
 		// page names them. This line said "CUI" in English, which is the
 		// Romanian term and means nothing to an English reader, and abbreviated
@@ -48,7 +46,6 @@ export const ui: Record<Locale, Ui> = {
 		footerWho: 'Alexandru Trofaniuc, București',
 		footerLanguages: 'Română, rusă, engleză',
 		footerContact: 'Contact',
-		footerBuilt: 'Construit fără framework pe client',
 		legal: 'Quick Flow SRL · CUI 44089760 · Nr. reg. com. J2021006561401',
 		salAlt: 'ANPC, Soluționarea Alternativă a Litigiilor',
 	},
