@@ -255,7 +255,7 @@ const ogImage = new URL(
 		     change at all, so the separation has to be here: one surface, a
 		     hairline above it, the same on all twenty-nine pages. -->
 		<footer class="relative z-10 border-t border-[var(--line)] bg-[var(--surface)]">
-			<div class="shell pb-16 pt-24 md:pb-20 md:pt-32">
+			<div class="shell pb-10 pt-24 md:pb-12 md:pt-32">
 				<!-- Four columns, grouped by what a link is rather than by what fit
 				     in the header. The header stops at six items for a measured
 				     reason and this does not have to. -->
@@ -305,9 +305,22 @@ const ogImage = new URL(
 				     accurately. The bank details are not here either. No law asks
 				     for an IBAN and it belongs on an invoice, not on a page
 				     anybody can open. -->
-				<div class="hair mt-16 pt-8">
-					<div class="flex flex-wrap items-center justify-between gap-x-10 gap-y-6">
-						<span class="spec">Quick Flow, {new Date().getFullYear()}</span>
+				<div class="hair mt-10 pt-5">
+					<div class="flex flex-wrap items-center justify-between gap-x-10 gap-y-5">
+						<div>
+							<span class="spec">Quick Flow, {new Date().getFullYear()}</span>
+
+							<!-- Last on the page and quieter than the line above it. It is
+							     there to be found rather than read, which is what Legea
+							     365/2002 article 5 asks for: easy, direct, permanent and
+							     free, not prominent. Not in mono uppercase, because a
+							     registration number read in capitals with tracking is a
+							     puzzle, and at a size the contrast check measures as text
+							     rather than decoration. -->
+							<p class="mt-2 max-w-[78ch] text-[0.75rem] leading-relaxed text-[var(--faint)]">
+								{t.legal}
+							</p>
+						</div>
 
 					<!-- The mark sits on the year's row, at the other end of it, because
 					     the row is there either way and the mark is the tallest thing in
@@ -336,16 +349,6 @@ const ogImage = new URL(
 							/>
 						</a>
 					</div>
-
-					<!-- Last on the page and quieter than the line above it. It is there
-					     to be found rather than read, which is what Legea 365/2002
-					     article 5 asks for: easy, direct, permanent and free, not
-					     prominent. Not in mono uppercase, because a registration number
-					     read in capitals with tracking is a puzzle, and at a size the
-					     contrast check measures as text rather than decoration. -->
-					<p class="mt-6 max-w-[78ch] text-[0.75rem] leading-relaxed text-[var(--faint)]">
-						{t.legal}
-					</p>
 				</div>
 			</div>
 		</footer>
