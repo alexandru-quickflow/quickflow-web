@@ -135,20 +135,25 @@ const ogImage = new URL(
 			)
 		}
 		<!-- Self-hosted and subset. Google served 540 KB of fonts to a Romanian
-		     page, and the two Newsreader styles were 450 KB of that. These four
-		     files are 160 KB: cut to the characters the site actually uses plus a
-		     margin, with the weight and optical-size axes narrowed to the range
-		     the stylesheet asks for. Regenerate with scripts/fonts.py when the
-		     copy gains a character they do not carry. Nothing third-party is left
-		     in the critical path. -->
-		<link rel="preload" href="/fonts/jakarta.woff2" as="font" type="font/woff2" crossorigin />
-		<link
-			rel="preload"
-			href="/fonts/newsreader-roman.woff2"
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
+		     page, and the two Newsreader styles were 450 KB of that. The files are
+		     cut to the characters the site actually uses plus a margin, with the
+		     weight and optical-size axes narrowed to the range the stylesheet asks
+		     for. Regenerate with scripts/fonts.py when the copy gains a character
+		     they do not carry. Nothing third-party is left in the critical path.
+		
+		     Preloaded per language, because the two faces a page uses depend on its
+		     script: Russian is set in Literata and Manrope, everything else in
+		     Newsreader and Plus Jakarta Sans. Preloading all four would have sent
+		     the Russian page 79 KB it never draws with, and left the two it does
+		     need to be discovered from the stylesheet. -->
+		{
+			(lang === 'ru'
+				? ['/fonts/manrope.woff2', '/fonts/literata.woff2']
+				: ['/fonts/jakarta.woff2', '/fonts/newsreader-roman.woff2']
+			).map((href) => (
+				<link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+			))
+		}
 	</head>
 
 	<body>
