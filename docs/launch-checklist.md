@@ -335,11 +335,12 @@ only if a whole year passes with no deploy.
 
 ## 5. After the first deploy
 
-**Worked through on 30 October 2026.** Done:
+**Worked through on 30 October 2026. Nothing is open.**
 
 - The site key is in the HTML on both contact pages, and a real submission in
-  Romanian produced a token and went through, so the widget renders and verifies.
-- That submission delivered both emails, the owner's copy and the sender's copy.
+  each language produced a token and went through, so the widget renders and
+  verifies on both.
+- Both submissions delivered both emails, the owner's copy and the sender's copy.
 - Zero third-party requests on the home page, measured in a browser rather than
   with `curl`. Section 1.4 is why that distinction is the whole point.
 - `robots.txt` and `sitemap-index.xml` both answer 200, and neither thank-you
@@ -351,10 +352,8 @@ only if a whole year passes with no deploy.
 - The rate limiting rule blocks at the edge, with `error code: 1015`, from the
   third post in ten seconds. Measured on the live domain. Section 1.1 has it.
 
-Still open:
-
-- Send one submission in English too. Only the Romanian path has been run end to
-  end against production.
+Section 6 is what keeps this true. A contact form that stops working is silent,
+and the only thing standing between that and a lost enquiry is the monthly send.
 
 ---
 
