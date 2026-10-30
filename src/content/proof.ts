@@ -30,13 +30,27 @@ export const VERIFIED_ON: Record<Locale, string> = {
 	ro: '27 octombrie 2026',
 };
 
-/** What this page itself ships, measured on the production build with the same
- *  snippet the reader is handed below: 422 bytes of our own script plus 5,383
- *  for the inertial scroller, gzipped, so six kilobytes. It said 0 KB until
- *  2026-10-28, which was true until the scroller arrived and false for one
- *  build afterwards. Re-measure before every release. The Cloudflare Web
- *  Analytics beacon in the technical annex would add to it again. */
-export const SELF_JS = '6 KB';
+/** What this page itself ships, measured the way the snippet below measures it,
+ *  because the reader is told to run that snippet and the two have to agree.
+ *
+ *  The build emits one file: 19,170 bytes, 5,612 gzipped, 4,994 brotli. Over
+ *  1024 and rounded, which is what the snippet does, both come to 5.
+ *
+ *  It said 6 until 30 October, from adding up 422 bytes of our own script and
+ *  5,383 for the inertial scroller, gzipped, which is 5,805 and rounds up. But
+ *  those are two files weighed apart and the build bundles them into one,
+ *  which compresses a little better than the two of them do separately. So the
+ *  number here was arrived at honestly and was still one kilobyte above what
+ *  anybody doing what this page asks would see. On a page that hands out the
+ *  check, that gap costs more than rounding up protects.
+ *
+ *  It said 0 KB until 2026-10-28, which was true until the scroller arrived
+ *  and false for one build afterwards.
+ *
+ *  Re-measure before every release, from dist, not from the parts. The
+ *  Cloudflare Web Analytics beacon would add 10,264 bytes on the wire, which
+ *  is why it stays off: see docs/launch-checklist.md. */
+export const SELF_JS = '5 KB';
 
 /** Pasted into the reader's own console, on their own app. The one thing on
  *  the site that needs no translation.

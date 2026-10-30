@@ -192,7 +192,11 @@ const schema = {
 					expensive part, and that is the part you are paying for.
 				</p>
 				<p class="prose-body mt-5">
-					This site was built the same way: seventeen pages in two languages, six kilobytes of
+					{/* Fourteen is the number of pages in src/i18n/routes.ts, each of which
+					    exists in both languages, plus a 404 that does not. It said seventeen,
+					    which was true of some earlier version of this site and of no version
+					    since. Five kilobytes is SELF_JS written out. */}
+					This site was built the same way: fourteen pages in two languages, five kilobytes of
 					JavaScript, and a script that checks every page for unreadable text and sideways overflow
 					before anything goes out. You are reading the method, not a description of it.
 				</p>

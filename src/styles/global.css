@@ -46,11 +46,13 @@
  * The direction was settled on 2026-10-28 from the questionnaire and a
  * prototype page, deleted once the real pages carried it: a near-black ground,
  * an editorial serif for display, two saturated colours in contrast, generous
- * radii, real screenshots, and motion that costs six kilobytes.
+ * radii, real screenshots, and motion that costs five kilobytes on the wire.
  *
  * Token names are unchanged on purpose. Every page already writes bg-ink,
  * text-paper/70, border-teal/35 and so on, so moving the values moves the whole
- * site at once instead of asking seventeen pages to be rewritten first.
+ * site at once instead of asking all twenty-nine pages to be rewritten first.
+ * It said seventeen, which was the count when the direction was settled and
+ * has not been the count since the product pages arrived on 29 October.
  */
 
 @theme {

@@ -10,8 +10,14 @@ const weight = proof('en', 'bubble-weight');
 // on every public page of every Bubble app regardless of what the page holds,
 // not a measurement of any particular site. Spec v7 forbids publishing a
 // comparison between two identifiable sites.
+//
+// The 5 is SELF_JS written out, because this row sets it next to a number from
+// somewhere else and the two have to be read together. If SELF_JS moves, this
+// moves. The bar widths are the shape, not the ratio: 5 against 1,371 is 0.36
+// per cent, which draws as nothing, so wb is 1 and min-w-[3px] keeps it
+// visible. Rounded the way that flatters this side least.
 const metrics = [
-	{ label: 'JavaScript delivered before the first word', a: '1,371 KB', b: '6 KB', wa: 100, wb: 1 },
+	{ label: 'JavaScript delivered before the first word', a: '1,371 KB', b: '5 KB', wa: 100, wb: 1 },
 ];
 
 const phases = [

@@ -11,9 +11,12 @@ const weight = proof('ro', 'bubble-weight');
 // not a measurement of any particular site. Spec v7 forbids publishing a
 // comparison between two identifiable sites. The console snippet and the self
 // measurement both come from content/proof.ts, so the two language versions
-// cannot drift apart the way they already had once.
+// cannot drift apart the way they already had once. The 5 here does not: it is
+// SELF_JS written out, because this row sets it next to a number from somewhere
+// else and the two have to be read together. If SELF_JS moves, this moves, and
+// so does the English row.
 const metrics = [
-	{ label: 'JavaScript livrat înainte de primul cuvânt', a: '1.371 KB', b: '6 KB', wa: 100, wb: 1 },
+	{ label: 'JavaScript livrat înainte de primul cuvânt', a: '1.371 KB', b: '5 KB', wa: 100, wb: 1 },
 ];
 
 const phases = [
