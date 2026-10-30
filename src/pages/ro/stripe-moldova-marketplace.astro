@@ -1,0 +1,334 @@
+---
+import Site from '../../layouts/Site.astro';
+import { VERIFIED_ON } from '../../content/proof';
+import { paths } from '../../i18n/routes';
+
+// Romanian only, and it is the one page on the site that is. The question is
+// asked in Romanian by people whose company is in a country Stripe does not
+// cover; an English translation would rank for nothing and help nobody. The
+// routing table carries that fact, so the header switcher and the hreflang
+// block already know, and neither points at a page that is not there.
+//
+// Every number here comes from 06-research-srl-romania.md in the dossier, and
+// the two Stripe lists were read at the source on the date below. A page that
+// says "verified in October 2026" and is never re-verified turns into the
+// forum thread from 2019 that it exists to replace.
+const verifiedOn = VERIFIED_ON.ro;
+
+const setup = [
+	{ what: 'Durată', value: '3 la 5 zile lucrătoare' },
+	{ what: 'Depunere online', value: '615 la 680 lei' },
+	{ what: 'Capital social minim', value: '500 lei, Legea 239/2025, din 18 decembrie 2025' },
+	{ what: 'Semnătură electronică', value: 'de la 39 EUR plus TVA, pentru depunerea online' },
+];
+
+const options = [
+	{
+		n: '01',
+		title: 'Entitate într-o țară suportată',
+		body: 'România e în ambele liste, și ca platformă și ca țară de vânzător. O firmă în România, cu operarea reală din Moldova, rezolvă încasarea și plata vânzătorilor români. Costă contabilitate și are implicații fiscale pe care le discuți cu un contabil, nu cu mine.',
+	},
+	{
+		n: '02',
+		title: 'Procesator local plus plăți separate',
+		body: 'Încasezi local și plătești vânzătorii separat, cu evidența în platformă. Funcționează, dar transferul către vânzător nu mai e automat, deci ai nevoie de cineva care să îl facă. Asta e varianta când vânzătorii tăi sunt în Moldova.',
+	},
+	{
+		n: '03',
+		title: 'Varianta mixtă',
+		body: 'Vânzători din țări suportate prin Stripe, restul pe fluxul local. Mai complicat de construit, dar singura variantă când ai vânzători de ambele părți.',
+	},
+];
+
+const faq = [
+	{
+		q: 'Pot folosi Stripe cu o firmă din Moldova?',
+		a: 'Nu. Moldova nu apare nici în lista țărilor care pot avea cont de platformă, nici în lista țărilor din care se pot înrola vânzători. Nu există setare, document sau intermediar care să schimbe asta.',
+	},
+	{
+		q: 'O firmă în România rezolvă problema?',
+		a: 'Pe jumătate. Rezolvă încasarea, pentru că România e în lista celor 57 de țări care pot avea cont de platformă. Nu rezolvă vânzătorii moldoveni, pentru că Moldova nu e în lista celor 43 de țări din care se pot înrola conturi conectate.',
+	},
+	{
+		q: 'Cât durează și cât costă să deschid un SRL în România?',
+		a: 'Trei la cinci zile lucrătoare și 615 la 680 lei pentru depunerea online, plus o semnătură electronică de la 39 EUR. Asta dacă ai cetățenie română. Fără ea, firma se înființează la fel, dar contul bancar e pasul despre care nicio sursă nu spune cât durează.',
+	},
+];
+
+const title = 'Stripe în Moldova: ce poți face pentru un marketplace | Quick Flow';
+const description =
+	'Stripe nu operează în Moldova, nici ca platformă, nici pentru vânzători. Verificat în octombrie 2026. Trei variante care funcționează, explicate.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	inLanguage: 'ro',
+	mainEntity: faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a },
+	})),
+};
+---
+
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Faptul, în prima propoziție. Cititorul a căutat "stripe moldova" și
+	     a găsit până acum doar fire de forum care ghicesc. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Plăți pentru marketplace</p>
+			<span class="stamp">Liste verificate {verifiedOn}</span>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			Stripe nu operează în Moldova. Nici ca platformă, nici pentru vânzători.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			Nu e o cerere respinsă pe care să o rescrii. Moldova nu apare în niciuna dintre cele două
+			liste, iar asta nu se rezolvă cu documente. Mai jos e ce rămâne de făcut, în ordinea în care
+			merită discutat.
+		</p>
+	</section>
+
+	<!-- 2. Trei propoziții, nu trei paragrafe. -->
+	<section class="bleed mt-32" aria-labelledby="concret">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Fapte, nu opinii</p>
+				<h2 id="concret" class="display-lg mt-6">Ce înseamnă concret.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<ul class="flex flex-col gap-4">
+					<li class="prose-body">
+						Un marketplace cu firmă în Chișinău nu poate încasa prin Stripe pe entitatea
+						moldovenească.
+					</li>
+					<li class="prose-body">
+						Vânzătorii cu firmă în Moldova nu pot fi plătiți prin Stripe nici dintr-o platformă
+						românească.
+					</li>
+					<li class="prose-body">
+						Nu există setare, document sau intermediar care să schimbe asta.
+					</li>
+				</ul>
+				<p class="prose-body mt-6">Același lucru e valabil pentru Ucraina.</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3. Bifurcația. Vine înaintea oricărei soluții, pentru că răspunsul la
+	     tot restul depinde de ea. -->
+	<section class="bleed mt-32" aria-labelledby="cetatenie">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Întrebarea care împarte pagina</p>
+				<h2 id="cetatenie" class="display-lg mt-6">Ai cetățenie română?</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Întrebarea asta vine prima pentru că răspunsul la tot restul depinde de ea, iar
+					jumătate dintre cititori ar citi altfel un răspuns care nu e al lor.
+				</p>
+				<p class="prose-body mt-5">
+					Sute de mii de moldoveni au redobândit cetățenia română prin articolul 11 din Legea
+					21/1991. Un studiu al Fundației Soros numără 323.049 de dosare soluționate între 1991 și
+					2012. Ordinul de mărime e clar chiar dacă cifra exactă nu e: o parte foarte mare dintre
+					oamenii care citesc pagina asta sunt deja cetățeni UE.
+				</p>
+			</div>
+		</div>
+
+		<div class="hair mt-12 grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h3 class="display-md md:col-span-5">Cu cetățenie română, nu ești nerezident.</h3>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">Deschizi SRL ca orice cetățean român.</p>
+
+				<div class="mt-8 overflow-x-auto">
+					<table class="w-full border-collapse text-left">
+						<tbody>
+							{
+								setup.map((row) => (
+									<tr>
+										<th
+											scope="row"
+											class="spec border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
+										>
+											{row.what}
+										</th>
+										<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
+											{row.value}
+										</td>
+									</tr>
+								))
+							}
+						</tbody>
+					</table>
+				</div>
+
+				<p class="prose-body mt-8">
+					Fără cetățenie română, firma se înființează la fel de legal, dar apare un pas pe care
+					nicio sursă nu îl documentează clar. Citește mai departe înainte să începi.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 4. Partea care chiar costă timp, și pe care nimeni nu o scrie. -->
+	<section class="bleed mt-32" aria-labelledby="banca">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h2 id="banca" class="display-md md:col-span-5">
+				Firma se face în cinci zile. Contul bancar e altă poveste.
+			</h2>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Nu am găsit nicio sursă credibilă despre ce cere o bancă din România ca să deschidă cont
+					unei firme românești cu administrator nerezident moldovean. Căutarea întoarce doar
+					reguli din partea moldovenească: Banca Națională a Moldovei reglementează deschiderea de
+					conturi în străinătate de către rezidenți, iar Serviciul Fiscal de Stat eliberează o
+					confirmare de rezidență în trei zile lucrătoare, document pe care banca românească îl
+					poate cere.
+				</p>
+				<p class="prose-body mt-5">
+					Nicio sursă nu spune cât durează sau care bănci acceptă. Asta e, cel mai probabil,
+					pasul care doare.
+				</p>
+				<p class="prose-body mt-5">
+					Și nu e opțional. Documentația Stripe listează România cu tip de cont IBAN. Nu am putut
+					confirma dacă Stripe acceptă un IBAN SEPA din altă țară pentru o platformă românească,
+					deci deocamdată presupune că ai nevoie de IBAN românesc.
+				</p>
+				<p class="prose-body mt-5">
+					Dacă ai trecut prin asta, <a href={paths.contact.ro} class="link">scrie-mi</a> ce bancă a
+					acceptat și cât a durat. Actualizez pagina și pun data.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. Precizia care deosebește pagina asta de un fir de forum: firma din
+	     România mută încasarea, nu plata către vânzători. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="jumatate">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Partea pe care n-o scrie nimeni</p>
+			<h2 id="jumatate" class="display-lg mt-6 max-w-[24ch]">
+				Ce rezolvă și ce nu rezolvă o firmă în România.
+			</h2>
+
+			<div class="mt-12 grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-5">
+					<p class="spec">Rezolvă</p>
+					<p class="mt-4 text-lg leading-snug">Partea de platformă.</p>
+					<p class="prose-body mt-5">
+						România e în lista celor 57 de țări care pot avea cont de platformă, deci poți încasa.
+					</p>
+				</div>
+				<div class="md:col-span-5 md:col-start-7">
+					<p class="spec">Nu rezolvă</p>
+					<p class="mt-4 text-lg leading-snug">Vânzătorii moldoveni.</p>
+					<p class="prose-body mt-5">
+						Moldova nu e în lista celor 43 de țări din care se pot înrola conturi conectate sub o
+						platformă românească. Dacă vânzătorii tăi sunt din Moldova, firma din România nu
+						schimbă nimic pentru ei.
+					</p>
+				</div>
+			</div>
+
+			<p class="mt-12 max-w-[62ch] text-lg leading-snug">
+				Cu alte cuvinte: firma din România mută încasarea, nu plata către vânzători. Dacă ambele
+				părți sunt în Moldova, ai rezolvat jumătate din problemă și îți trebuie varianta a doua.
+			</p>
+		</div>
+	</section>
+
+	<!-- 6. Cele trei variante, în ordinea în care merită discutate. -->
+	<section class="bleed mt-32" aria-labelledby="variante">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Ce se poate face</p>
+			<span class="spec">03</span>
+		</div>
+		<h2 id="variante" class="display-lg mt-8 max-w-[24ch]">Trei variante care funcționează.</h2>
+
+		<div class="mt-12 flex flex-col">
+			{
+				options.map((o) => (
+					<article class="hair grid gap-4 py-8 md:grid-cols-12 md:gap-8">
+						<p class="spec md:col-span-1 md:pt-2">{o.n}</p>
+						<h3 class="display-md md:col-span-4">{o.title}</h3>
+						<p class="prose-body md:col-span-6 md:col-start-7">{o.body}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- 7. Ce nu știu. O pagină care pretinde că știe tot despre partea asta
+	     minte, iar cititorul o prinde la primul telefon dat unei bănci. -->
+	<section class="bleed mt-32" aria-labelledby="necunoscut">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h2 id="necunoscut" class="display-md md:col-span-5">Ce nu știu încă.</h2>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Două lucruri schimbă recomandarea de mai sus, și pe amândouă le verific activ:
+				</p>
+				<ul class="mt-5 flex flex-col gap-4">
+					<li class="prose-body">
+						Ce cer exact băncile românești pentru un administrator nerezident.
+					</li>
+					<li class="prose-body">
+						Dacă Stripe acceptă IBAN non-românesc pentru o platformă din România.
+					</li>
+				</ul>
+				<p class="prose-body mt-6">
+					Restul cifrelor de pe pagină se actualizează, nu se schimbă în fond.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. Întrebările, scrise ca să poată fi citite fără pagină, și ca să le
+	     citească și Google. -->
+	<section class="bleed mt-32" aria-labelledby="faq">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Cel mai des întrebat</p>
+			<span class="spec">03</span>
+		</div>
+		<h2 id="faq" class="display-lg mt-8 max-w-[24ch]">Trei întrebări, cu răspunsul scurt.</h2>
+
+		<dl class="mt-12 flex flex-col">
+			{
+				faq.map((f) => (
+					<div class="hair grid gap-4 py-8 md:grid-cols-12 md:gap-8">
+						<dt class="display-md md:col-span-5">{f.q}</dt>
+						<dd class="prose-body md:col-span-6 md:col-start-7">{f.a}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</section>
+
+	<!-- 9. Închidere, pe cerneală. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed py-20 md:py-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<h2 class="display-lg">Scrie-mi cum circulă banii la tine.</h2>
+					<p class="prose-body mt-7">
+						Nu sunt avocat și nu sunt contabil. Ce pot să îți spun exact e ce permite tehnic
+						fiecare variantă, cât costă să o construiesc și cât durează. Cine plătește, cine
+						încasează, cine ia comision. Îți răspund în aceeași zi lucrătoare, în scris.
+					</p>
+					<p class="stamp mt-9">Listele Stripe au fost citite la sursă pe {verifiedOn}</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Trimite-mi fluxul</a>
+					<p class="mt-6 text-sm text-paper/70">
+						Sau citește de ce <a href={paths.escrow.ro} class="link">Stripe nu îți dă escrow</a>.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

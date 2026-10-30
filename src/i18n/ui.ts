@@ -11,6 +11,7 @@ interface Ui {
 	menu: string;
 	home: string;
 	switchTo: (language: string) => string;
+	switchToHome: (language: string) => string;
 	footerWho: string;
 	footerLanguages: string;
 	footerContact: string;
@@ -26,6 +27,7 @@ export const ui: Record<Locale, Ui> = {
 		menu: 'Menu',
 		home: 'Quick Flow, home',
 		switchTo: (language) => `Read this page in ${language}`,
+		switchToHome: (language) => `This page is only in Romanian. Go to the ${language} home page`,
 		footerWho: 'Alexandru Trofaniuc, Bucharest',
 		footerLanguages: 'Romanian, Russian, English',
 		footerContact: 'Contact',
@@ -43,6 +45,7 @@ export const ui: Record<Locale, Ui> = {
 		menu: 'Meniu',
 		home: 'Quick Flow, acasă',
 		switchTo: (language) => `Citește pagina în ${language}`,
+		switchToHome: (language) => `Pagina asta e doar în română. Mergi la pagina principală în ${language}`,
 		footerWho: 'Alexandru Trofaniuc, București',
 		footerLanguages: 'Română, rusă, engleză',
 		footerContact: 'Contact',

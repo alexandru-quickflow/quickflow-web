@@ -4,14 +4,18 @@
 import '../styles/global.css';
 import {
 	DEFAULT_LOCALE,
+	LOCALES,
 	PROFILE,
 	alternates,
 	footerNav,
 	hreflang,
+	inLocale,
 	localeNames,
 	nav,
 	paths,
+	switcherTarget,
 	type Locale,
+	type PageId,
 } from '../i18n/routes';
 import { ui } from '../i18n/ui';
 import ogSlugs from '../content/og.json';
@@ -34,8 +38,17 @@ const t = ui[lang];
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
-const items = nav[lang];
-const columns = footerNav[lang];
+// A page missing from this language is missing from its menus too, so the
+// Moldova page lists itself in the Romanian footer and nowhere in the English
+// one without either list carrying a special case.
+// The href is resolved once, here, rather than looked up again at every place
+// the item is drawn: after the filter above there is always one, and the markup
+// should not have to say so three times.
+const withHref = <T extends { id: PageId }>(list: T[]) =>
+	inLocale(list, lang).map((item) => ({ ...item, href: paths[item.id][lang] as string }));
+
+const items = withHref(nav[lang]);
+const columns = footerNav[lang].map((column) => ({ ...column, items: withHref(column.items) }));
 // Written out per column rather than composed with conditions. Two col-span
 // classes on one element is a coin toss over which the stylesheet emits last,
 // and the third column lost it: it wrapped under the first.
@@ -48,7 +61,12 @@ const columnSpans = [
 	'lg:col-span-2 lg:col-start-11',
 ];
 const twins = alternates(Astro.url.pathname);
-const other = twins.find((a) => a.locale !== lang);
+// Always a link, never a missing control: on a page written in one language
+// only, this points at the other language's home page rather than vanishing.
+const other = switcherTarget(
+	Astro.url.pathname,
+	LOCALES.find((l) => l !== lang) ?? DEFAULT_LOCALE,
+);
 // x-default is the English page, which is the one a reader with no matching
 // language should land on.
 const fallback = twins.find((a) => a.locale === 'en');
@@ -159,8 +177,8 @@ const ogImage = new URL(
 						{
 							items.map((item) => (
 								<a
-									href={paths[item.id][lang]}
-									aria-current={here(paths[item.id][lang]) ? 'page' : undefined}
+									href={item.href}
+									aria-current={here(item.href) ? 'page' : undefined}
 									class:list={[
 										'spec whitespace-nowrap transition-colors hover:text-paper',
 										/* Contact is the only one of the six that is an action
@@ -171,7 +189,7 @@ const ogImage = new URL(
 										/* Where you are and the one action are both paper white,
 										   so the current page takes a rule under it to tell the
 										   two apart on the page where they are the same item. */
-										here(paths[item.id][lang]) &&
+										here(item.href) &&
 											'text-paper underline decoration-teal decoration-2 underline-offset-[0.6rem]',
 									]}
 								>
@@ -193,7 +211,11 @@ const ogImage = new URL(
 									hreflang={hreflang[other.locale]}
 									lang={other.locale}
 									class="transition-colors hover:text-paper"
-									aria-label={t.switchTo(localeNames[other.locale].full)}
+									aria-label={
+										other.translated
+											? t.switchTo(localeNames[other.locale].full)
+											: t.switchToHome(localeNames[other.locale].full)
+									}
 								>
 									{localeNames[other.locale].short}
 								</a>
@@ -216,11 +238,11 @@ const ogImage = new URL(
 						{
 							items.map((item) => (
 								<a
-									href={paths[item.id][lang]}
-									aria-current={here(paths[item.id][lang]) ? 'page' : undefined}
+									href={item.href}
+									aria-current={here(item.href) ? 'page' : undefined}
 									class:list={[
 										'block px-4 py-2.5 text-sm',
-										here(paths[item.id][lang]) ? 'text-paper' : 'text-[var(--mute)]',
+										here(item.href) ? 'text-paper' : 'text-[var(--mute)]',
 									]}
 								>
 									{item.label}
@@ -234,6 +256,11 @@ const ogImage = new URL(
 									hreflang={hreflang[other.locale]}
 									lang={other.locale}
 									class="hair mt-2 block px-4 py-2.5 text-sm"
+									aria-label={
+										other.translated
+											? t.switchTo(localeNames[other.locale].full)
+											: t.switchToHome(localeNames[other.locale].full)
+									}
 								>
 									{localeNames[other.locale].full}
 								</a>
@@ -280,7 +307,7 @@ const ogImage = new URL(
 									{column.items.map((item) => (
 										<li>
 											<a
-												href={paths[item.id][lang]}
+												href={item.href}
 												class="text-[var(--mute)] transition-colors hover:text-paper"
 											>
 												{item.label}

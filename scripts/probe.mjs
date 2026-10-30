@@ -80,11 +80,23 @@ function readRoutes() {
 	const block = src.match(/export const paths[^=]*=\s*\{([\s\S]*?)\n\};/);
 	if (!block) throw new Error('routes.ts: could not find the paths map');
 
+	/* A page may be missing from a language on purpose, so an entry is read for
+	 * whichever locales it has rather than required to have both. One with
+	 * neither is a typo, and saying so here is cheaper than a 404 in the audit. */
 	const pairs = [];
-	const entry = /(\w+):\s*\{\s*en:\s*'([^']+)',\s*ro:\s*'([^']+)',?\s*\}/g;
-	for (const m of block[1].matchAll(entry)) pairs.push({ id: m[1], en: m[2], ro: m[3] });
+	const solo = [];
+	const entry = /(\w+):\s*\{([^}]*)\}/g;
+	for (const m of block[1].matchAll(entry)) {
+		const id = m[1];
+		const en = m[2].match(/en:\s*'([^']+)'/)?.[1];
+		const ro = m[2].match(/ro:\s*'([^']+)'/)?.[1];
+		if (en && ro) pairs.push({ id, en, ro });
+		else if (en) solo.push({ id, locale: 'en', url: en });
+		else if (ro) solo.push({ id, locale: 'ro', url: ro });
+		else throw new Error(`routes.ts: ${id} has no path in any language`);
+	}
 	if (pairs.length === 0) throw new Error('routes.ts: the paths map parsed to nothing');
-	return pairs;
+	return { pairs, solo };
 }
 
 /* The page audit ----------------------------------------------------------
@@ -504,13 +516,22 @@ async function motion(page, base, url) {
 const pad = (s, n) => String(s).padEnd(n);
 
 async function main() {
-	const pairs = readRoutes();
+	const { pairs, solo } = readRoutes();
 	const routes = [];
 	for (const pair of pairs) {
 		routes.push({ id: pair.id, locale: 'en', url: pair.en });
 		routes.push({ id: pair.id, locale: 'ro', url: pair.ro });
 	}
+	/* Audited like any other page. It has no twin to be compared against, but
+	 * contrast, overflow and tap targets do not need one. */
+	for (const page of solo) routes.push({ id: page.id, locale: page.locale, url: page.url });
 	routes.push({ id: '404', locale: 'en', url: '/404' });
+
+	/* A page that exists in one language only puts one more link in that
+	 * language's footer, on every page of it. That offset is known, so it is
+	 * subtracted once here rather than reported as drift on all fourteen pairs.
+	 * Anything beyond it is still a real difference. */
+	const footerOffset = solo.reduce((n, page) => n + (page.locale === 'ro' ? 1 : -1), 0);
 
 	const browser = await chromium.launch();
 	const context = await browser.newContext({
@@ -611,9 +632,12 @@ async function main() {
 			for (const pair of pairs) {
 				const en = counts.get(`${pair.id}:en`);
 				const ro = counts.get(`${pair.id}:ro`);
-				if (en !== ro) {
+				if (ro - en !== footerOffset) {
 					drift += 1;
-					problems.push(`${width}px ${pair.id}: en has ${en} text elements, ro has ${ro}`);
+					problems.push(
+						`${width}px ${pair.id}: en has ${en} text elements, ro has ${ro}, ` +
+							`expected a difference of ${footerOffset}`
+					);
 				}
 			}
 			const total = [...counts.values()].reduce((a, b) => a + b, 0);

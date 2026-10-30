@@ -25,9 +25,19 @@ export type PageId =
 	| 'privacy'
 	| 'terms'
 	| 'thanks'
-	| 'escrow';
+	| 'escrow'
+	| 'moldova';
 
-export const paths: Record<PageId, Record<Locale, string>> = {
+/** A page can be missing from a language. Not every subject is worth a page in
+ *  both: the Moldova page answers a question asked in Romanian, by people whose
+ *  company is in a country Stripe does not cover, and an English translation of
+ *  it would rank for nothing and serve nobody.
+ *
+ *  Missing means missing everywhere, which is the point of keeping it in this
+ *  table rather than in the page: no hreflang pointing at a 404, no nav item
+ *  linking to one, and a language switcher that sends a reader somewhere real.
+ *  Everything that reads this map filters by language first. */
+export const paths: Record<PageId, Partial<Record<Locale, string>>> = {
 	home: { en: '/', ro: '/ro/' },
 	migration: {
 		en: '/services/bubble-to-code-migration',
@@ -68,7 +78,24 @@ export const paths: Record<PageId, Record<Locale, string>> = {
 	terms: { en: '/terms', ro: '/ro/termeni' },
 	thanks: { en: '/thank-you', ro: '/ro/multumesc' },
 	escrow: { en: '/stripe-escrow-marketplace', ro: '/ro/stripe-escrow-marketplace' },
+	// Romanian only. Stripe does not operate in Moldova, which is a fact worth a
+	// page in the language the question is asked in and worth nothing in English.
+	moldova: { ro: '/ro/stripe-moldova-marketplace' },
 };
+
+/** The path to a page in a language, or undefined when the page does not exist
+ *  in it. Callers that render a link check this rather than indexing `paths`
+ *  twice. */
+export function pathIn(id: PageId, locale: Locale): string | undefined {
+	return paths[id][locale];
+}
+
+/** The items of a nav list that exist in this language. The Moldova page shows
+ *  up in the Romanian footer and nowhere in the English one, without either
+ *  list having to know why. */
+export function inLocale<T extends { id: PageId }>(items: T[], locale: Locale): T[] {
+	return items.filter((item) => paths[item.id][locale] !== undefined);
+}
 
 /** The pages in the header, in order, per language: the four services, then
  *  the portfolio and the way to write. Six items, and six is the ceiling: a
@@ -118,7 +145,10 @@ export function localeOf(pathname: string): Locale {
 export function pageIdOf(pathname: string): PageId | undefined {
 	const here = normalize(pathname);
 	return (Object.keys(paths) as PageId[]).find((id) =>
-		LOCALES.some((l) => normalize(paths[id][l]) === here)
+		LOCALES.some((l) => {
+			const path = paths[id][l];
+			return path !== undefined && normalize(path) === here;
+		})
 	);
 }
 
@@ -129,20 +159,44 @@ export function pageIdOf(pathname: string): PageId | undefined {
 export function alternates(pathname: string): { locale: Locale; href: string }[] {
 	const id = pageIdOf(pathname);
 	if (!id) return [{ locale: localeOf(pathname), href: normalize(pathname) || '/' }];
-	return LOCALES.map((locale) => ({ locale, href: paths[id][locale] }));
+	return LOCALES.flatMap((locale) => {
+		const href = paths[id][locale];
+		return href === undefined ? [] : [{ locale, href }];
+	});
+}
+
+/** Where the switcher sends a reader who asks for a language this page is not
+ *  written in: that language's home page.
+ *
+ *  The alternative was to hide the switcher, which is worse. A reader who lands
+ *  on a Romanian-only page from a search result would have no way back to the
+ *  English site at all, and a control that disappears on one page out of
+ *  twenty-seven reads as a bug rather than as an answer. `translated` says which
+ *  of the two it is, so the link can say so. */
+export function switcherTarget(
+	pathname: string,
+	to: Locale,
+): { locale: Locale; href: string; translated: boolean } {
+	const twin = alternates(pathname).find((a) => a.locale === to);
+	if (twin) return { ...twin, translated: true };
+	return { locale: to, href: paths.home[to] as string, translated: false };
 }
 
 /** The footer is an index, not a copy of the header. The header stops at six
  *  items for a measured reason; the footer has room for all twelve pages and
  *  groups them by what they are rather than by what fits.
  *
- *  Twelve is every page with content on it: the fourteen ids below, less the
+ *  Every page with content on it belongs here: the ids in `paths`, less the
  *  home page, which the mark links to, and the thank-you page, which is
- *  noindex. It said twelve while listing eleven until 30 October, because the
- *  escrow page was missing from it. That page is reached from seven others, so
- *  it was never orphaned, but it was the one piece of content the index did
- *  not index. Anything added to `paths` belongs in a column here or has a
- *  reason written down for why it does not. */
+ *  noindex. Twelve in English, thirteen in Romanian, because the Moldova page
+ *  exists in one language and `inLocale` drops it from the other list without
+ *  either column having to know.
+ *
+ *  It said twelve while listing eleven until 30 October, because the escrow
+ *  page was missing from it. That page is reached from seven others, so it was
+ *  never orphaned, but it was the one piece of content the index did not index.
+ *  Anything added to `paths` belongs in a column here or has a reason written
+ *  down for why it does not. */
 export const footerNav: Record<
 	Locale,
 	{ title: string; items: { id: PageId; label: string }[] }[]
@@ -186,6 +240,7 @@ export const footerNav: Record<
 				{ id: 'internal', label: 'Aplicații interne' },
 				{ id: 'websites', label: 'Landing page și site' },
 				{ id: 'escrow', label: 'Stripe și escrow' },
+				{ id: 'moldova', label: 'Stripe în Moldova' },
 			],
 		},
 		{
