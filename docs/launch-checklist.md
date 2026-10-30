@@ -25,9 +25,32 @@ Cloudflare Pages project is recreated. Nothing may be added to it quietly.
 
 ### 1.1 The rate limiting rule on the contact endpoint
 
-**Status on 30 October 2026: created, but not at the rate this document asked
-for.** The rate below is what the account's plan actually permits, and the
-difference is worth understanding before anyone "fixes" it.
+**Status on 30 October 2026: created, not at the rate this document asked for,
+and confirmed working against the live domain.** The rate below is what the
+account's plan actually permits, and the difference is worth understanding before
+anyone "fixes" it.
+
+Six posts fired back to back at `quickflow.dev/api/contact`:
+
+```
+1 -> 400  the function's own answer
+2 -> 400  the function's own answer
+3 -> 429  error code: 1015
+4 -> 429  error code: 1015
+5 -> 429  error code: 1015
+6 -> 429  error code: 1015
+```
+
+`1015` is Cloudflare's own rate limiting code, so the block comes from the edge
+and the function is never reached. That is what this rule was for. The posts
+carried a deliberately invalid Turnstile token, so the test cost no email.
+
+One consequence, named rather than fixed: the third request gets Cloudflare's
+bare page, not the site's. A visitor whose first submission fails and who
+immediately tries twice more lands on it. Ten seconds is short and the form is
+not something people submit in bursts, so this is accepted for now. If it ever
+shows up in a real complaint, the fix is a counter in the function rather than a
+longer window, which the plan refuses anyway.
 
 | Setting | Value |
 |---|---|
@@ -325,11 +348,11 @@ only if a whole year passes with no deploy.
   function's own 400 and its own message on the apex, identical to `pages.dev`.
   That is the evidence behind the 422 in section 4.
 
+- The rate limiting rule blocks at the edge, with `error code: 1015`, from the
+  third post in ten seconds. Measured on the live domain. Section 1.1 has it.
+
 Still open:
 
-- Post to `/api/contact` faster than the rule in section 1.1 allows and confirm
-  the block comes from the edge rather than from the function. Two posts per ten
-  seconds is the real rate, not the five per hour this document once named.
 - Send one submission in English too. Only the Romanian path has been run end to
   end against production.
 
