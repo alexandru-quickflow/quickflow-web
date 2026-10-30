@@ -104,8 +104,17 @@
 		   strength, which is the loudest possible version of the quietest
 		   thing on the page. */
 		--line-soft: rgba(224, 240, 238, 0.06);
-		/* The big faint numeral. A token rather than a literal, because it has
-		   to flip on the light band and a literal cannot. */
+		/* The big faint numeral. The reason this was a token used to be that
+		   it had to flip on the light band; the band became a plate on 29
+		   October and nothing flips any more. It stays a token because the
+		   two rules that set it have to stay at one faintness.
+
+		   It is the faintest thing the site paints, which makes it ornament
+		   and never a word somebody has to read. Measured on all three
+		   grounds, ink, surface and raised: 3.26, 3.27, 3.28 to one. That
+		   clears the 3:1 large text needs and misses the 4.5 small text
+		   needs on every one of them. The field placeholders were set in it
+		   at 16px, and that is exactly how they failed. */
 		--ghost: rgba(233, 242, 240, 0.38);
 		/* Two radii, and the rule for choosing between them, written here
 		   because until it was checked it lived only in a commit message.
@@ -393,8 +402,10 @@
 		letter-spacing: -0.04em;
 		/* 0.18 measured 1.55:1 against the ground, which fails even the
 		   large-text threshold. A ghost can be faint; it cannot be invisible.
-		   Through a token, because on the light band it has to come back the
-		   other way and a literal cannot. */
+		   Through the token, which at 0.38 measures 3.27:1. This is 40 to 64
+		   pixels, so it is large text and 3:1 is the bar it has to clear. The
+		   same token on a 16px word does not clear 4.5 and must not be used
+		   there. */
 		color: var(--ghost);
 	}
 
@@ -576,8 +587,15 @@
 		border-color: var(--color-teal);
 	}
 
+	/* Not --ghost, which is what this was. A placeholder is text a person has
+	   to read to know what the field wants, and it is set at 16px, so it owes
+	   4.5:1 like any other small text. --ghost gave it 3.28:1 against the
+	   well, on six fields in each language, and no check here saw it: a
+	   placeholder is a pseudo-element with no node, so a probe that walks the
+	   DOM for text never visits it. --faint is the next step up the same
+	   ladder and measures 5.26:1 on the same ground. */
 	.field::placeholder {
-		color: var(--ghost);
+		color: var(--faint);
 	}
 
 	textarea.field {
@@ -817,9 +835,12 @@
 		flex: none;
 	}
 
-	/* Mixed from the token rather than written out, so the pill follows the
-	   accent onto the light band instead of staying at the dark page's
-	   lightness and disappearing there. */
+	/* The border is mixed from the accent rather than written out, so the ring
+	   around the pill is always the same hue as the dot inside it. It was
+	   written when the band was light and the mix had to follow the accent
+	   through a brightness change; the band is a plate now and there is no
+	   brightness change left to follow. The mix stays because one source for
+	   the hue is still the right way round, not because anything flips. */
 	.state-ok {
 		color: var(--color-teal);
 		border-color: color-mix(in oklab, var(--color-teal) 32%, transparent);

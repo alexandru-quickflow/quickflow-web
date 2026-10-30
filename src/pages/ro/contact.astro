@@ -88,8 +88,15 @@ const flowFields = [
 				     upgrades it with inline messages and no page reload. -->
 				<form id="contact-form" action="/api/contact" method="POST" novalidate class="card flex flex-col gap-7">
 					<input type="hidden" name="locale" value="ro" />
-					<p id="form-error" hidden class="rounded-xl border border-hot/40 bg-hot/10 px-4 py-3 text-sm text-hot"></p>
+					<!-- role="alert" because this is the only way the visitor learns
+					     the send failed. The success panel below has had it since it
+					     was written; this one was announced to nobody. -->
+					<p id="form-error" hidden role="alert" class="rounded-xl border border-hot/40 bg-hot/10 px-4 py-3 text-sm text-hot"></p>
 
+					<!-- Each field error carries an id and the input points at it, so
+					     the message is read out with the field when the script moves
+					     focus there. Without that a screen reader hears the label
+					     again and nothing about what is wrong with it. -->
 					<div>
 						<label for="nume" class="spec block">Nume</label>
 						<input
@@ -98,9 +105,10 @@ const flowFields = [
 							type="text"
 							required
 							autocomplete="name"
+							aria-describedby="error-nume"
 							class={field}
 						/>
-						<p data-error-for="nume" hidden class={errorText}></p>
+						<p id="error-nume" data-error-for="nume" hidden class={errorText}></p>
 					</div>
 
 					<div>
@@ -111,9 +119,10 @@ const flowFields = [
 							type="email"
 							required
 							autocomplete="email"
+							aria-describedby="error-email"
 							class={field}
 						/>
-						<p data-error-for="email" hidden class={errorText}></p>
+						<p id="error-email" data-error-for="email" hidden class={errorText}></p>
 					</div>
 
 					<div>
@@ -134,9 +143,10 @@ const flowFields = [
 							name="proiect"
 							rows="5"
 							required
+							aria-describedby="error-proiect"
 							class={field}
 						></textarea>
-						<p data-error-for="proiect" hidden class={errorText}></p>
+						<p id="error-proiect" data-error-for="proiect" hidden class={errorText}></p>
 					</div>
 
 					<!-- The most useful field on the form. For a Bubble app this is the
@@ -297,6 +307,7 @@ const flowFields = [
 		document.querySelectorAll('[data-error-for]').forEach((el) => {
 			el.setAttribute('hidden', '');
 			el.textContent = '';
+			document.getElementById(el.getAttribute('data-error-for') ?? '')?.removeAttribute('aria-invalid');
 		});
 	}
 
@@ -307,7 +318,12 @@ const flowFields = [
 			if (!el) continue;
 			el.textContent = message;
 			el.removeAttribute('hidden');
-			if (!first) first = document.getElementById(field);
+			// The input already points at this paragraph with aria-describedby,
+			// so marking it invalid is what makes the message read out with the
+			// field rather than sit next to it unannounced.
+			const input = document.getElementById(field);
+			input?.setAttribute('aria-invalid', 'true');
+			if (!first) first = input;
 		}
 		first?.focus();
 	}
