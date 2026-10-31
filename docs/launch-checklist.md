@@ -174,6 +174,18 @@ the second one starts its own preview server it builds first; if one is already
 running on 4322 it uses that, so run it before the scripts below rather than in
 the middle of them.
 
+`npm test`, `probe.mjs` and `responsive.mjs` also run on every push, in
+`.github/workflows/checks.yml`. The three generators below do not, because
+their output is binary and depends on the versions of brotli, freetype and the
+AVIF encoder on the machine that ran them. That workflow does not gate the
+deploy: Pages builds from the same push, in parallel, so a red run tells you
+within two minutes that a bad deploy happened rather than preventing it. Making
+it a gate means pull requests, or deploying from the workflow instead of from
+the git integration.
+
+`.github/workflows/liveness.yml` is the other one, and it runs weekly against
+the live domain rather than against a build. Section 6 is what it is for.
+
 Then the three scripts, in this order. What each one should say:
 
 ### `python -I scripts/fonts.py`

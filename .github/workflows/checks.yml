@@ -1,0 +1,87 @@
+# The three checks that can run anywhere, on every push.
+#
+# What is here and what is not is a deliberate split. `npm test`, probe.mjs and
+# responsive.mjs read the built site and report; they are deterministic, so a
+# failure here is a real failure. fonts.py, images.py and og.py *write* binary
+# files, and their output depends on the versions of brotli, freetype and the
+# AVIF encoder on the machine that ran them. Comparing a woff2 subsetted on
+# this runner against one subsetted on a Windows laptop would fail on the
+# compressor's mood rather than on the subset, so those three stay where
+# docs/launch-checklist.md already puts them: run locally before a deploy.
+#
+# One limitation worth naming rather than discovering: Cloudflare Pages builds
+# and deploys from the same push, in parallel with this. So a red run here does
+# not stop a bad deploy, it only tells you within a couple of minutes that one
+# happened. Making it a gate means either moving to pull requests, or turning
+# off the Pages git integration and deploying from this workflow instead.
+
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - run: npm ci
+
+      # Chromium only, the same one the Playwright config settles on. The other
+      # two scripts drive the same browser through the playwright package.
+      - run: npx playwright install --with-deps chromium
+
+      # Builds and serves dist/ itself: the config sets reuseExistingServer to
+      # false on CI, and Astro refuses a second preview server, so nothing may
+      # be listening on 4322 before this runs.
+      - name: Form wiring, in both languages
+        run: npm test
+
+      # The server and the two scripts share one step on purpose. A server
+      # backgrounded in its own step outlives that step only by the runner's
+      # good will, and when it does not, the next step fails on a connection
+      # refused that says nothing about the site. Each script prints its own
+      # name, so a failure is still easy to place.
+      - name: Contrast, overflow, parity and layout across 12 widths
+        run: |
+          set -euo pipefail
+
+          npm run build
+
+          npx astro preview --host 127.0.0.1 --port 4322 &
+          preview=$!
+          trap 'kill "$preview" 2>/dev/null || true' EXIT
+
+          # An `if`, not `curl && break`: under `set -e` a bare failing curl in
+          # a list ends the step on the first attempt, which is the opposite of
+          # waiting for a server to come up.
+          up=
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null http://127.0.0.1:4322/; then
+              up=yes
+              break
+            fi
+            sleep 1
+          done
+          [ -n "$up" ] || { echo "preview never answered on 4322"; exit 1; }
+
+          # The first line has to read `self-test`. The script exits non-zero
+          # when the three planted defects are not all caught, so a pass means
+          # its own measurements are trustworthy.
+          node scripts/probe.mjs
+
+          # Past the viewport edge, out past its parent, tap target under 24px.
+          # All three have to be zero. The two categories that are never zero
+          # are the label vocabulary and are not defects.
+          node scripts/responsive.mjs

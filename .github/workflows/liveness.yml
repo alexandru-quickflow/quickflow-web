@@ -1,0 +1,150 @@
+# Once a week, against the live domain.
+#
+# ADR-0004 accepts that there is no error monitoring on this site and names the
+# consequence: a failing contact form is silent. Its mitigation is a manual
+# send once a month. This does not replace that send, because it cannot: only a
+# real browser can solve Turnstile, and only a verified submission exercises the
+# Resend key. What this does cover is the three ways the form breaks that need
+# no human to detect.
+#
+# What a red run here means, in order of likelihood:
+#
+#   contact page missing its site key   the deployment was built before the
+#                                       variables existed. Section 1.2 of the
+#                                       launch checklist: check the deployment,
+#                                       not the project.
+#   endpoint not answering its own 400  the function is gone, or the edge is
+#                                       swallowing its answer again. Section 4.
+#   nothing answering at all            the deploy, the domain or the DNS.
+#
+# Three limitations, named rather than discovered. GitHub disables scheduled
+# workflows after 60 days with no activity in the repository. A scheduled run
+# can be delayed under load, so treat the day as the resolution, not the hour.
+# And the notification channel is GitHub's own mail on a failed run, so it is
+# worth confirming once that it arrives.
+
+name: liveness
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: The site answers, and so do the files robots read
+        run: |
+          set -euo pipefail
+          # The Russian page is in this list and the other twenty-nine are not.
+          # It is the only page on the site with no measurement behind it: there
+          # is no Yandex property, decided 31 October 2026, so Search Console's
+          # Russian queries are the whole picture. Knowing it still serves is
+          # the least this can do for it.
+          for path in / /ru/stripe-moldova-marketplace/ /sitemap-index.xml /robots.txt; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://quickflow.dev${path}")
+            echo "${path} -> ${code}"
+            [ "$code" = 200 ] || { echo "expected 200"; exit 1; }
+          done
+
+      - name: Both contact pages carry a Turnstile site key
+        run: |
+          set -euo pipefail
+          # The shape, not the value. The key is public and ends up in the HTML,
+          # but it can be rotated, and a check that pins the current one would
+          # fail on the rotation rather than on the fault.
+          for path in /contact/ /ro/contact/; do
+            body=$(curl -fsS "https://quickflow.dev${path}")
+            echo "$body" | grep -q 'data-sitekey="0x' || {
+              echo "${path}: no Turnstile site key in the HTML."
+              echo "The widget cannot render, so no token is ever sent and no"
+              echo "visitor ever gets their copy. Check PUBLIC_TURNSTILE_SITE_KEY"
+              echo "on the deployment that is serving, not on the project."
+              exit 1
+            }
+            echo "${path} -> site key present"
+          done
+
+      - name: The endpoint answers with its own 400, not the edge's error page
+        run: |
+          set -euo pipefail
+          # A deliberately invalid token. The function validates the required
+          # fields first, so they have to be filled for this to reach the
+          # Turnstile branch at all, and a token that fails verification returns
+          # before anything is mailed. Measured: this costs no email.
+          #
+          # Reaching this answer proves three things at once. The function runs.
+          # TURNSTILE_SECRET_KEY is set, because the branch is skipped entirely
+          # when it is missing. And a 4xx from the function reaches the caller on
+          # the proxied apex instead of being replaced by Cloudflare's own page.
+          out=$(curl -s -w '\n%{http_code}' -X POST https://quickflow.dev/api/contact \
+            -H 'Accept: application/json' \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'nume=Liveness check' \
+            --data-urlencode 'email=monitor@quickflow.dev' \
+            --data-urlencode 'proiect=Weekly automated check. No reply needed.' \
+            --data-urlencode 'locale=en' \
+            --data-urlencode 'website=' \
+            --data-urlencode 'cf-turnstile-response=deliberately-invalid-token')
+
+          code=$(echo "$out" | tail -1)
+          body=$(echo "$out" | sed '$d')
+          echo "status ${code}"
+          echo "body   ${body}"
+
+          [ "$code" = 400 ] || {
+            echo "Expected 400. Anything else means the submission did not stop"
+            echo "at the anti-robot check: either the secret key is gone, in which"
+            echo "case this request just mailed you, or the edge is answering"
+            echo "instead of the function."
+            exit 1
+          }
+          # Three different 400s, and telling them apart is the whole point.
+          # The field validation runs before the anti-robot check, so a renamed
+          # or newly required field turns this check's payload stale and lands
+          # on `fields` instead. That is this file being out of date, not the
+          # site being broken, and it is measured: a post with the required
+          # fields left out answers {"fields":{...}} with the same 400.
+          case "$body" in
+            '{"message":'*)
+              echo "the function's own answer, from the anti-robot branch"
+              ;;
+            '{"fields":'*)
+              echo "The submission never reached the anti-robot check: the form's"
+              echo "required fields have changed and the payload in this workflow"
+              echo "no longer satisfies them. Update it against the field names in"
+              echo "functions/api/contact.ts. The site is probably fine."
+              exit 1
+              ;;
+            *)
+              echo "400, but not JSON from the function. The edge is answering."
+              exit 1
+              ;;
+          esac
+
+      - name: No third-party script on the home page
+        run: |
+          set -euo pipefail
+          # The Pages project has its own Web Analytics switch that ignores
+          # PUBLIC_CF_BEACON_TOKEN and injects the beacon into every response.
+          # It was on for about an hour on 30 October 2026 while both privacy
+          # pages went on saying the site ships no analytics.
+          #
+          # Honest about what this is worth: the injection only applies to
+          # requests that look like a browser, which is why every curl check
+          # that day came back clean. A browser user agent is sent below for
+          # that reason, but this check has never been shown to catch the
+          # injection, only to pass while it is off. The confirmed way to see it
+          # is a real browser on the real domain after a new deployment.
+          body=$(curl -fsS https://quickflow.dev/ \
+            -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36')
+          if echo "$body" | grep -q 'cloudflareinsights'; then
+            echo "A beacon is in the HTML. Either PUBLIC_CF_BEACON_TOKEN was set,"
+            echo "or the Pages project's Web Analytics switch is on. Both privacy"
+            echo "pages now say something that is not true. Section 1.4."
+            exit 1
+          fi
+          echo "no beacon"
