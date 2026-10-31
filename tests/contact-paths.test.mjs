@@ -138,19 +138,19 @@ test('the honeypot answers as if it worked and sends nothing', async () => {
 test('a form post with no Accept header is redirected, not answered in JSON', async () => {
 	const { status, res, to } = await post(submission(), { json: false });
 	assert.equal(status, 303);
-	assert.equal(new URL(res.headers.get('location')).pathname, '/ro/multumesc');
+	assert.equal(new URL(res.headers.get('location')).pathname, '/ro/multumesc/');
 	assert.deepEqual(to, [OWNER]);
 });
 
 test('the locale decides the thank-you page, and only the two known ones count', async () => {
 	const english = await post(submission({ locale: 'en' }), { json: false });
-	assert.equal(new URL(english.res.headers.get('location')).pathname, '/thank-you');
+	assert.equal(new URL(english.res.headers.get('location')).pathname, '/thank-you/');
 
 	// A locale is never trusted as a path, so an injected one falls back to
 	// English rather than turning the redirect into an open one.
 	sent = [];
 	const hostile = await post(submission({ locale: 'https://example.com/' }), { json: false });
-	assert.equal(new URL(hostile.res.headers.get('location')).pathname, '/thank-you');
+	assert.equal(new URL(hostile.res.headers.get('location')).pathname, '/thank-you/');
 });
 
 test('with no Resend key the request fails loudly instead of quietly', async () => {

@@ -33,7 +33,7 @@ import { test, expect, type Page, type Route } from '@playwright/test';
 const PAGES = [
 	{
 		lang: 'en',
-		path: '/contact',
+		path: '/contact/',
 		submit: 'Send',
 		errors: {
 			nume: 'Tell me what to call you.',
@@ -44,7 +44,7 @@ const PAGES = [
 	},
 	{
 		lang: 'ro',
-		path: '/ro/contact',
+		path: '/ro/contact/',
 		submit: 'Trimite',
 		errors: {
 			nume: 'Scrie-mi cum te cheamă.',

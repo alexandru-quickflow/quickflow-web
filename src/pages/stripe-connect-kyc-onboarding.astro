@@ -12,6 +12,13 @@ import { paths } from '../i18n/routes';
 // numbers were re-checked, which was a different day and a different errand.
 const sourcesRead = STRIPE_DOCS_READ.en;
 
+/** An identifier is one word to a browser, so on a phone it broke wherever the
+ *  column ran out: "pending_v / erificati / on". A break opportunity after each
+ *  underscore gives the line breaker somewhere sensible to go first, and the
+ *  stylesheet's overflow-wrap only has to catch a segment that is still too
+ *  long on its own. */
+const parts = (name: string) => name.split('_');
+
 const hash = [
 	{
 		field: 'currently_due',
@@ -157,7 +164,18 @@ const schema = {
 									scope="row"
 									class="w-[34%] border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
 								>
-									<code>{row.field}</code>
+									<code>
+										{parts(row.field).map((part, i, all) => (
+											<>
+												{part}
+												{i < all.length - 1 && (
+													<>
+														_<wbr />
+													</>
+												)}
+											</>
+										))}
+									</code>
 								</th>
 								<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
 									{row.meaning}
@@ -235,7 +253,18 @@ const schema = {
 									scope="row"
 									class="w-[34%] border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
 								>
-									<code>{row.path}</code>
+									<code>
+										{parts(row.path).map((part, i, all) => (
+											<>
+												{part}
+												{i < all.length - 1 && (
+													<>
+														_<wbr />
+													</>
+												)}
+											</>
+										))}
+									</code>
 								</th>
 								<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
 									{row.who}

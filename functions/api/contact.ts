@@ -107,8 +107,8 @@ interface Copy {
 
 const COPY: Record<Locale, Copy> = {
 	en: {
-		thanks: '/thank-you',
-		contact: '/contact',
+		thanks: '/thank-you/',
+		contact: '/contact/',
 		invalidRequest: 'Invalid request.',
 		missingSomething: 'Something is still missing from the form.',
 		serviceDown:
@@ -149,8 +149,8 @@ const COPY: Record<Locale, Copy> = {
 		],
 	},
 	ro: {
-		thanks: '/ro/multumesc',
-		contact: '/ro/contact',
+		thanks: '/ro/multumesc/',
+		contact: '/ro/contact/',
 		invalidRequest: 'Cerere invalidă.',
 		missingSomething: 'Mai lipsește ceva din formular.',
 		serviceDown:
