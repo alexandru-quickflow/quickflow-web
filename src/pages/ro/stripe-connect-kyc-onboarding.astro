@@ -1,0 +1,371 @@
+---
+import Site from '../../layouts/Site.astro';
+import { STRIPE_DOCS_READ } from '../../content/proof';
+import { paths } from '../../i18n/routes';
+
+// Perechea românească a paginii de KYC. Slug-ul rămâne englezesc, ca la escrow:
+// cine caută tastează "stripe connect kyc" chiar dacă vrea să citească în
+// română.
+//
+// Numele de câmpuri rămân în engleză pentru că așa le vede cititorul în API.
+// Restul e scris în română, nu tradus cuvânt cu cuvânt din pagina engleză.
+//
+// Data e a paginii, nu a site-ului. VERIFIED_ON e ziua în care s-au reverificat
+// cifrele măsurate, altă treabă în altă zi.
+const sourcesRead = STRIPE_DOCS_READ.ro;
+
+const hash = [
+	{
+		field: 'currently_due',
+		meaning: 'Ce trebuie rezolvat până la current_deadline ca să rămână contul activ.',
+	},
+	{
+		field: 'eventually_due',
+		meaning: 'Ce s-ar putea cere mai târziu, după ce contul trece un prag.',
+	},
+	{
+		field: 'past_due',
+		meaning:
+			'Ce a dezactivat deja capabilități, pentru că nu a fost rezolvat la timp. E un subset din currently_due.',
+	},
+	{
+		field: 'pending_verification',
+		meaning: 'Trimis și în curs de verificare. Gol, dacă nu e nimic asincron pe drum.',
+	},
+	{
+		field: 'current_deadline',
+		meaning:
+			'Un timestamp Unix. Cel mai apropiat termen dintre toate capabilitățile cerute, inclusiv cele ascunse.',
+	},
+	{
+		field: 'disabled_reason',
+		meaning: 'De ce contul nu poate procesa plăți sau transferuri.',
+	},
+	{
+		field: 'errors',
+		meaning: 'De ce a fost respins ceva deja trimis, cu un cod și un motiv în text clar.',
+	},
+];
+
+const resolutionPaths = [
+	{
+		path: 'form',
+		who: 'Completează contul, sau completezi tu în locul lui, din dashboard-ul tău.',
+	},
+	{ path: 'challenge', who: 'Doar titularul poate răspunde. Un selfie, un cont bancar.' },
+	{
+		path: 'notice',
+		who: 'Un terț trebuie să trimită ceva către Stripe, de exemplu o ridicare de gaj.',
+	},
+	{ path: 'support', who: 'Nu se poate acționa direct. Suportul Stripe.' },
+	{ path: 'underwriting_case', who: 'Stripe a cerut mai mult în dashboard-ul de underwriting.' },
+];
+
+const fileRules = [
+	'Imagine color, maximum 8.000 pe 8.000 de pixeli, maximum 10 MB',
+	'Documentele de identitate JPG sau PNG. Cele de adresă și de entitate juridică JPG, PNG sau PDF',
+	'Documentele de entitate juridică trebuie să conțină toate paginile',
+	'Fără parolă',
+	'Un document de adresă trebuie emis în ultimele șase luni',
+	'Un document de identitate trebuie să expire după data la care a fost trimis',
+];
+
+const faq = [
+	{
+		q: 'De ce payouts_enabled e false dacă onboarding-ul s-a terminat?',
+		a: 'Pentru că onboarding-ul a colectat ce era currently_due în ziua aia. O cerință care între timp a ieșit din eventually_due a rămas neacoperită, iar Stripe dezactivează de obicei payout-urile când trece current_deadline fără ea.',
+	},
+	{
+		q: 'Pot rezolva orice cerință prin API?',
+		a: 'Nu. Cerințele adăugate de o revizie de risc au prefixul interv_ și o cale de rezolvare. În funcție de cale, numai titularul contului, un terț sau suportul Stripe le poate închide.',
+	},
+	{
+		q: 'De ce a picat același document de două ori?',
+		a: 'Încărcările duplicate sunt respinse automat. După o verificare picată, fișierul următor trebuie să fie altul, nu aceeași scanare trimisă din nou.',
+	},
+];
+
+const title = 'De ce un cont Stripe Connect nu mai plătește | Quick Flow';
+const description =
+	'Onboarding-ul se termină și contul tot se blochează. Hash-ul requirements, termenul care se mută și verificările pe care niciun apel de API nu le închide.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	inLanguage: 'ro',
+	mainEntity: faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a },
+	})),
+};
+
+/** Un identificator e un singur cuvânt pentru browser, deci pe telefon se rupea
+ *  unde se termina coloana. O oportunitate de rupere după fiecare underscore îi
+ *  dă liniei un loc cu sens unde să se întrerupă. */
+const parts = (name: string) => name.split('_');
+---
+
+<Site lang="ro" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. Cititorul a ajuns aici pentru că s-au oprit payout-urile și nimic din
+	     dashboard nu îi spune de ce. De acolo se începe. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Plăți pentru marketplace</p>
+			<span class="stamp">Documentație citită {sourcesRead}</span>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			Vânzătorul tău a terminat onboarding-ul. Stripe nu a terminat să îl verifice.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			A dat click până la ecranul de final și au început să intre bani. După câteva săptămâni
+			payout-urile se opresc și nimeni nu știe să spună de ce. Răspunsul era tot timpul în obiectul
+			contului, într-un câmp pe care majoritatea integrărilor nu îl citesc niciodată.
+		</p>
+	</section>
+
+	<!-- 2. Două flaguri, și faptul că sunt separate. -->
+	<section class="bleed mt-32" aria-labelledby="flags">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Unde te uiți prima dată</p>
+				<h2 id="flags" class="display-lg mt-6">Un flag pentru încasare, altul pentru plată.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					<code>charges_enabled</code> și <code>payouts_enabled</code> sunt separate. Un cont poate
+					să încaseze și să nu poată trimite mai departe, iar un marketplace care verifică doar
+					primul flag află de al doilea de la un vânzător nervos.
+				</p>
+				<p class="prose-body mt-5">
+					Când oricare dintre ele e false, răspunsul e în <code>requirements</code>.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3. Obiectul de referință. Pentru asta există pagina. -->
+	<section class="bleed mt-32" aria-labelledby="hash">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Obiectul în sine</p>
+			<span class="spec">07</span>
+		</div>
+		<h2 id="hash" class="display-lg mt-8 max-w-[24ch]">Hash-ul requirements, câmp cu câmp.</h2>
+
+		<div class="mt-12 overflow-x-auto">
+			<table class="w-full border-collapse text-left">
+				<tbody>
+					{
+						hash.map((row) => (
+							<tr>
+								<th
+									scope="row"
+									class="w-[34%] border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
+								>
+									<code>
+										{parts(row.field).map((part, i, all) => (
+											<>
+												{part}
+												{i < all.length - 1 && (
+													<>
+														_<wbr />
+													</>
+												)}
+											</>
+										))}
+									</code>
+								</th>
+								<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
+									{row.meaning}
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<!-- 4. Cea care îi prinde pe toți, și reparația de două câmpuri. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="countdown">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">Cea care îi prinde pe toți</p>
+			<h2 id="countdown" class="display-lg mt-6 max-w-[24ch]">Cronometrul pe care nu îl vezi.</h2>
+
+			<div class="mt-12 grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-6">
+					<p class="prose-body">
+						O cerință care stă în <code>eventually_due</code> devine obligatorie în clipa în care
+						contul trece un prag. Stripe o mută în <code>currently_due</code>, iar atunci apare în
+						amândouă listele.
+					</p>
+					<p class="prose-body mt-5">
+						Dacă noua cerință are un termen mai apropiat decât <code>current_deadline</code>-ul
+						existent, se mută și termenul odată cu ea. Data pe care ai citit-o luna trecută poate
+						să dispară fără să se schimbe nimic în integrarea ta.
+					</p>
+					<p class="prose-body mt-5">
+						Documentația Stripe spune că dezactivează de obicei payout-urile când informația nu
+						ajunge până la <code>current_deadline</code>. Dacă payout-urile sunt deja oprite și
+						contul nu răspunde, pot pleca și încasările.
+					</p>
+				</div>
+				<div class="md:col-span-5 md:col-start-8">
+					<p class="spec">Ce se face în loc</p>
+					<p class="mt-4 text-lg leading-snug">
+						Colectezi <code>eventually_due</code> la onboarding, nu <code>currently_due</code>.
+					</p>
+					<p class="prose-body mt-5">
+						Și onboarding-ul găzduit, și cel încorporat au un parametru pentru asta. Două câmpuri
+						în plus la început, și o discuție mai puțin despre bani blocați.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. Cerințele care nu sunt o problemă de API. -->
+	<section class="bleed mt-32" aria-labelledby="risk">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Nu e un câmp de API</p>
+				<h2 id="risk" class="display-lg mt-6">O parte nu e a ta de reparat.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Revizia de risc adaugă cerințe care nu se pot satisface prin API. Stau în același hash,
+					cu prefixul <code>interv_</code>, în forma{' '}
+					<code>&lt;id&gt;.&lt;descriere&gt;.&lt;cale_de_rezolvare&gt;</code>.
+				</p>
+				<p class="prose-body mt-5">Calea de rezolvare îți spune cine poate acționa.</p>
+			</div>
+		</div>
+
+		<div class="mt-12 overflow-x-auto">
+			<table class="w-full border-collapse text-left">
+				<tbody>
+					{
+						resolutionPaths.map((row) => (
+							<tr>
+								<th
+									scope="row"
+									class="w-[34%] border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
+								>
+									<code>
+										{parts(row.path).map((part, i, all) => (
+											<>
+												{part}
+												{i < all.length - 1 && (
+													<>
+														_<wbr />
+													</>
+												)}
+											</>
+										))}
+									</code>
+								</th>
+								<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
+									{row.who}
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<p class="prose-body mt-10 max-w-[60ch]">
+			O integrare care tratează orice cerință ca pe un câmp de API intră în buclă pe astea,
+			reîncercând ceva ce nu avea cum să meargă.
+		</p>
+	</section>
+
+	<!-- 6. De ce pică încărcările, ceea ce e aproape întotdeauna fișierul. -->
+	<section class="bleed mt-32" aria-labelledby="documents">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">De ce pică documentele</p>
+				<h2 id="documents" class="display-md mt-6">De obicei problema e fișierul în sine.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<ul class="flex flex-col gap-4">
+					{fileRules.map((rule) => <li class="prose-body">{rule}</li>)}
+				</ul>
+				<p class="prose-body mt-6">
+					Nu retrimite același fișier. Stripe respinge automat încărcările duplicate, deci după o
+					verificare picată fișierul următor trebuie să fie altul.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. Singurul lucru de pe pagină greu de găsit în altă parte. -->
+	<section class="bleed mt-32" aria-labelledby="url">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h2 id="url" class="display-md md:col-span-5">
+				Repararea site-ului nu redeclanșează verificarea.
+			</h2>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Orice cont care vinde online are nevoie de un <code>business_profile.url</code> care
+					funcționează, iar Stripe verifică ce scrie efectiv pe pagina aia. Motivele de respingere
+					sunt precise: fără politică de retur, fără termeni, fără date de contact pentru clienți,
+					protejat cu parolă, încă în construcție, blocat pe regiuni.
+				</p>
+				<p class="prose-body mt-5">
+					Dacă repari site-ul, nu se reverifică nimic. Metoda documentată de Stripe e să schimbi
+					URL-ul de pe cont în orice altă valoare și imediat la loc.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. Întrebările, scrise ca să poată fi citite fără pagină. -->
+	<section class="bleed mt-32" aria-labelledby="faq">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Cel mai des întrebat</p>
+			<span class="spec">03</span>
+		</div>
+		<h2 id="faq" class="display-lg mt-8 max-w-[24ch]">Trei întrebări, cu răspunsul scurt.</h2>
+
+		<dl class="mt-12 flex flex-col">
+			{
+				faq.map((f) => (
+					<div class="hair grid gap-4 py-8 md:grid-cols-12 md:gap-8">
+						<dt class="display-md md:col-span-5">{f.q}</dt>
+						<dd class="prose-body md:col-span-6 md:col-start-7">{f.a}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</section>
+
+	<!-- 9. Închiderea cere exact lucrul pe care pagina tocmai l-a explicat. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed py-20 md:py-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<h2 class="display-lg">Trimite-mi obiectul contului și îți spun ce îl blochează.</h2>
+					<p class="prose-body mt-7">
+						Lipește hash-ul <code>requirements</code> cu identificatorii scoși. Îți spun care intrări
+						sunt ale tale de reparat, care sunt ale titularului de cont, și care e termenul după
+						care chiar alergi. În aceeași zi lucrătoare, în scris.
+					</p>
+					<p class="stamp mt-9">
+						Documentația Stripe Connect a fost citită la sursă pe {sourcesRead}
+					</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
+					<a href={paths.contact.ro} class="btn btn-primary">Trimite-mi hash-ul</a>
+					<p class="mt-6 text-sm text-paper/70">
+						Sau citește de ce <a href={paths.escrow.ro} class="link">Stripe nu îți dă escrow</a>.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

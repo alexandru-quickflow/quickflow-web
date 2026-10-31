@@ -88,10 +88,13 @@ export const paths: Record<PageId, Partial<Record<Locale, string>>> = {
 	// Romanian only. Stripe does not operate in Moldova, which is a fact worth a
 	// page in the language the question is asked in and worth nothing in English.
 	moldova: { ro: '/ro/stripe-moldova-marketplace/', ru: '/ru/stripe-moldova-marketplace/' },
-	// English only. The phrases people search here are English even when they
-	// are not, and the Romanian half of the site has no page this one pairs
-	// with yet.
-	kyc: { en: '/stripe-connect-kyc-onboarding/' },
+	// The slug is the same in both languages, like the escrow page and for the
+	// same reason: the phrase people type into Google is English even when the
+	// page they want to read is not.
+	kyc: {
+		en: '/stripe-connect-kyc-onboarding/',
+		ro: '/ro/stripe-connect-kyc-onboarding/',
+	},
 };
 
 /** The path to a page in a language, or undefined when the page does not exist
@@ -275,6 +278,7 @@ export const footerNav: Record<
 				{ id: 'websites', label: 'Landing page și site' },
 				{ id: 'escrow', label: 'Stripe și escrow' },
 				{ id: 'moldova', label: 'Stripe în Moldova' },
+				{ id: 'kyc', label: 'KYC la Stripe Connect' },
 			],
 		},
 		{
