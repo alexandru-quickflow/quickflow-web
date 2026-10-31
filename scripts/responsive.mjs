@@ -15,7 +15,17 @@
 //      it that matters most: a child narrower than its parent, laid out
 //      beyond the parent's edge anyway.
 import { createRequire } from 'node:module';
-const require = createRequire('D:/dev/quickflow-web/package.json');
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// Both the require below and the sitemap read further down were absolute
+// paths to one laptop until 31 October 2026, so this script ran on that
+// machine and nowhere else. On a Linux runner 'D:/dev/...' is not an
+// absolute path, and createRequire refuses it before anything is measured.
+// Derived from the script's own location now, the way probe.mjs next door
+// already did it.
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const fs = require('fs');
 
@@ -24,7 +34,7 @@ const WIDTHS = [320, 360, 375, 414, 540, 768, 834, 1024, 1180, 1280, 1440, 1920]
 const MOBILE = 540; // at or below this, tap targets are measured
 
 const routes = fs
-	.readFileSync('D:/dev/quickflow-web/dist/sitemap-0.xml', 'utf8')
+	.readFileSync(path.join(ROOT, 'dist', 'sitemap-0.xml'), 'utf8')
 	.match(/<loc>[^<]+<\/loc>/g)
 	.map((s) => new URL(s.slice(5, -6)).pathname)
 	.concat(['/thank-you', '/ro/multumesc', '/404'])
