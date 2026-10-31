@@ -785,6 +785,21 @@ html[lang="ru"] {
 		color: var(--faint);
 	}
 
+	/* Inline code. The KYC page is the first here to name API fields inside
+	   running text, and a bare <code> otherwise falls back to whatever
+	   monospace the browser keeps, at a size that does not match anything.
+	
+	   `overflow-wrap: anywhere` rather than `break-word`, because only the
+	   first one shrinks the element's minimum width. A browser reads
+	   pending_verification as one unbreakable word, and with break-word the
+	   table column it sits in was still 345px wide inside a 320px phone. */
+	code {
+		font-family: var(--font-mono);
+		font-size: 0.9em;
+		color: var(--paper);
+		overflow-wrap: anywhere;
+	}
+
 	.code {
 		font-family: var(--font-mono);
 		font-size: 0.75rem;

@@ -26,6 +26,7 @@
 	"services-course-platforms",
 	"services-internal-apps",
 	"services-marketplace-payments",
+	"stripe-connect-kyc-onboarding",
 	"stripe-escrow-marketplace",
 	"terms",
 	"thank-you",

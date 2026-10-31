@@ -1,0 +1,339 @@
+---
+import Site from '../layouts/Site.astro';
+import { STRIPE_DOCS_READ } from '../content/proof';
+import { paths } from '../i18n/routes';
+
+// English only. The second place a marketplace gets stuck after escrow, and the
+// one where the answer is already in the API response nobody reads.
+//
+// Every field name, error code and rule below comes from Stripe's Connect
+// documentation, read at the source on the date this page prints. It carries
+// its own date rather than the site's: VERIFIED_ON is the day the measured
+// numbers were re-checked, which was a different day and a different errand.
+const sourcesRead = STRIPE_DOCS_READ.en;
+
+const hash = [
+	{
+		field: 'currently_due',
+		meaning: 'What must be resolved by current_deadline for the account to stay active.',
+	},
+	{
+		field: 'eventually_due',
+		meaning: 'What might be needed later, once a threshold is crossed.',
+	},
+	{
+		field: 'past_due',
+		meaning:
+			'What already disabled capabilities because it was not resolved in time. A subset of currently_due.',
+	},
+	{
+		field: 'pending_verification',
+		meaning: 'Submitted and under review. Empty unless something asynchronous is in flight.',
+	},
+	{
+		field: 'current_deadline',
+		meaning:
+			'A Unix timestamp. The earliest deadline across every requested capability, including hidden ones.',
+	},
+	{
+		field: 'disabled_reason',
+		meaning: 'Why the account cannot process charges or transfers.',
+	},
+	{
+		field: 'errors',
+		meaning:
+			'Why something already submitted was rejected, with a code and a plain-language reason.',
+	},
+];
+
+const paths_ = [
+	{ path: 'form', who: 'The account fills it in, or you fill it in for them from your dashboard.' },
+	{ path: 'challenge', who: 'Only the account owner can answer. A selfie, a bank account.' },
+	{
+		path: 'notice',
+		who: 'A third party has to send Stripe something, for example a lien release.',
+	},
+	{ path: 'support', who: 'Not directly actionable. Stripe support.' },
+	{ path: 'underwriting_case', who: 'Stripe has asked for more in the underwriting dashboard.' },
+];
+
+const fileRules = [
+	'Colour image, 8,000 by 8,000 pixels or smaller, 10 MB or less',
+	'Identity documents JPG or PNG. Address and legal entity documents JPG, PNG or PDF',
+	'Legal entity documents must include every page',
+	'Not password protected',
+	'An address document must have been issued within the last six months',
+	'An identity document must expire after the date it was submitted',
+];
+
+const faq = [
+	{
+		q: 'Why is payouts_enabled false when the account finished onboarding?',
+		a: 'Because onboarding collected what was currently_due that day. A requirement that later moved out of eventually_due is now unmet, and Stripe typically disables payouts when current_deadline passes without it.',
+	},
+	{
+		q: 'Can I fix every requirement through the API?',
+		a: 'No. Requirements added by a risk review carry an interv_ prefix and a resolution path. Depending on the path, only the account owner, a third party, or Stripe support can clear them.',
+	},
+	{
+		q: 'Why did the same document fail twice?',
+		a: 'Duplicate uploads fail automatically. After a failed verification the next file has to be a different one, not the same scan sent again.',
+	},
+];
+
+const title = 'Why a Stripe Connect account stops paying out | Quick Flow';
+const description =
+	'Onboarding finishes and the account still breaks. The requirements hash, the deadline that moves, and the risk checks no API call can clear.';
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	inLanguage: 'en',
+	mainEntity: faq.map((f) => ({
+		'@type': 'Question',
+		name: f.q,
+		acceptedAnswer: { '@type': 'Answer', text: f.a },
+	})),
+};
+---
+
+<Site lang="en" title={title} description={description}>
+	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+	<!-- 1. The reader arrived because payouts stopped and the dashboard will not
+	     say why. Start there, not with what KYC is. -->
+	<section class="bleed pt-12 md:pt-16">
+		<div class="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+			<p class="spec">Marketplace payments</p>
+			<span class="stamp">Stripe docs read {sourcesRead}</span>
+		</div>
+
+		<h1 class="display-xl mt-8 max-w-[18ch]">
+			Your seller finished onboarding. Stripe has not finished verifying them.
+		</h1>
+
+		<p class="lead mt-9 max-w-[56ch] text-lg">
+			They clicked through to the success screen and money started arriving. Weeks later payouts
+			stop and nobody can say why. The answer was in the account object all along, in a field most
+			integrations never read.
+		</p>
+	</section>
+
+	<!-- 2. Two flags, and the fact that they are separate. -->
+	<section class="bleed mt-32" aria-labelledby="flags">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Where to look first</p>
+				<h2 id="flags" class="display-lg mt-6">One flag for taking money, one for sending it.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					<code>charges_enabled</code> and <code>payouts_enabled</code> are separate. An account can
+					take money and not be able to send it, and a marketplace that only checks the first finds
+					out about the second from an angry seller.
+				</p>
+				<p class="prose-body mt-5">
+					When either is false, the answer is in <code>requirements</code>.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 3. The reference object. This is what the page is for. -->
+	<section class="bleed mt-32" aria-labelledby="hash">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">The object itself</p>
+			<span class="spec">07</span>
+		</div>
+		<h2 id="hash" class="display-lg mt-8 max-w-[24ch]">The requirements hash, field by field.</h2>
+
+		<div class="mt-12 overflow-x-auto">
+			<table class="w-full border-collapse text-left">
+				<tbody>
+					{
+						hash.map((row) => (
+							<tr>
+								<th
+									scope="row"
+									class="w-[34%] border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
+								>
+									<code>{row.field}</code>
+								</th>
+								<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
+									{row.meaning}
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<!-- 4. The one that catches people, and the two-field fix. -->
+	<section class="band mt-16 md:mt-20" aria-labelledby="countdown">
+		<div class="bleed py-20 md:py-28">
+			<p class="spec">The one that catches people</p>
+			<h2 id="countdown" class="display-lg mt-6 max-w-[24ch]">The countdown you cannot see.</h2>
+
+			<div class="mt-12 grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-6">
+					<p class="prose-body">
+						A requirement sitting in <code>eventually_due</code> becomes required the moment the
+						account crosses a threshold. Stripe moves it into <code>currently_due</code>, and both
+						arrays then contain it.
+					</p>
+					<p class="prose-body mt-5">
+						If that new requirement carries a due date earlier than the existing{' '}
+						<code>current_deadline</code>, the deadline moves earlier with it. The date you read
+						last month can be gone without anything in your integration changing.
+					</p>
+					<p class="prose-body mt-5">
+						Stripe's documentation says it typically disables payouts when the information does not
+						arrive by <code>current_deadline</code>. If payouts are already off and the account does
+						not respond, charges can go too.
+					</p>
+				</div>
+				<div class="md:col-span-5 md:col-start-8">
+					<p class="spec">What to do instead</p>
+					<p class="mt-4 text-lg leading-snug">
+						Collect <code>eventually_due</code> at onboarding, not <code>currently_due</code>.
+					</p>
+					<p class="prose-body mt-5">
+						Hosted and embedded onboarding both take a parameter for it. Two more fields at the
+						start, and one fewer conversation about money that is stuck.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5. The requirements that are not an API problem at all. -->
+	<section class="bleed mt-32" aria-labelledby="risk">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Not an API field</p>
+				<h2 id="risk" class="display-lg mt-6">Some of it is not yours to fix.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Risk review adds requirements that cannot be satisfied through the API. They sit in the
+					same hash, prefixed <code>interv_</code>, in the shape{' '}
+					<code>&lt;id&gt;.&lt;description&gt;.&lt;resolution_path&gt;</code>.
+				</p>
+				<p class="prose-body mt-5">The resolution path tells you who can act.</p>
+			</div>
+		</div>
+
+		<div class="mt-12 overflow-x-auto">
+			<table class="w-full border-collapse text-left">
+				<tbody>
+					{
+						paths_.map((row) => (
+							<tr>
+								<th
+									scope="row"
+									class="w-[34%] border-b border-[var(--line-soft)] py-4 pr-6 align-top font-normal"
+								>
+									<code>{row.path}</code>
+								</th>
+								<td class="border-b border-[var(--line-soft)] py-4 align-top text-sm leading-relaxed">
+									{row.who}
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+
+		<p class="prose-body mt-10 max-w-[60ch]">
+			An integration that treats every requirement as an API field will sit in a loop on these,
+			retrying something that was never going to work.
+		</p>
+	</section>
+
+	<!-- 6. Why uploads fail, which is almost always the file. -->
+	<section class="bleed mt-32" aria-labelledby="documents">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<div class="md:col-span-5">
+				<p class="spec">Why documents fail</p>
+				<h2 id="documents" class="display-md mt-6">The file itself is usually the problem.</h2>
+			</div>
+			<div class="md:col-span-6 md:col-start-7">
+				<ul class="flex flex-col gap-4">
+					{fileRules.map((rule) => <li class="prose-body">{rule}</li>)}
+				</ul>
+				<p class="prose-body mt-6">
+					Do not resubmit the same file. Stripe rejects duplicate uploads automatically, so after a
+					failed verification the next file has to be a different one.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 7. The one thing on this page that is hard to find anywhere else. -->
+	<section class="bleed mt-32" aria-labelledby="url">
+		<div class="hair grid gap-8 pt-10 md:grid-cols-12 md:pt-14">
+			<h2 id="url" class="display-md md:col-span-5">
+				Fixing the website does not re-trigger the check.
+			</h2>
+			<div class="md:col-span-6 md:col-start-7">
+				<p class="prose-body">
+					Any account that sells online needs a working <code>business_profile.url</code>, and
+					Stripe checks what is actually on that page. The failures are specific: no refund policy,
+					no terms, no customer service details, password protected, still under construction,
+					geoblocked.
+				</p>
+				<p class="prose-body mt-5">
+					If you fix the website itself, nothing re-runs. Stripe's documented way to re-trigger
+					verification is to change the URL on the account to any other value and immediately change
+					it back.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 8. The three questions this page gets, readable without the page. -->
+	<section class="bleed mt-32" aria-labelledby="faq">
+		<div class="hair flex items-baseline justify-between gap-6 pt-5">
+			<p class="spec">Most asked</p>
+			<span class="spec">03</span>
+		</div>
+		<h2 id="faq" class="display-lg mt-8 max-w-[24ch]">Three questions, short answers.</h2>
+
+		<dl class="mt-12 flex flex-col">
+			{
+				faq.map((f) => (
+					<div class="hair grid gap-4 py-8 md:grid-cols-12 md:gap-8">
+						<dt class="display-md md:col-span-5">{f.q}</dt>
+						<dd class="prose-body md:col-span-6 md:col-start-7">{f.a}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</section>
+
+	<!-- 9. The close asks for the one thing the page just taught them to read. -->
+	<section class="band mt-16 md:mt-20">
+		<div class="bleed py-20 md:py-28">
+			<div class="grid gap-10 md:grid-cols-12">
+				<div class="md:col-span-7">
+					<h2 class="display-lg">Send me the account object and I will tell you what is blocking it.</h2>
+					<p class="prose-body mt-7">
+						Paste the <code>requirements</code> hash with the identifiers removed. I will tell you
+						which entries are yours to fix, which belong to the account owner, and which one is the
+						deadline you are actually running against. Same working day, in writing.
+					</p>
+					<p class="stamp mt-9">Stripe's Connect documentation was read at the source on {sourcesRead}</p>
+				</div>
+				<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
+					<a href={paths.contact.en} class="btn btn-primary">Send me the hash</a>
+					<p class="mt-6 text-sm text-paper/70">
+						Or read why <a href={paths.escrow.en} class="link">Stripe will not give you escrow</a>.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+</Site>

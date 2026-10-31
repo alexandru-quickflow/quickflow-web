@@ -53,6 +53,20 @@ export const VERIFIED_ON: Record<Locale, string> = {
  *  is why it stays off: see docs/launch-checklist.md. */
 export const SELF_JS = '5 KB';
 
+/** When a page's own external sources were last read at the source.
+ *
+ *  Not the same event as VERIFIED_ON, which is the day the measured numbers
+ *  were re-checked, and it must not move with it. The Stripe lists behind the
+ *  escrow and Moldova pages were read on 27 October; the Connect documentation
+ *  behind the KYC page was read on 31 October. One constant for both would
+ *  have made one of those two dates a lie, the same way one constant made four
+ *  legal pages announce a day they had not changed on. */
+export const STRIPE_DOCS_READ: Record<Locale, string> = {
+	en: '31 October 2026',
+	ro: '31 octombrie 2026',
+	ru: '31 октября 2026',
+};
+
 /** The rate limiting rule on the contact endpoint, which lives in a Cloudflare
  *  dashboard and not in this repository. It is here so that the two privacy
  *  pages describe the same rule as each other and as the thing that is actually

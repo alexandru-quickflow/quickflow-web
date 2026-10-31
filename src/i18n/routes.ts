@@ -32,7 +32,8 @@ export type PageId =
 	| 'terms'
 	| 'thanks'
 	| 'escrow'
-	| 'moldova';
+	| 'moldova'
+	| 'kyc';
 
 /** A page can be missing from a language. Not every subject is worth a page in
  *  both: the Moldova page answers a question asked in Romanian, by people whose
@@ -46,47 +47,51 @@ export type PageId =
 export const paths: Record<PageId, Partial<Record<Locale, string>>> = {
 	home: { en: '/', ro: '/ro/' },
 	migration: {
-		en: '/services/bubble-to-code-migration',
-		ro: '/ro/servicii/migrare-bubble',
+		en: '/services/bubble-to-code-migration/',
+		ro: '/ro/servicii/migrare-bubble/',
 	},
 	marketplace: {
-		en: '/services/marketplace-payments',
-		ro: '/ro/servicii/marketplace-plati',
+		en: '/services/marketplace-payments/',
+		ro: '/ro/servicii/marketplace-plati/',
 	},
 	courses: {
-		en: '/services/course-platforms',
-		ro: '/ro/servicii/platforme-cursuri',
+		en: '/services/course-platforms/',
+		ro: '/ro/servicii/platforme-cursuri/',
 	},
 	internal: {
-		en: '/services/internal-apps',
-		ro: '/ro/servicii/aplicatii-interne',
+		en: '/services/internal-apps/',
+		ro: '/ro/servicii/aplicatii-interne/',
 	},
 	prototype: {
-		en: '/prototype-in-five-days',
-		ro: '/ro/prototip-in-cinci-zile',
+		en: '/prototype-in-five-days/',
+		ro: '/ro/prototip-in-cinci-zile/',
 	},
 	// Deliberately outside the header. A seventh nav item fits at 1280 and
 	// collides with the language switcher at 1024, and this page is reached
 	// from the home page, the migration page and the footer instead.
 	audit: {
-		en: '/bubble-performance-audit',
-		ro: '/ro/audit-performanta-bubble',
+		en: '/bubble-performance-audit/',
+		ro: '/ro/audit-performanta-bubble/',
 	},
 	// The Romanian slug carries both terms because both are searched for
 	// separately, and the Romanian market is the one where that matters.
 	websites: {
-		en: '/landing-page-and-website',
-		ro: '/ro/landing-page-si-site-de-prezentare',
+		en: '/landing-page-and-website/',
+		ro: '/ro/landing-page-si-site-de-prezentare/',
 	},
-	work: { en: '/work', ro: '/ro/portofoliu' },
-	contact: { en: '/contact', ro: '/ro/contact' },
-	privacy: { en: '/privacy', ro: '/ro/confidentialitate' },
-	terms: { en: '/terms', ro: '/ro/termeni' },
-	thanks: { en: '/thank-you', ro: '/ro/multumesc' },
-	escrow: { en: '/stripe-escrow-marketplace', ro: '/ro/stripe-escrow-marketplace' },
+	work: { en: '/work/', ro: '/ro/portofoliu/' },
+	contact: { en: '/contact/', ro: '/ro/contact/' },
+	privacy: { en: '/privacy/', ro: '/ro/confidentialitate/' },
+	terms: { en: '/terms/', ro: '/ro/termeni/' },
+	thanks: { en: '/thank-you/', ro: '/ro/multumesc/' },
+	escrow: { en: '/stripe-escrow-marketplace/', ro: '/ro/stripe-escrow-marketplace/' },
 	// Romanian only. Stripe does not operate in Moldova, which is a fact worth a
 	// page in the language the question is asked in and worth nothing in English.
-	moldova: { ro: '/ro/stripe-moldova-marketplace', ru: '/ru/stripe-moldova-marketplace' },
+	moldova: { ro: '/ro/stripe-moldova-marketplace/', ru: '/ru/stripe-moldova-marketplace/' },
+	// English only. The phrases people search here are English even when they
+	// are not, and the Romanian half of the site has no page this one pairs
+	// with yet.
+	kyc: { en: '/stripe-connect-kyc-onboarding/' },
 };
 
 /** The path to a page in a language, or undefined when the page does not exist
@@ -239,6 +244,7 @@ export const footerNav: Record<
 				{ id: 'internal', label: 'Internal apps' },
 				{ id: 'websites', label: 'Landing page and site' },
 				{ id: 'escrow', label: 'Stripe and escrow' },
+				{ id: 'kyc', label: 'Stripe Connect KYC' },
 			],
 		},
 		{
