@@ -1,6 +1,6 @@
 ---
 import Site from '../../layouts/Site.astro';
-import { STRIPE_DOCS_READ } from '../../content/proof';
+import { STRIPE_DOCS_READ, STRIPE_DOCS_READ_ISO } from '../../content/proof';
 import { paths } from '../../i18n/routes';
 
 // Perechea românească a paginii de KYC. Slug-ul rămâne englezesc, ca la escrow:
@@ -106,7 +106,7 @@ const schema = {
 const parts = (name: string) => name.split('_');
 ---
 
-<Site lang="ro" title={title} description={description}>
+<Site lang="ro" title={title} description={description} dateModified={STRIPE_DOCS_READ_ISO}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. Cititorul a ajuns aici pentru că s-au oprit payout-urile și nimic din

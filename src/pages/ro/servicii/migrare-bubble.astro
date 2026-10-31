@@ -1,7 +1,7 @@
 ---
 import Site from '../../../layouts/Site.astro';
 import Shot from '../../../components/Shot.astro';
-import { proof, weightSnippet, VERIFIED_ON } from '../../../content/proof';
+import { proof, weightSnippet, VERIFIED_ON, VERIFIED_ON_ISO } from '../../../content/proof';
 import { paths } from '../../../i18n/routes';
 
 const weight = proof('ro', 'bubble-weight');
@@ -160,7 +160,7 @@ const schema = {
 };
 ---
 
-<Site lang="ro" title={title} description={description}>
+<Site lang="ro" title={title} description={description} dateModified={VERIFIED_ON_ISO}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. Recunoaștere. Cititorul trebuie să își vadă propria situație în

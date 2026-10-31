@@ -307,3 +307,8 @@ export const footerNav: Record<
 /** The one profile that is confirmed. The home page schema used to carry a
  *  comment saying there would be no sameAs until there was a URL to put in it. */
 export const PROFILE = 'https://www.linkedin.com/in/alexandrutr/';
+
+/** The one spelling of the name. It was already written out in both home
+ *  pages and is now also the author on every page, which is one string in
+ *  three places, and the kind of thing that ends up spelled two ways. */
+export const AUTHOR = { name: 'Alexandru Trofaniuc', url: PROFILE } as const;

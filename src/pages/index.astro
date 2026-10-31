@@ -3,7 +3,7 @@ import Site from '../layouts/Site.astro';
 import Shot from '../components/Shot.astro';
 import PaymentFlow from '../components/PaymentFlow.astro';
 import ServiceMark from '../components/ServiceMark.astro';
-import { proof, weightSnippet, VERIFIED_ON, SELF_JS } from '../content/proof';
+import { proof, weightSnippet, VERIFIED_ON, SELF_JS, VERIFIED_ON_ISO } from '../content/proof';
 import {
 	BUBBLE_SINCE,
 	CODE_SINCE,
@@ -210,7 +210,7 @@ const schema = {
 };
 ---
 
-<Site lang="en" title={title} description={description}>
+<Site lang="en" title={title} description={description} dateModified={VERIFIED_ON_ISO}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. Hero. Type first, then the drawing edge to edge under it. The line

@@ -31,6 +31,11 @@ export const VERIFIED_ON: Record<Locale, string> = {
 	ru: '27 октября 2026',
 };
 
+
+/** The same day as VERIFIED_ON, in the form schema.org asks for. A date
+ *  written twice drifts the moment somebody updates one spelling and not
+ *  the other, so tests/proof.test.mjs asserts the two say the same day. */
+export const VERIFIED_ON_ISO = '2026-10-27';
 /** What this page itself ships, measured the way the snippet below measures it,
  *  because the reader is told to run that snippet and the two have to agree.
  *
@@ -67,6 +72,9 @@ export const STRIPE_DOCS_READ: Record<Locale, string> = {
 	ru: '31 октября 2026',
 };
 
+
+/** STRIPE_DOCS_READ, in the form schema.org asks for. Same guard as above. */
+export const STRIPE_DOCS_READ_ISO = '2026-10-31';
 /** The rate limiting rule on the contact endpoint, which lives in a Cloudflare
  *  dashboard and not in this repository. It is here so that the two privacy
  *  pages describe the same rule as each other and as the thing that is actually

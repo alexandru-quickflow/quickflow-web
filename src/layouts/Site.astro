@@ -3,6 +3,7 @@
 // Sheet.astro (the paper one) with the direction settled on 2026-10-28.
 import '../styles/global.css';
 import {
+	AUTHOR,
 	DEFAULT_LOCALE,
 	PROFILE,
 	alternates,
@@ -31,11 +32,40 @@ interface Props {
 	description: string;
 	lang?: Locale;
 	noindex?: boolean;
+	/** The day this page's claims were last checked, ISO, and only from a page
+	 *  that already shows a date to the reader. A page with nothing to date
+	 *  passes nothing: an invented dateModified is worse than none, because it
+	 *  is a freshness claim a model will repeat. */
+	dateModified?: string;
 }
 
-const { title, description, lang = DEFAULT_LOCALE, noindex = false } = Astro.props;
+const {
+	title,
+	description,
+	lang = DEFAULT_LOCALE,
+	noindex = false,
+	dateModified,
+} = Astro.props;
 const t = ui[lang];
 const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Who wrote this and when it was last checked, which the pages' own schema
+// cannot carry: ProfessionalService and Service describe a business and an
+// offer, not a document, and author and dateModified mean nothing on them. A
+// WebPage node is where those belong, so it is built here, once, instead of
+// being repeated in the twenty-two pages that each hand-roll their own.
+const documentSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebPage',
+	url: canonical.href,
+	name: title,
+	description,
+	inLanguage: hreflang[lang],
+	author: { '@type': 'Person', name: AUTHOR.name, url: AUTHOR.url },
+	publisher: { '@type': 'Organization', name: 'Quick Flow', url: Astro.site?.href },
+	// Only when the page gave one. See the prop.
+	...(dateModified ? { dateModified } : {}),
+};
 
 const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
 // A page missing from this language is missing from its menus too, so the
@@ -112,6 +142,7 @@ const ogImage = new URL(
 				</>
 			)
 		}
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(documentSchema)} />
 		<link rel="icon" href="/brand/icon.svg" />
 		<meta name="theme-color" content="#04080b" />
 		<meta property="og:title" content={title} />

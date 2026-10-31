@@ -1,6 +1,6 @@
 ---
 import Site from '../../layouts/Site.astro';
-import { VERIFIED_ON } from '../../content/proof';
+import { VERIFIED_ON, VERIFIED_ON_ISO } from '../../content/proof';
 import { paths } from '../../i18n/routes';
 
 // The one page on this site written in Russian, and the reason the locale
@@ -73,7 +73,7 @@ const schema = {
 };
 ---
 
-<Site lang="ru" title={title} description={description}>
+<Site lang="ru" title={title} description={description} dateModified={VERIFIED_ON_ISO}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. The fact in the first sentence. The reader searched "stripe молдова"

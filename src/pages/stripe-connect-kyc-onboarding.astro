@@ -1,6 +1,6 @@
 ---
 import Site from '../layouts/Site.astro';
-import { STRIPE_DOCS_READ } from '../content/proof';
+import { STRIPE_DOCS_READ, STRIPE_DOCS_READ_ISO } from '../content/proof';
 import { paths } from '../i18n/routes';
 
 // English only. The second place a marketplace gets stuck after escrow, and the
@@ -104,7 +104,7 @@ const schema = {
 };
 ---
 
-<Site lang="en" title={title} description={description}>
+<Site lang="en" title={title} description={description} dateModified={STRIPE_DOCS_READ_ISO}>
 	<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 
 	<!-- 1. The reader arrived because payouts stopped and the dashboard will not
