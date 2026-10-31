@@ -155,6 +155,97 @@ Two things made it hard to see, and both are worth remembering:
 
 So the check is: a real browser, on the real domain, after a new deployment.
 
+### 1.5 The `robots.txt` the site serves is not the one in this repository
+
+Found 31 October 2026, while working out why Search Console had not read the
+sitemap. It was not the cause, and it is worth more than the thing it was not
+the cause of.
+
+`public/robots.txt` is 7 lines. The file served at `quickflow.dev/robots.txt`
+is 137. Cloudflare prepends its own managed block, and the repository's file
+follows it unchanged at the bottom. Nothing in this repository says so, and a
+redeploy does not restore it.
+
+What the managed block adds:
+
+- `Content-Signal: search=yes,ai-train=no,use=reference`, a reservation of
+  rights with the EU copyright directive named in the preamble above it.
+- 31 `Disallow: /` groups, one per crawler.
+- A second `User-agent: *` group, so the served file now has two. Google merges
+  groups that match the same agent and both say `Allow: /`, so this is harmless
+  today. It would not be if the two ever disagreed.
+
+**The distinction that matters, because it is the whole trade.** The blocked
+list is training and bulk scraping: GPTBot, ClaudeBot, Google-Extended, CCBot,
+Bytespider, anthropic-ai, and so on. The crawlers that fetch a page to answer a
+question somebody is asking right now are not blocked, and were checked by name
+on 31 October: OAI-SearchBot, ChatGPT-User, Claude-User, Claude-SearchBot,
+PerplexityBot. Googlebot and Bingbot are not blocked either.
+
+So the site can be read and cited when a reader asks an assistant something it
+answers, and cannot be swept into a training set. For a site whose job is to be
+found, that is the right way round, and it is the configuration as it stands
+rather than anything that was chosen here deliberately.
+
+Two things on the list are search crawlers rather than training ones,
+`Baiduspider` and `PetalBot`. They are Chinese and Huawei search, neither of
+which is a market this site is written for, so they stay blocked by default
+rather than by decision. Worth knowing before anybody calls it a mistake.
+
+| Where | Cloudflare dashboard, AI Crawl Control |
+|---|---|
+| Setting | managed `robots.txt` on, `ai-train` disallowed |
+| In the API | `GET /zones/{zone}/bot_management`, `is_robots_txt_managed` |
+
+**If someone edits `public/robots.txt` expecting it to be the whole file, they
+are editing the last 7 lines of 137.** That is the trap this section exists for.
+The file's own comment says "Everything here is meant to be read, including by
+machines", which stopped being the whole truth the moment the managed block
+appeared above it.
+
+### 1.6 The two uptime monitors
+
+Created 31 October 2026. UptimeRobot, free plan, five-minute interval. They
+exist in that account and nowhere else: not in this repository, not restored by
+a redeploy, and not visible to anyone reading the code.
+
+| Monitor | URL | Keyword | Incident when |
+|---|---|---|---|
+| `quickflow.dev` | `/` | `Quick Flow` | keyword does not exist |
+| `quickflow.dev formular` | `/contact/` | `data-sitekey` | keyword does not exist |
+
+**Keyword monitors rather than a status check, on purpose.** A 200 is not proof
+the page rendered; Cloudflare can answer with its own page and the site can
+deploy broken while still returning 200. `Quick Flow` is the brand name, which
+appears five times on the home page and survives a copy rewrite, unlike a
+headline or a title.
+
+The second one is the one worth having. `data-sitekey` is in the HTML only when
+the deployment was built with the Turnstile variables present, which is exactly
+the state section 1.2 describes: the form renders without a widget, nobody gets
+their copy, and nothing anywhere says so. Section 6's monthly send catches that
+in up to a month and the weekly workflow in up to a week. This catches it in
+five minutes.
+
+**The alerting was tested end to end, not assumed.** On 31 October the second
+monitor was pointed at `/terms/`, a real page that genuinely has no
+`data-sitekey`, and left there. It went down in 7 seconds, was confirmed
+independently from four locations, and the email was sent 48 seconds after the
+first detection. Then it was pointed back. The incident is still in the history,
+dated, which is the evidence that alerting worked on the day it was set up.
+
+Two limits, named rather than discovered:
+
+- **Every check location is in North America.** N. Virginia, Ohio, Ashburn,
+  Dallas. Visitors reach this site through Cloudflare's Bucharest PoP, which is
+  what `CF-RAY: ...-OTP` reports. A total outage is visible from anywhere, but a
+  regional fault in Europe would leave both monitors green while nobody in
+  Romania could load the site. Adding a location is a paid feature.
+- **SSL expiry monitoring is also paid, and is not on.** The certificate is
+  issued and renewed by Cloudflare. If a renewal ever failed, the `curl -fsS` in
+  `.github/workflows/liveness.yml` fails on an invalid certificate, so it would
+  surface there within a week rather than within five minutes.
+
 ---
 
 ## 2. Before every deploy
@@ -450,10 +541,25 @@ and the only thing standing between that and a lost enquiry is the monthly send.
 
 ## 6. Once a month, after launch
 
-One item, and ADR-0004 is the reason for it. There is no error monitoring on
-this site, which is the right call at this size and has one consequence: **a
-failing contact form is silent.** If the Resend key expires, nothing anywhere
-says so until a visitor complains or the owner tests it.
+One item, and ADR-0004 is the reason for it. There is still no error
+monitoring on this site, which is the right call at this size. Until 31
+October 2026 that had one consequence, stated here as a flat fact: a failing
+contact form was silent.
+
+Two things now watch part of it, and neither replaces this one.
+
+- The second uptime monitor in section 1.6 checks every five minutes that the
+  contact page still carries a Turnstile site key, which is the state section
+  1.2 describes and the one that silently stops every visitor copy.
+- `.github/workflows/liveness.yml` checks weekly that the endpoint answers
+  with its own 400 rather than Cloudflare's page, which also proves the
+  Turnstile secret is set, since the branch is skipped without it.
+
+Both of those cover the wiring. **What neither can reach is the Resend key.**
+Sending for real needs a Turnstile token, and only a person in a browser
+produces one, so no automated check can prove mail still leaves the building.
+If that key expires, nothing anywhere says so until a visitor complains or the
+owner tests it. That half is still silent, and this is what listens to it.
 
 So, once a month: send the form, in either language, and confirm both emails
 arrive. ADR-0004 calls this mitigation weak and accepts it knowingly. It is only
