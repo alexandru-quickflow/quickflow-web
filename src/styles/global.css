@@ -789,15 +789,18 @@ html[lang="ru"] {
 	   running text, and a bare <code> otherwise falls back to whatever
 	   monospace the browser keeps, at a size that does not match anything.
 	
-	   `overflow-wrap: anywhere` rather than `break-word`, because only the
-	   first one shrinks the element's minimum width. A browser reads
-	   pending_verification as one unbreakable word, and with break-word the
-	   table column it sits in was still 345px wide inside a 320px phone. */
+	   `break-word`, with the page writing a break opportunity after each
+	   underscore. A browser reads pending_verification as one unbreakable
+	   word, so the table holding it ran 345px wide inside a 320px phone.
+	   `overflow-wrap: anywhere` fixed the width and broke the names at
+	   arbitrary letters instead: pending_v / erificati / on. This way the
+	   line breaker takes the underscore first, and mid-word breaking is left
+	   for a segment too long to fit a line on its own. */
 	code {
 		font-family: var(--font-mono);
 		font-size: 0.9em;
 		color: var(--paper);
-		overflow-wrap: anywhere;
+		overflow-wrap: break-word;
 	}
 
 	.code {
