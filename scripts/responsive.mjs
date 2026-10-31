@@ -200,8 +200,10 @@ const LABEL = {
 };
 
 let total = 0;
+const counts = {};
 for (const kind of ['overflow', 'escapes', 'squeezed', 'taps', 'tiny']) {
 	const rows = [...findings.values()].filter((f) => f.kind === kind);
+	counts[kind] = rows.length;
 	console.log(`${LABEL[kind]}: ${rows.length}`);
 	for (const f of rows.slice(0, 14)) {
 		const w = [...f.widths].sort((a, b) => a - b);
@@ -216,3 +218,20 @@ for (const kind of ['overflow', 'escapes', 'squeezed', 'taps', 'tiny']) {
 	total += rows.length;
 }
 console.log(total === 0 ? 'Nothing found.' : `${total} distinct findings.`);
+
+// Three of the five categories are defects and two are not. `squeezed` is
+// two-character labels that have exactly the room they need, and `tiny` is the
+// .spec and .stamp label vocabulary, so both are reported and neither is an
+// error. The other three have to be zero, which the runbook has said since this
+// script was written and nothing enforced until now: on 31 October 2026 it found
+// one element out past its parent on a Linux runner, printed it, and exited 0,
+// so the CI step built around it could not fail on the one thing it is there to
+// catch. probe.mjs next door has set exitCode since the day it was written.
+const ENFORCED = ['overflow', 'escapes', 'taps'];
+const broken = ENFORCED.filter((kind) => counts[kind] > 0);
+if (broken.length > 0) {
+	const named = broken.map((k) => `${LABEL[k]}: ${counts[k]}`).join(', ');
+	console.log(`\n${named}`);
+	console.log('These have to be zero. See docs/launch-checklist.md, section 2.');
+	process.exitCode = 1;
+}
