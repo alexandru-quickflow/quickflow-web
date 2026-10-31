@@ -165,9 +165,11 @@ npm run build
 npx astro preview --host 0.0.0.0 --port 4322   # stop it with: npx astro preview stop
 ```
 
-`npm test` is two suites and takes about five seconds. `test:handler` calls the
-contact function directly, since nothing serves Pages Functions locally, and
-`test:form` drives both contact pages in a browser against the built site. If
+`npm test` is two npm scripts and takes about five seconds. `test:handler` is
+`node --test` over every `.test.mjs` in `tests/`, which is two files: the
+contact function, called directly because nothing serves Pages Functions
+locally, and the routing table's trailing-slash invariant. `test:form` drives
+both contact pages in a browser against the built site. If
 the second one starts its own preview server it builds first; if one is already
 running on 4322 it uses that, so run it before the scripts below rather than in
 the middle of them.
@@ -358,6 +360,55 @@ animation on the site. The decision is not close.
 elapsed count is derived from the current year at build time. The site said
 "eight years" for a while after it had been nine. It can still go stale, but
 only if a whole year passes with no deploy.
+
+### Every path in the routing table ends with a slash
+
+Decided 31 October 2026, after measuring it against the live domain rather than
+against the dev server, which is where this kind of thing hides.
+
+The build emits a directory per page, so the server answers `/contact` with a
+308 to `/contact/`. `src/i18n/routes.ts` held the slugs without the slash, and
+that table is where every internal link, every language switcher target and
+every hreflang in the site comes from. Three things were true at once, and none
+of them was visible from reading a page:
+
+- Every internal link paid a redirect before the page began loading. The header
+  navigation, the footer index, every call to action.
+- Every hreflang pointed at a URL that redirects. Google asks that hreflang name
+  the canonical URL, and a redirecting target is a known reason for a language
+  cluster not to form. The Romanian and Russian pages are the whole point of
+  having the annotations, so this was the one place it could cost something real.
+- The canonical tag disagreed with the hreflang on the same page. Canonical is
+  computed from the request path, which carries the slash; hreflang came from the
+  table, which did not.
+
+The third one is why it lasted. The two were generated from different sources,
+so nothing in the repository compared them, and `probe.mjs` checks that the two
+language versions of a page match each other rather than that either one names
+itself correctly.
+
+The same bug had a second half in `functions/api/contact.ts`, which keeps its
+own copy of the two confirmation paths on purpose. A no-JavaScript submission
+got a 303 to `/thank-you`, which then answered 308 to `/thank-you/`. Two
+redirects at the one moment on this site that converts.
+
+**What the table looks like now:** 32 entries, all ending with a slash. Two of
+them, `/` and `/ro/`, already did, which is why the home page looked fine while
+every page under it did not.
+
+`tests/routes.test.mjs` is what keeps this true, and it is the reason there is a
+test rather than a note. It asserts the slash on every entry, that
+`alternates()` never offers a redirecting href, and that the set of languages
+the table declares for a page is exactly the set the switcher offers. It was
+checked in the direction that matters: with one slash removed from one entry it
+fails and names the key.
+
+**Where to look if you are reading history.** The change landed inside two
+commits whose messages are about something else, `8cd636f "Add the Connect KYC
+page"` and `7628822 "Break field names at the underscore"`, because two
+sessions were writing to the same checkout that afternoon and the slashes were
+swept up by whichever committed next. `git log` will not explain the slashes to
+anyone. This section is the only record, which is the argument for this file.
 
 ---
 
