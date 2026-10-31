@@ -177,7 +177,16 @@ const ogImage = new URL(
 	     date. -->
 		<header class="topbar">
 			<div class="shell flex items-center justify-between gap-6 py-6">
-				<div class="flex items-center gap-10 xl:gap-12">
+				{/* gap-6 and not gap-10 from lg to xl. The Romanian nav is the longest
+				     set of six labels on the site, and the Moldova page is the only
+				     page where the switcher offers three languages rather than two,
+				     which costs the header another 41px on the right. Measured at
+				     1024: the nav needs 613px of content on Windows and about 24px
+				     more wherever text shapes wider, and at gap-10 that left 16px of
+				     slack here and none on a Linux runner, where the nav was laid out
+				     3px past this div. 24px buys back 16 of those without touching the
+				     nav rhythm itself. xl keeps 48px, where there was never a problem. */}
+				<div class="flex items-center gap-6 xl:gap-12">
 					<a href={paths.home[lang]} class="shrink-0" aria-label={t.home}>
 						<img src="/brand/logo-white.svg" alt="Quick Flow" class="h-6 w-auto" />
 					</a>
