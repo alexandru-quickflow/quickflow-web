@@ -96,11 +96,24 @@ const schema = {
 
 		<!-- The whole menu for this language, in one sentence. There is one page
 		     in Russian, so a header full of Romanian links would be worse than
-		     saying plainly where the rest of the site is. -->
+		     saying plainly where the rest of the site is.
+
+		     The privacy notice and the terms are in that sentence because this
+		     page sends the reader to a Romanian contact form twice and the
+		     Russian footer has no link columns. They cannot go through
+		     `footerNav`: `inLocale` drops an item with no path in this
+		     language, and giving `paths.privacy` a `ru` pointing at the
+		     Romanian URL would make hreflang and the language switcher claim a
+		     Russian version that does not exist. -->
 		<p class="prose-body mt-8 max-w-[56ch]">
 			Остальная часть сайта на <a href={paths.home.ro} class="link" hreflang="ro" lang="ro"
 				>румынском</a
-			> и <a href={paths.home.en} class="link" hreflang="en" lang="en">английском</a>. Эта страница
+			> и <a href={paths.home.en} class="link" hreflang="en" lang="en">английском</a>, включая <a
+				href={paths.privacy.ro}
+				class="link"
+				hreflang="ro"
+				lang="ro">политику конфиденциальности</a
+			> и <a href={paths.terms.ro} class="link" hreflang="ro" lang="ro">условия</a>. Эта страница
 			на русском, потому что половина коммерческих запросов в Молдове идёт на русском, а ответа на
 			них нет.
 		</p>
@@ -337,7 +350,10 @@ const schema = {
 				<div class="md:col-span-4 md:col-start-9 md:self-start md:justify-self-end">
 					<a href={paths.contact.ro} class="btn btn-primary" hreflang="ro" lang="ro">Написать мне</a>
 					<p class="mt-6 text-sm text-paper/70">
-						Форма на румынском. Пишите на русском, я отвечу на русском.
+						Форма на румынском. Пишите на русском, я отвечу на русском. Куда попадают ваши
+						данные, написано в <a href={paths.privacy.ro} class="link" hreflang="ro" lang="ro"
+							>политике конфиденциальности</a
+						>: если коротко, в мою почту, чтобы я мог ответить.
 					</p>
 				</div>
 			</div>
