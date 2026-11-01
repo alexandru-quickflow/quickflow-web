@@ -37,7 +37,11 @@ const routes = fs
 	.readFileSync(path.join(ROOT, 'dist', 'sitemap-0.xml'), 'utf8')
 	.match(/<loc>[^<]+<\/loc>/g)
 	.map((s) => new URL(s.slice(5, -6)).pathname)
-	.concat(['/thank-you', '/ro/multumesc', '/404'])
+	// Not in the sitemap, so they are named here. Both forms answer, but only
+	// one without a redirect: /thank-you and /ro/multumesc are directories and
+	// 308 to the slash, while /404 is 404.html and 308s the other way. Measured
+	// 1 November 2026. Without this the run spends 24 redirects on 3 pages.
+	.concat(['/thank-you/', '/ro/multumesc/', '/404'])
 	.sort();
 
 function audit(isMobile) {
