@@ -338,7 +338,10 @@ const flowFields = [
 				</div>
 			</div>
 
-			<aside class="md:col-span-4 md:col-start-9 md:sticky md:top-28 md:self-start">
+			<!-- A div rather than an aside. It sits inside <main> and belongs to this
+			     page, so a complementary landmark here is one a screen reader offers
+			     at the same level as the page itself. Its own h2 already places it. -->
+			<div class="md:col-span-4 md:col-start-9 md:sticky md:top-28 md:self-start">
 				<p class="spec">Sau, dacă preferi</p>
 				<h2 class="display-md mt-4">Treizeci de minute de vorbit.</h2>
 				<p class="prose-body mt-5">
@@ -360,7 +363,7 @@ const flowFields = [
 					Scris simplu, dacă nu vrei niciun formular:<br />
 					<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>
 				</p>
-			</aside>
+			</div>
 		</div>
 	</section>
 </Site>

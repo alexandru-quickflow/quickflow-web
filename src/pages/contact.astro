@@ -348,7 +348,10 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 				</div>
 			</div>
 
-			<aside class="md:col-span-4 md:col-start-9 md:sticky md:top-28 md:self-start">
+			<!-- A div rather than an aside. It sits inside <main> and belongs to this
+			     page, so a complementary landmark here is one a screen reader offers
+			     at the same level as the page itself. Its own h2 already places it. -->
+			<div class="md:col-span-4 md:col-start-9 md:sticky md:top-28 md:self-start">
 				<p class="spec">Or, if you prefer</p>
 				<h2 class="display-md mt-4">Thirty minutes of talking.</h2>
 				<p class="prose-body mt-5">
@@ -370,7 +373,7 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 					Plain writing, if you want no form at all:<br />
 					<a href="mailto:alexandru@quickflow.dev" class="link">alexandru@quickflow.dev</a>
 				</p>
-			</aside>
+			</div>
 		</div>
 	</section>
 </Site>
