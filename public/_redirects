@@ -1,0 +1,13 @@
+# Cloudflare Pages reads this file from the root of the build. One rule so far.
+#
+# Crawlers that do not read robots.txt first probe /sitemap.xml, because that
+# is where the convention says a sitemap lives. @astrojs/sitemap writes the
+# index as sitemap-index.xml and offers no way to rename it, so the
+# conventional path is a 404. Measured on 1 November 2026, over the
+# twenty-six hours Cloudflare still had logs for: four attempts, one
+# crawler, every one answered with nothing.
+#
+# An alias rather than a second file. Two sitemaps listing the same thirty URLs
+# is how the two end up listing different thirty URLs. robots.txt still names
+# sitemap-index.xml, which stays the one address this site gives out.
+/sitemap.xml  /sitemap-index.xml  301
