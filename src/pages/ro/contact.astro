@@ -28,6 +28,7 @@ const optional = 'ml-2 font-normal normal-case tracking-normal';
 const stepPrompt = 'Completează câmpul ăsta ca să mergi mai departe.';
 
 import { BOOKING, BOOKING_URL } from '../../content/booking';
+import { paths } from '../../i18n/routes';
 
 // The bottom rung used to be "under 5,000", which put a 350 EUR audit in the
 // same box as a 4,800 EUR project. Everything the site sells as a way in now
@@ -317,6 +318,15 @@ const flowFields = [
 						</div>
 						<p id="form-note" class="mt-4 text-sm text-paper/68">
 							Primești și tu o copie pe email, ca să ai ce ai scris.
+						</p>
+						<!-- Article 13 asks for the notice where the data is handed
+						     over, not only in the footer of every page. The footer link
+						     was the only route to it until now, which is accessible but
+						     not the same thing as being told at the time. -->
+						<p class="mt-2 text-sm text-paper/68">
+							Unde ajunge și cât stă e în <a href={paths.privacy.ro} class="link"
+								>politica de confidențialitate</a
+							>. Pe scurt: în emailul meu, ca să îți pot răspunde.
 						</p>
 					</div>
 				</form>

@@ -79,6 +79,7 @@ const optional = 'ml-2 font-normal normal-case tracking-normal';
 const stepPrompt = 'Fill this in before the next step.';
 
 import { BOOKING, BOOKING_URL } from '../content/booking';
+import { paths } from '../i18n/routes';
 ---
 
 <Site
@@ -327,6 +328,16 @@ import { BOOKING, BOOKING_URL } from '../content/booking';
 						</div>
 						<p id="form-note" class="prose-body mt-4 text-sm">
 							You get a copy by email too, so you keep what you wrote.
+						</p>
+						<!-- Article 13 asks for the notice where the data is handed
+						     over, not only in the footer of every page. The footer link
+						     was the only route to it until now, which is accessible but
+						     not the same thing as being told at the time. -->
+						<p class="prose-body mt-2 text-sm">
+							Where it goes and how long it stays is in the <a
+								href={paths.privacy.en}
+								class="link">privacy policy</a
+							>. Short version: my inbox, so I can answer you.
 						</p>
 					</div>
 				</form>
