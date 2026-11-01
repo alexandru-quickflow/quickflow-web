@@ -18,21 +18,29 @@
  * See ADR-0003 and docs/launch-checklist.md; the rule does not live in this
  * repo, which is exactly why it has to be checked before every launch.
  *
- * Turnstile needs JavaScript, so a no-JS submission arrives without a token.
- * Those are accepted, because rejecting them would break the form for everyone
- * without JavaScript, which the spec requires to keep working.
+ * Turnstile needs JavaScript, so a submission made without it arrives with no
+ * token. Those used to be accepted, on the grounds that the spec required the
+ * form to work without JavaScript. The spec says no such thing. What section
+ * 3.1 does say, under what happens when someone abuses the form, is
+ * "verificare Turnstile inainte de trimitere": the check comes before the
+ * send. Skipping it when the field is absent is the opposite of that, and it
+ * made the one request shape a script writes by hand the one shape never
+ * checked. Posting to this endpoint with the field left out sent mail.
  *
- * But accepted is not the same as trusted, and the difference is the copy sent
- * to the visitor. That copy goes to whatever address was typed into the form,
- * which makes this endpoint a mail relay for anyone who can POST to it: send
- * text, name someone else's address, and the site delivers it. The honeypot
- * stops a crawler filling every field it finds; it does not stop anybody who
- * reads the HTML once. So the copy is sent only when Turnstile actually
- * verified a human. A submission without a token still reaches the owner,
- * which is the whole point of the form, and simply gets no copy of itself.
+ * So the secret decides whether the check runs, and the token decides whether
+ * it passes. Those are two questions and they now have two conditions. With
+ * the secret set, a submission carrying no token is refused exactly like one
+ * carrying a bad token, and the message points at the email address instead,
+ * which is what the spec already asks for when the form cannot go through.
  *
- * That leaves the edge rule as a cap on volume rather than as the only thing
- * between this endpoint and a stranger's inbox.
+ * The copy to the visitor stays gated on a verified human for its own reason.
+ * It goes to whatever address was typed into the form, so sending it on an
+ * unverified submission would make this endpoint a mail relay: send text, name
+ * someone else's address, and the site delivers it. With no secret configured
+ * at all, as in local development, nothing is verified and no copy goes out.
+ *
+ * That leaves the edge rule as a cap on volume by a person in a browser,
+ * rather than as the only thing standing between this endpoint and an inbox.
  */
 
 interface Env {
@@ -113,7 +121,11 @@ const COPY: Record<Locale, Copy> = {
 		missingSomething: 'Something is still missing from the form.',
 		serviceDown:
 			'I could not send the request right now. Write directly to alexandru@quickflow.dev or try again in a few minutes.',
-		turnstileFailed: 'The anti-robot check did not pass. Reload the page and try again.',
+		// Reached both by a token that failed and by a submission that carried
+		// none, which is what a browser with JavaScript off produces. Reloading
+		// does nothing for the second visitor, so the address is in the line.
+		turnstileFailed:
+			'The anti-robot check did not pass. Reload the page and try again, or write straight to alexandru@quickflow.dev.',
 		errorIntro:
 			'Your text is below, it is not lost. Copy it and send it to me by email, or try again in a few minutes.',
 		backToForm: 'Back to the form',
@@ -155,7 +167,8 @@ const COPY: Record<Locale, Copy> = {
 		missingSomething: 'Mai lipsește ceva din formular.',
 		serviceDown:
 			'Nu am putut trimite cererea acum. Scrie direct la alexandru@quickflow.dev sau încearcă din nou în câteva minute.',
-		turnstileFailed: 'Verificarea anti-robot nu a trecut. Reîncarcă pagina și încearcă din nou.',
+		turnstileFailed:
+			'Verificarea anti-robot nu a trecut. Reîncarcă pagina și încearcă din nou, sau scrie direct la alexandru@quickflow.dev.',
 		errorIntro:
 			'Textul tău e mai jos, nu s-a pierdut. Copiază-l și trimite-mi-l pe email, sau încearcă din nou în câteva minute.',
 		backToForm: 'Înapoi la formular',
@@ -379,11 +392,16 @@ export const onRequestPost = async (context: {
 	// Whether a human was actually verified, not merely whether the check was
 	// skipped. A missing token, a missing secret and a passing token are three
 	// different states, and only the last one earns the visitor a copy.
+	//
+	// The secret decides whether the check runs, the token decides whether it
+	// passes, and the two conditions have to stay apart. Joined into one, an
+	// absent token read as "no check configured" and the submission went
+	// through unverified.
 	let verifiedHuman = false;
-	const token = text(form.get('cf-turnstile-response'));
-	if (token && env.TURNSTILE_SECRET_KEY) {
+	if (env.TURNSTILE_SECRET_KEY) {
+		const token = text(form.get('cf-turnstile-response'));
 		const ip = request.headers.get('CF-Connecting-IP') || '';
-		const passed = await verifyTurnstile(token, env.TURNSTILE_SECRET_KEY, ip);
+		const passed = token ? await verifyTurnstile(token, env.TURNSTILE_SECRET_KEY, ip) : false;
 		if (!passed) {
 			return wantsJson
 				? Response.json({ message: c.turnstileFailed }, { status: 400 })

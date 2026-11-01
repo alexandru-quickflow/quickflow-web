@@ -90,13 +90,34 @@ test('a verified submission reaches the owner and comes back to the visitor', as
 	assert.deepEqual(to, [OWNER, VISITOR]);
 });
 
-test('without a token the owner still gets it and nobody else does', async () => {
-	// This is the whole point of the change: the form keeps working with no
-	// JavaScript, and stops being usable to send mail to an address a stranger
-	// typed. The copy is the only thing the visitor loses.
+test('a submission carrying no token at all sends nothing', async () => {
+	// This test asserted the opposite until 1 November 2026, when a post to the
+	// live endpoint with the field left out came back 200 and delivered mail.
+	// Leaving the field out is what a script does, not what a browser does, so
+	// it was the one way in that never met Turnstile. The secret is set in ENV,
+	// which makes a missing token a failed check rather than an absent one.
 	const { status, to } = await post(submission());
-	assert.equal(status, 200);
-	assert.deepEqual(to, [OWNER]);
+	assert.equal(status, 400);
+	assert.deepEqual(to, []);
+});
+
+test('with no secret configured the check is absent rather than failed', async () => {
+	// Local development, where the handler has nothing to verify against. The
+	// submission goes through and the visitor gets no copy of it, because
+	// nothing proved there was a visitor.
+	const res = await onRequestPost({
+		request: new Request('https://quickflow.dev/api/contact', {
+			method: 'POST',
+			headers: { Accept: 'application/json' },
+			body: submission(),
+		}),
+		env: { RESEND_API_KEY: 'test-key' },
+	});
+	assert.equal(res.status, 200);
+	assert.deepEqual(
+		sent.map((mail) => mail.to),
+		[OWNER]
+	);
 });
 
 test('a token that does not verify sends nothing at all', async () => {
@@ -135,21 +156,32 @@ test('the honeypot answers as if it worked and sends nothing', async () => {
 	assert.deepEqual(to, []);
 });
 
+// The two below are about which answer a non-JSON caller gets, not about the
+// check, so they carry a token that verifies. Without one they now stop at the
+// refusal and never reach the redirect they exist to assert.
 test('a form post with no Accept header is redirected, not answered in JSON', async () => {
-	const { status, res, to } = await post(submission(), { json: false });
+	const { status, res, to } = await post(submission({ 'cf-turnstile-response': 'a-good-token' }), {
+		json: false,
+	});
 	assert.equal(status, 303);
 	assert.equal(new URL(res.headers.get('location')).pathname, '/ro/multumesc/');
-	assert.deepEqual(to, [OWNER]);
+	assert.deepEqual(to, [OWNER, VISITOR]);
 });
 
 test('the locale decides the thank-you page, and only the two known ones count', async () => {
-	const english = await post(submission({ locale: 'en' }), { json: false });
+	const english = await post(
+		submission({ locale: 'en', 'cf-turnstile-response': 'a-good-token' }),
+		{ json: false }
+	);
 	assert.equal(new URL(english.res.headers.get('location')).pathname, '/thank-you/');
 
 	// A locale is never trusted as a path, so an injected one falls back to
 	// English rather than turning the redirect into an open one.
 	sent = [];
-	const hostile = await post(submission({ locale: 'https://example.com/' }), { json: false });
+	const hostile = await post(
+		submission({ locale: 'https://example.com/', 'cf-turnstile-response': 'a-good-token' }),
+		{ json: false }
+	);
 	assert.equal(new URL(hostile.res.headers.get('location')).pathname, '/thank-you/');
 });
 

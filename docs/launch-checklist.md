@@ -82,6 +82,15 @@ human, so the rule is a cap on volume rather than the only thing standing
 between the endpoint and a stranger's inbox. Both are needed. Neither replaces
 the other.
 
+**The sentence above about Turnstile making volume expensive was false until 1
+November 2026.** The handler ran the check only when a token was present, so a
+post that simply left the field out skipped it and the mail went: measured on
+the live endpoint, no token, HTTP 200, a real email delivered. Omitting a field
+is what a script does and a browser never does, which made it the one request
+shape that was never checked. The guard now branches on the secret rather than
+on the token, a missing token is refused exactly like a bad one, and twelve
+posts a minute is again a thing only a person in a browser can do.
+
 ### 1.2 Environment variables in the Cloudflare Pages project
 
 **Status on 30 October 2026: the three required ones are set on Production and
