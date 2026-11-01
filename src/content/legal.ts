@@ -19,5 +19,5 @@ import type { Locale } from '../i18n/routes';
 // created to stop.
 export const LEGAL_UPDATED: Record<'privacy' | 'terms', Record<Locale, string>> = {
 	privacy: { en: '1 November 2026', ro: '1 noiembrie 2026' },
-	terms: { en: '27 October 2026', ro: '27 octombrie 2026' },
+	terms: { en: '1 November 2026', ro: '1 noiembrie 2026' },
 };
