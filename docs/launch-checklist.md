@@ -450,10 +450,20 @@ bytes, sha256 `22c8a456...`. It is served unretouched and `scripts/images.py`
 skips the folder, so no AVIF or WebP of it is ever generated. Re-encoding
 somebody else's legal mark is not ours to do.
 
-Two things this is not sure about, both worth a minute before an inspection:
-the order is reported to describe a 250x50 pictogram while the file ANPC serves
-is 201x50, and the order asks for the home page menu bar while the mark here is
-in the footer of every page.
+Both doubts this section used to record are closed, checked against the
+consolidated text on legislatie.just.ro on 1 November 2026.
+
+Art 2(2) as amended asks for 250x50 and the file ANPC serves is 201x50, so the
+link is a 250x50 box and the mark sits inside it unscaled. Stretching somebody
+else's trademark by 49 pixels to satisfy a rule about the space it occupies is
+the wrong way round.
+
+The menu bar was never in art 2(1). That alineat says only `pe prima pagină a
+site-ului - home page`, which names the page and not the part of it, and it
+said the same in the 2022 original. The menu bar lived in art 2(2), and art
+2(2) is precisely what Ordinul 270/2026 rewrote on 19 May 2026: what is left of
+it is the size and the link. The footer of every page includes the home page,
+so the placement is already right.
 
 ### CSS minification stays off
 
