@@ -255,6 +255,34 @@ Two limits, named rather than discovered:
   `.github/workflows/liveness.yml` fails on an invalid certificate, so it would
   surface there within a week rather than within five minutes.
 
+### 1.7 The page view counter's dataset binding
+
+`functions/_middleware.ts` counts page views into Workers Analytics Engine
+(ADR-0006). The binding is set in the Pages project, not in this repository,
+because the project has no Wrangler file.
+
+| Where | Value |
+|---|---|
+| Pages project, Settings, Bindings, Analytics engine | variable `PAGEVIEWS`, dataset `quickflow_pageviews`, production |
+| Pages project, Settings, Runtime, Fail open / closed | **Fail open** |
+
+Without the binding the counter writes nothing and the site works as before,
+which also means nothing complains when it goes missing. After a deployment,
+open a page in a real browser and check that a row arrives:
+
+```sql
+SELECT timestamp, blob1 AS path, blob2 AS source, blob3 AS country,
+       blob4 AS device, blob5 AS kind
+FROM quickflow_pageviews
+WHERE timestamp > NOW() - INTERVAL '1' HOUR
+ORDER BY timestamp DESC
+```
+
+Fail open matters because the Functions allowance, 100,000 requests a day, is
+shared by every project on the account. Fail closed would turn a busy day into
+an error page on every URL. `public/_routes.json` keeps images, fonts and CSS
+away from the Function so only page requests spend it.
+
 ---
 
 ## 2. Before every deploy
@@ -404,6 +432,12 @@ has its own Web Analytics switch that ignores the variable entirely. Read sectio
 pages, `SELF_JS` in `src/content/proof.ts`, and the comparison row on both
 migration pages. Both privacy pages change themselves; they read the same
 variable.
+
+**Counting moved to the server on 5 November 2026** (ADR-0006). The beacon
+stays off and every number above stays true: the counter is a Pages Function
+that runs after the page is served and puts nothing in it. What the dashboard
+could not say, which visits are people and where they came from, the counter
+now records. Section 1.7 has the binding it depends on.
 
 ### The mail service being down answers 422, not 502
 

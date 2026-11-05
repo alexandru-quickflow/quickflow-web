@@ -39,7 +39,8 @@ src/
 ├── i18n/           translation strings
 └── styles/
 functions/
-└── api/contact.ts  the only server-side code
+├── _middleware.ts  the page view counter, ADR-0006
+└── api/contact.ts  the contact form
 docs/
 ├── spec.md                  approved spec v2, frozen
 ├── anexa-tehnica.md         stack decisions taken before estimating
@@ -58,6 +59,7 @@ the work plan and the change request log.
 
 Pushing to `main` deploys to production. Any other branch gets a preview URL.
 
-Three pieces of configuration live in the Cloudflare dashboard and are not in
-this repository: the rate limiting rule on `/api/contact`, the Web Analytics
-token, and the two environment variables above. See `CLAUDE.md`.
+Some configuration lives in the Cloudflare dashboard and is not in this
+repository: the rate limiting rule on `/api/contact`, the two environment
+variables above, and the `PAGEVIEWS` Analytics Engine binding the page view
+counter writes to. See `CLAUDE.md` and `docs/launch-checklist.md`, section 1.7.

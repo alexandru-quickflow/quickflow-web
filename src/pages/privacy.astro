@@ -10,6 +10,7 @@ import { LEGAL_UPDATED } from '../content/legal';
 const analytics = Boolean(import.meta.env.PUBLIC_CF_BEACON_TOKEN);
 
 import { BOOKING } from '../content/booking';
+import { PAGE_COUNTER } from '../content/counter';
 import { paths } from '../i18n/routes';
 
 const updated = LEGAL_UPDATED.privacy.en;
@@ -21,8 +22,9 @@ const updated = LEGAL_UPDATED.privacy.en;
 // since the button came back. Analytics is off, and stays off: the beacon
 // measures 10,264 bytes on the wire against 5,612 for the whole site, which
 // would make the stamp on the home page false by a factor of nearly three.
-// Traffic is read from the Cloudflare dashboard instead, which is the host
-// already named below and adds no script, no cookie and no third party.
+// Traffic is counted on the server instead (functions/_middleware.ts, ADR-0006),
+// by the host already named below, with no script, no cookie and no third
+// party. PAGE_COUNTER decides whether the pages describe it.
 const sections = [
 	{
 		title: 'Who processes the data',
@@ -34,7 +36,10 @@ const sections = [
 		title: 'On what basis',
 		body: [
 			'Article 6(1)(b) of the GDPR: steps taken at your request before entering a contract. You write to find out whether we should work together, I process what you wrote so that I can answer you.',
-			'Article 6(1)(f) for one thing more, which is keeping the form from being abused. The anti-robot check and the rule that counts submissions per IP address both read technical data to do their job, and that is not something you asked for. The legitimate interest is a contact form that still reaches me on the day somebody points a script at it.',
+			'Article 6(1)(f) for two things more. The first is keeping the form from being abused. The anti-robot check and the rule that counts submissions per IP address both read technical data to do their job, and that is not something you asked for. The legitimate interest is a contact form that still reaches me on the day somebody points a script at it.',
+			...(PAGE_COUNTER
+				? ['The second is counting page views. Knowing which pages are read and which sites send people here is how I decide what to write next, and the count is built so that it says nothing about who you are.']
+				: []),
 			'There is no consent box and you are not asked for one, because I do nothing with the data beyond answering you.',
 		],
 	},
@@ -67,6 +72,9 @@ const sections = [
 			...(analytics
 				? ['Cloudflare Web Analytics, which counts page views. It stores no cookie and builds no profile.']
 				: []),
+			...(PAGE_COUNTER
+				? ['Cloudflare also counts page views, on its own servers and with no script in the page. For each page opened it records the address of the page, the name of the site you came from (google.com, for example, never the full link), your country as Cloudflare works it out from the connection, whether you use a phone or a computer, and whether the visit looks like a robot. It records no IP address, no cookie and no identifier, so two visits by the same person cannot be linked. The counts are kept for three months and then deleted.']
+				: []),
 			...(BOOKING
 				? ['Calendly, but only if you choose to book a slot. What you type there is processed by them, under their own policy, and I only see the booking.']
 				: []),
@@ -77,7 +85,9 @@ const sections = [
 		body: [
 			analytics
 				? 'The site sets no cookies. Traffic statistics come from Cloudflare Web Analytics, which uses no cookies, sets no identifier and does not recognise you from one visit to the next. That is why you see no cookie banner.'
-				: 'The site sets no cookies and carries no analytics script at all. That is why you see no cookie banner. If I add traffic statistics later it will be Cloudflare Web Analytics, which uses no cookies and does not identify individual visitors, and this page will say so on the day it goes live, not before.',
+				: PAGE_COUNTER
+					? 'The site sets no cookies and carries no analytics script. Page views are counted on the server, as described above, without cookies and without recognising you from one visit to the next. That is why you see no cookie banner.'
+					: 'The site sets no cookies and carries no analytics script at all. That is why you see no cookie banner. If I add traffic statistics later it will be Cloudflare Web Analytics, which uses no cookies and does not identify individual visitors, and this page will say so on the day it goes live, not before.',
 		],
 	},
 	{

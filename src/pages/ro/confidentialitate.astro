@@ -10,6 +10,7 @@ import { LEGAL_UPDATED } from '../../content/legal';
 const analytics = Boolean(import.meta.env.PUBLIC_CF_BEACON_TOKEN);
 
 import { BOOKING } from '../../content/booking';
+import { PAGE_COUNTER } from '../../content/counter';
 import { paths } from '../../i18n/routes';
 
 const updated = LEGAL_UPDATED.privacy.ro;
@@ -21,8 +22,9 @@ const updated = LEGAL_UPDATED.privacy.ro;
 // since the button came back. Analytics is off, and stays off: the beacon
 // measures 10,264 bytes on the wire against 5,612 for the whole site, which
 // would make the stamp on the home page false by a factor of nearly three.
-// Traffic is read from the Cloudflare dashboard instead, which is the host
-// already named below and adds no script, no cookie and no third party.
+// Traffic is counted on the server instead (functions/_middleware.ts, ADR-0006),
+// by the host already named below, with no script, no cookie and no third
+// party. PAGE_COUNTER decides whether the pages describe it.
 
 const sections = [
 	{
@@ -35,7 +37,10 @@ const sections = [
 		title: 'Pe ce temei',
 		body: [
 			'Articolul 6(1)(b) din GDPR: demersuri făcute la cererea ta înainte de încheierea unui contract. Tu scrii ca să afli dacă lucrăm împreună, eu prelucrez ca să îți pot răspunde.',
-			'Articolul 6(1)(f) pentru un singur lucru în plus, și anume ca formularul să nu poată fi abuzat. Verificarea anti-robot și regula care numără trimiterile pe adresă IP citesc amândouă date tehnice ca să își facă treaba, iar asta nu e ceva ce ai cerut tu. Interesul legitim e un formular de contact care ajunge la mine și în ziua în care cineva îndreaptă un script spre el.',
+			'Articolul 6(1)(f) pentru încă două lucruri. Primul e ca formularul să nu poată fi abuzat. Verificarea anti-robot și regula care numără trimiterile pe adresă IP citesc amândouă date tehnice ca să își facă treaba, iar asta nu e ceva ce ai cerut tu. Interesul legitim e un formular de contact care ajunge la mine și în ziua în care cineva îndreaptă un script spre el.',
+			...(PAGE_COUNTER
+				? ['Al doilea e numărarea afișărilor de pagină. Din ce pagini se citesc și de pe ce site-uri vin oamenii aflu ce merită să scriu mai departe, iar numărătoarea e făcută așa încât să nu spună nimic despre cine ești.']
+				: []),
 			'Nu există consimțământ de bifat și nici nu ți se cere unul, pentru că nu fac nimic cu datele în afară de a-ți răspunde.',
 		],
 	},
@@ -68,6 +73,9 @@ const sections = [
 			...(analytics
 				? ['Cloudflare Web Analytics, care numără afișările de pagină. Nu pune niciun cookie și nu construiește niciun profil.']
 				: []),
+			...(PAGE_COUNTER
+				? ['Tot Cloudflare numără afișările de pagină, pe serverele lui și fără niciun script în pagină. Pentru fiecare pagină deschisă notează adresa paginii, numele site-ului de pe care ai venit (de exemplu google.com, niciodată linkul complet), țara, așa cum o deduce Cloudflare din conexiune, dacă folosești telefon sau calculator și dacă vizita pare a unui robot. Nu notează adresa IP, niciun cookie și niciun identificator, deci două vizite ale aceluiași om nu pot fi legate între ele. Datele se păstrează trei luni, apoi se șterg.']
+				: []),
 			...(BOOKING
 				? ['Calendly, doar dacă alegi să rezervi un interval. Ce scrii acolo e prelucrat de ei, după politica lor, iar eu văd doar rezervarea.']
 				: []),
@@ -78,7 +86,9 @@ const sections = [
 		body: [
 			analytics
 				? 'Site-ul nu pune niciun cookie. Statisticile de trafic vin de la Cloudflare Web Analytics, care nu folosește cookies, nu pune niciun identificator și nu te recunoaște de la o vizită la alta. De-aia nu vezi niciun banner de cookies.'
-				: 'Site-ul nu pune niciun cookie și nu are niciun script de analiză. De-aia nu vezi niciun banner de cookies. Dacă adaug statistici de trafic, va fi Cloudflare Web Analytics, care nu folosește cookies și nu identifică vizitatori individuali, iar pagina asta o va scrie în ziua în care intră, nu înainte.',
+				: PAGE_COUNTER
+					? 'Site-ul nu pune niciun cookie și nu are niciun script de analiză. Afișările de pagină se numără pe server, cum scrie mai sus, fără cookies și fără să te recunoască de la o vizită la alta. De-aia nu vezi niciun banner de cookies.'
+					: 'Site-ul nu pune niciun cookie și nu are niciun script de analiză. De-aia nu vezi niciun banner de cookies. Dacă adaug statistici de trafic, va fi Cloudflare Web Analytics, care nu folosește cookies și nu identifică vizitatori individuali, iar pagina asta o va scrie în ziua în care intră, nu înainte.',
 		],
 	},
 	{

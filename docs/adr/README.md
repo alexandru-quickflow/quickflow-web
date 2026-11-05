@@ -15,6 +15,7 @@ taken during development.
 | [0003](0003-rate-limiting-at-the-edge.md) | Rate limiting at the edge, not in code | Accepted | 2026-10-27 |
 | [0004](0004-no-sentry.md) | No error monitoring service | Accepted | 2026-10-27 |
 | [0005](0005-single-playwright-test.md) | One Playwright test, on the form only | Accepted | 2026-10-27 |
+| [0006](0006-page-views-counted-on-the-server.md) | Page views counted on the server | Accepted | 2026-11-05 |
 
 ## Creating a new ADR
 

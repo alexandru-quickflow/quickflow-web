@@ -41,7 +41,8 @@ From the spec, sections 1 and 4:
 Cloudflare dashboard, and therefore not restored by a deployment:
 
 - Rate limiting rule on `/api/contact`, 5 requests per hour per IP (ADR-0003)
-- Web Analytics token
+- Web Analytics token (unset on purpose, see ADR-0006)
+- Analytics Engine binding `PAGEVIEWS` and Fail open, for the page view counter
 - Environment variables: Resend API key, Turnstile secret key
 
 ## Commands
