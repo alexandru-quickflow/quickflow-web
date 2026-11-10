@@ -269,6 +269,17 @@ const copy = {
 	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 	const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
 
+	function preconnect() {
+		for (const origin of ['https://stream.mux.com', 'https://image.mux.com']) {
+			if (document.querySelector(`link[rel=preconnect][href="${origin}"]`)) continue;
+			const link = document.createElement('link');
+			link.rel = 'preconnect';
+			link.href = origin;
+			link.crossOrigin = 'anonymous';
+			document.head.append(link);
+		}
+	}
+
 	function loadStyles(): Promise<void> {
 		if (document.querySelector('link[data-plate-css]')) return Promise.resolve();
 		return new Promise((resolve) => {
@@ -401,6 +412,10 @@ const copy = {
 			facade.toggleAttribute('data-loading', true);
 			if (error) error.textContent = '';
 
+			// Open the connections to Mux now, after the press and not before it (see the privacy
+			// page), so the handshakes run while the player mounts and the plate morphs.
+			preconnect();
+
 			let embed: any;
 			try {
 				[, embed] = await warm();
@@ -410,8 +425,8 @@ const copy = {
 				return;
 			}
 
-			// The preview stops before the snapshot, and the video only starts once the morph is
-			// over: streaming setup and autoplay would otherwise compete with the animation.
+			// The preview stops before the snapshot. The stream starts loading when the morph begins
+			// and plays when it ends.
 			facade.querySelector<HTMLVideoElement>('.plate-facade-preview')?.pause();
 
 			const host = document.createElement('div');
@@ -423,7 +438,7 @@ const copy = {
 				if (swapped) return;
 				swapped = true;
 				facade.replaceWith(host);
-				// No source yet: streaming starts after the morph, not during it.
+				// No source yet: it is set once the morph is running, not while it is being set up.
 				player = embed.mountPlate(host, {
 					src: '',
 					poster: facade.dataset.poster,
@@ -434,6 +449,23 @@ const copy = {
 				if (player && morph) name(player, PLAYER_PARTS, true);
 			};
 
+			type Media = HTMLElement & { play?: () => Promise<void>; readyState?: number };
+			const media = () => player?.querySelector('mux-video') as Media | null;
+
+			// Set the source once, as early as the animation allows.
+			let metadata: Promise<unknown> | null = null;
+			const load = async () => {
+				if (metadata || !player) return;
+				await customElements.whenDefined('mux-video');
+				const el = media();
+				if (!el || metadata) return;
+				metadata = new Promise((r) => {
+					el.addEventListener('loadedmetadata', r, { once: true });
+					setTimeout(r, 4000);
+				});
+				el.setAttribute('src', facade.dataset.src ?? '');
+			};
+
 			// Then play, and keep the keyboard where it was: on the play control, now in the player.
 			let started = false;
 			const start = async () => {
@@ -441,23 +473,18 @@ const copy = {
 				started = true;
 				document.documentElement.removeAttribute('data-plate-morph');
 				player.querySelector<HTMLElement>('.pl-btn-play')?.focus({ preventScroll: true });
-				await customElements.whenDefined('mux-video');
-				const media = player.querySelector('mux-video') as (HTMLElement & { play?: () => Promise<void> }) | null;
-				if (!media) return;
-				// Play right away, while the press still counts as a user gesture. If the new source's
-				// load cuts that call off, try once more when the metadata is in. If the browser refuses
-				// sound without a fresh gesture, focus is already on Play and the plate reads Ready.
-				const ready = new Promise((r) => {
-					media.addEventListener('loadedmetadata', r, { once: true });
-					setTimeout(r, 4000);
-				});
-				media.setAttribute('src', facade.dataset.src ?? '');
+				await load();
+				const el = media();
+				if (!el) return;
+				// Play right away, while the press still counts as a user gesture. If the source's load
+				// cuts that call off, try once more when the metadata is in. If the browser refuses sound
+				// without a fresh gesture, focus is already on Play and the plate reads Ready.
 				try {
-					await media.play?.();
+					await el.play?.();
 				} catch (e) {
 					if ((e as DOMException)?.name !== 'AbortError') return;
-					await ready;
-					await media.play?.().catch(() => undefined);
+					await metadata;
+					await el.play?.().catch(() => undefined);
 				}
 			};
 
@@ -470,7 +497,7 @@ const copy = {
 			name(facade, FACADE_PARTS, true);
 			document.documentElement.setAttribute('data-plate-morph', '');
 			const transition = document.startViewTransition(swap);
-			transition.ready.catch(() => undefined);
+			transition.ready.then(() => void load(), () => undefined);
 			transition.updateCallbackDone.catch(() => undefined);
 			// A page that is not being painted never runs the transition: swap without it.
 			setTimeout(() => {
