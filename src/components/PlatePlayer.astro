@@ -211,7 +211,13 @@ const copy = {
 </style>
 
 <style is:global>
-	/* The morph from the drawing to the player. Matching parts share a name for one transition. */
+	/* The morph from the drawing to the player. Matching parts share a name for one transition.
+	   The page itself is left out of it: capturing the whole viewport, with the fixed glow and
+	   grain behind everything, costs far more than the plate. */
+	html[data-plate-morph] {
+		view-transition-name: none;
+	}
+
 	::view-transition-group(plate),
 	::view-transition-group(plate-head),
 	::view-transition-group(plate-stage),
@@ -385,8 +391,9 @@ const copy = {
 				if (swapped) return;
 				swapped = true;
 				facade.replaceWith(host);
+				// No source yet: streaming starts after the morph, not during it.
 				player = embed.mountPlate(host, {
-					src: facade.dataset.src,
+					src: '',
 					poster: facade.dataset.poster,
 					chapters: facade.dataset.chapters,
 					title: facade.dataset.title,
@@ -396,12 +403,23 @@ const copy = {
 			};
 
 			// Then play, and keep the keyboard where it was: on the play control, now in the player.
+			let started = false;
 			const start = async () => {
-				if (!player) return;
+				if (!player || started) return;
+				started = true;
+				document.documentElement.removeAttribute('data-plate-morph');
 				player.querySelector<HTMLElement>('.pl-btn-play')?.focus({ preventScroll: true });
 				await customElements.whenDefined('mux-video');
 				const media = player.querySelector('mux-video') as (HTMLElement & { play?: () => Promise<void> }) | null;
-				void media?.play?.().catch(() => undefined);
+				if (!media) return;
+				// A play() sent with a fresh source is cut off by its load, so wait for the metadata.
+				const ready = new Promise((r) => {
+					media.addEventListener('loadedmetadata', r, { once: true });
+					setTimeout(r, 4000);
+				});
+				media.setAttribute('src', facade.dataset.src ?? '');
+				await ready;
+				void media.play?.().catch(() => undefined);
 			};
 
 			if (!morph) {
@@ -411,6 +429,7 @@ const copy = {
 			}
 
 			name(facade, FACADE_PARTS, true);
+			document.documentElement.setAttribute('data-plate-morph', '');
 			const transition = document.startViewTransition(swap);
 			transition.ready.catch(() => undefined);
 			transition.updateCallbackDone.catch(() => undefined);

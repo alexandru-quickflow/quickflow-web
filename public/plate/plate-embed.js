@@ -31773,7 +31773,7 @@ function xD(e, t) {
 	let n = document.createElement("video-player");
 	t.poster && n.setAttribute("poster", t.poster), t.title && n.setAttribute("content-title", t.title);
 	let r = t.chapters ? `<track kind="chapters" label="Chapters" srclang="en" src="${bD(t.chapters)}" default>` : "";
-	n.innerHTML = vD.replace(yD, `<mux-video src="${bD(t.src)}" playsinline crossorigin>${r}</mux-video>`);
+	n.innerHTML = vD.replace(yD, `<mux-video${t.src ? ` src="${bD(t.src)}"` : ""} playsinline crossorigin>${r}</mux-video>`);
 	let i = document.createElement("media-i18n");
 	return i.append(n), e.replaceChildren(i), t.autoplay && customElements.whenDefined("mux-video").then(() => {
 		n.querySelector("mux-video")?.play?.().catch(() => void 0);
