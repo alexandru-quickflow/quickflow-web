@@ -15,6 +15,18 @@ interface Props {
 
 const { lang } = Astro.props;
 
+// The embed files keep their names between builds, so their URLs carry a hash of the bundle:
+// a new build is fetched fresh, an unchanged one stays cached.
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+const embedFile = (name: string) => readFileSync(join(process.cwd(), 'public', 'plate', name));
+const VERSION = createHash('sha256')
+	.update(embedFile('plate-embed.js'))
+	.update(embedFile('plate-embed.css'))
+	.digest('hex')
+	.slice(0, 10);
+
 // The Quick Flow showreel on Mux (public playback ID). The poster is the frame the preview
 // opens on, so the morph lands on the same picture.
 const MUX_ID = 'aXI42UOoIwGj6KnF016x8K7QO5l6P01KqH4SHOiIGLMGA';
@@ -65,6 +77,7 @@ const copy = {
 	data-poster={SHOWREEL.poster}
 	data-chapters={SHOWREEL.chapters}
 	data-title={SHOWREEL.title}
+	data-version={VERSION}
 >
 	<div class="plate-facade-head" aria-hidden="true">
 		<span>{copy.plate} 01 · {SHOWREEL.title}</span>
@@ -98,6 +111,43 @@ const copy = {
 	<p class="plate-facade-error prose-body text-[0.95rem]" role="status" data-failed={copy.failed}></p>
 	<noscript><p class="prose-body mt-4 text-[0.95rem]">{copy.noscript}</p></noscript>
 </figure>
+
+<style is:global>
+	/* The drawing follows the theme chosen on the Plate page (PlateThemes), so the switch shows
+	   before Play too. The same values as the skin's themes. */
+	[data-plate-theme='blueprint'] .plate-facade.plate-facade {
+		--surface: #f8fafc;
+		--line: rgb(12 45 85 / 0.14);
+		--line-strong: rgb(12 45 85 / 0.3);
+		--faint: rgb(12 45 85 / 0.85);
+		--mute: rgb(12 45 85 / 0.92);
+		--color-teal: #1d57b8;
+		--color-mint: #3a72cf;
+		background:
+			linear-gradient(rgb(29 87 184 / 0.04) 1px, transparent 1px) 0 0 / 24px 24px,
+			linear-gradient(90deg, rgb(29 87 184 / 0.04) 1px, transparent 1px) 0 0 / 24px 24px,
+			#f8fafc;
+	}
+
+	[data-plate-theme='blueprint'] .plate-facade .btn-primary {
+		color: #ffffff;
+		background-color: #1d57b8;
+	}
+
+	[data-plate-theme='blueprint'] .plate-facade-head {
+		font-weight: 500;
+	}
+
+	[data-plate-theme='signal'] .plate-facade {
+		--color-teal: #ffb020;
+		--color-mint: #ffc659;
+	}
+
+	[data-plate-theme='signal'] .plate-facade .btn-primary {
+		color: #1d1300;
+		background-color: #ffb020;
+	}
+</style>
 
 <style>
 	/* The drawing of the player: the same plate the skin draws, with a preview in the window. */
@@ -301,12 +351,12 @@ const copy = {
 		}
 	}
 
-	function loadStyles(): Promise<void> {
+	function loadStyles(version: string): Promise<void> {
 		if (document.querySelector('link[data-plate-css]')) return Promise.resolve();
 		return new Promise((resolve, reject) => {
 			const link = document.createElement('link');
 			link.rel = 'stylesheet';
-			link.href = `${BASE}plate-embed.css`;
+			link.href = `${BASE}plate-embed.css?v=${version}`;
 			link.dataset.plateCss = '';
 			link.onload = () => resolve();
 			link.onerror = () => {
@@ -399,6 +449,7 @@ const copy = {
 
 	for (const facade of document.querySelectorAll<HTMLElement>('[data-plate]')) {
 		const stopPreview = setupPreview(facade);
+		const version = facade.dataset.version ?? '';
 
 		const button = facade.querySelector<HTMLButtonElement>('[data-plate-play]');
 		if (!button) continue;
@@ -408,9 +459,9 @@ const copy = {
 		let attempt = 0;
 		const warm = () =>
 			(loading ??= Promise.all([
-				loadStyles(),
+				loadStyles(version),
 				// A failed import can stay in the module map; a retry asks for a fresh URL.
-				import(/* @vite-ignore */ `${BASE}plate-embed.js${attempt ? `?r=${attempt}` : ''}`),
+				import(/* @vite-ignore */ `${BASE}plate-embed.js?v=${version}${attempt ? `&r=${attempt}` : ''}`),
 			]).then(
 				async (result) => {
 					// A first mount costs several times a later one (styles, element setup, fonts), so
