@@ -18,6 +18,6 @@ import type { Locale } from '../i18n/routes';
 // a date for a page that does not exist would be the kind of claim this file was
 // created to stop.
 export const LEGAL_UPDATED: Record<'privacy' | 'terms', Record<Locale, string>> = {
-	privacy: { en: '5 November 2026', ro: '5 noiembrie 2026' },
+	privacy: { en: '10 November 2026', ro: '10 noiembrie 2026' },
 	terms: { en: '1 November 2026', ro: '1 noiembrie 2026' },
 };
