@@ -228,7 +228,14 @@ const id = (part: string) => `plate-opt-${part}-${lang}`;
 		transition: none !important;
 	}
 
-	/* Phone: the player at a phone's width, so the More panel and the chapter strip show. */
+	/* On a phone the player is already at a phone's width: the hint about the Phone option goes. */
+	@media (max-width: 640px) {
+		.plate-hint-wide {
+			display: none;
+		}
+	}
+
+	/* Phone: the player at a phone's width, so the More menu and the chapter strip show. */
 	[data-plate-width='phone'] :is(.plate-facade, .plate-host) {
 		max-width: 390px;
 		margin-inline: auto;
