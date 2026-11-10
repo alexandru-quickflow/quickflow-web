@@ -174,19 +174,20 @@ const copy = {
 			repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 7px) 0 5px / 100% 7px no-repeat;
 	}
 
-	/* While the player downloads, the red playhead runs along the ruler. */
+	/* While the player downloads, the red playhead runs along the ruler. It moves with a
+	   transform only, so it stays smooth while the main thread parses the player. */
 	.plate-facade-ruler::after {
 		content: '';
 		position: absolute;
 		inset-block: -4px 0;
-		inset-inline-start: 0;
-		width: 2px;
-		background: var(--hot);
+		inset-inline: 0;
+		background: linear-gradient(var(--hot), var(--hot)) 0 0 / 2px 100% no-repeat;
 		opacity: 0;
 	}
 
 	.plate-facade[data-loading] .plate-facade-play {
 		pointer-events: none;
+		opacity: 0.85;
 	}
 
 	.plate-facade[data-loading] .plate-facade-ruler::after {
@@ -197,24 +198,14 @@ const copy = {
 		.plate-facade[data-loading] .plate-facade-ruler::after {
 			animation: plate-sweep 1.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 		}
-
-		.plate-facade[data-loading] .plate-facade-play {
-			animation: plate-pulse 1.1s ease-in-out infinite;
-		}
 	}
 
 	@keyframes plate-sweep {
 		from {
-			inset-inline-start: 0;
+			transform: translateX(0);
 		}
 		to {
-			inset-inline-start: calc(100% - 2px);
-		}
-	}
-
-	@keyframes plate-pulse {
-		50% {
-			box-shadow: 0 0 0 16px color-mix(in srgb, var(--teal) 18%, transparent);
+			transform: translateX(calc(100% - 2px));
 		}
 	}
 </style>
@@ -226,7 +217,7 @@ const copy = {
 	::view-transition-group(plate-stage),
 	::view-transition-group(plate-ruler),
 	::view-transition-group(plate-play) {
-		animation-duration: 0.6s;
+		animation-duration: 0.5s;
 		animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
@@ -352,44 +343,87 @@ const copy = {
 		setupPreview(facade);
 
 		const button = facade.querySelector<HTMLButtonElement>('[data-plate-play]');
-		button?.addEventListener('click', async () => {
+		if (!button) continue;
+
+		// Start fetching as soon as a press looks likely, so the click itself has little to wait for.
+		let loading: Promise<[void, any]> | null = null;
+		const warm = () =>
+			(loading ??= Promise.all([loadStyles(), import(/* @vite-ignore */ `${BASE}plate-embed.js`)]).then(
+				async (result) => {
+					// A first mount costs several times a later one (styles, element setup, fonts), so
+					// do it once off screen, without a source: nothing reaches Mux before the click.
+					const dry = document.createElement('div');
+					dry.setAttribute('aria-hidden', 'true');
+					dry.inert = true;
+					dry.style.cssText = `position:fixed;left:-10000px;top:0;width:${facade.offsetWidth}px;visibility:hidden`;
+					document.body.append(dry);
+					result[1].mountPlate(dry, { src: '', title: facade.dataset.title });
+					await document.fonts.ready;
+					await new Promise((r) => setTimeout(r, 50));
+					dry.remove();
+					return result;
+				},
+			));
+		for (const type of ['pointerenter', 'focus', 'touchstart']) {
+			button.addEventListener(type, () => void warm(), { once: true, passive: true });
+		}
+
+		button.addEventListener('click', async () => {
 			facade.toggleAttribute('data-loading', true);
-			const [, embed] = await Promise.all([
-				loadStyles(),
-				import(/* @vite-ignore */ `${BASE}plate-embed.js`),
-			]);
+			const [, embed] = await warm();
+
+			// The preview stops before the snapshot, and the video only starts once the morph is
+			// over: streaming setup and autoplay would otherwise compete with the animation.
+			facade.querySelector<HTMLVideoElement>('.plate-facade-preview')?.pause();
 
 			const host = document.createElement('div');
 			let player: HTMLElement | null = null;
+			const morph = 'startViewTransition' in document && !reduceMotion.matches;
 
+			let swapped = false;
 			const swap = () => {
+				if (swapped) return;
+				swapped = true;
 				facade.replaceWith(host);
 				player = embed.mountPlate(host, {
 					src: facade.dataset.src,
 					poster: facade.dataset.poster,
 					chapters: facade.dataset.chapters,
 					title: facade.dataset.title,
-					autoplay: true,
+					autoplay: false,
 				});
 				if (player && morph) name(player, PLAYER_PARTS, true);
 			};
 
-			// Keep the keyboard where it was: on the play control, now inside the real player.
-			const focusPlay = () =>
-				player?.querySelector<HTMLElement>('.pl-btn-play')?.focus({ preventScroll: true });
+			// Then play, and keep the keyboard where it was: on the play control, now in the player.
+			const start = async () => {
+				if (!player) return;
+				player.querySelector<HTMLElement>('.pl-btn-play')?.focus({ preventScroll: true });
+				await customElements.whenDefined('mux-video');
+				const media = player.querySelector('mux-video') as (HTMLElement & { play?: () => Promise<void> }) | null;
+				void media?.play?.().catch(() => undefined);
+			};
 
-			const morph = 'startViewTransition' in document && !reduceMotion.matches;
 			if (!morph) {
 				swap();
-				requestAnimationFrame(focusPlay);
+				requestAnimationFrame(() => void start());
 				return;
 			}
 
 			name(facade, FACADE_PARTS, true);
 			const transition = document.startViewTransition(swap);
+			transition.ready.catch(() => undefined);
+			transition.updateCallbackDone.catch(() => undefined);
+			// A page that is not being painted never runs the transition: swap without it.
+			setTimeout(() => {
+				if (swapped) return;
+				swap();
+				if (player) name(player, PLAYER_PARTS, false);
+				void start();
+			}, 800);
 			void transition.finished.finally(() => {
 				if (player) name(player, PLAYER_PARTS, false);
-				focusPlay();
+				void start();
 			});
 		});
 	}
