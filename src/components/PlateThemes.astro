@@ -1,0 +1,120 @@
+---
+// Three of Plate's themes, switched under the player on the Plate pages. The choice goes on the
+// wrapper as data-plate-theme, which the skin reads from any ancestor, so it applies before and
+// after the player mounts. The line of code underneath is what a site would write.
+interface Props {
+	lang: 'en' | 'ro';
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+	en: { label: 'Theme' },
+	ro: { label: 'Temă' },
+}[lang];
+
+const themes = ['night', 'blueprint', 'signal'] as const;
+const names = { night: 'Night', blueprint: 'Blueprint', signal: 'Signal' };
+---
+
+<div class="plate-themes" data-plate-themes>
+	<p class="spec" id={`plate-themes-label-${lang}`}>{copy.label}</p>
+	<div class="plate-themes-keys" role="group" aria-labelledby={`plate-themes-label-${lang}`}>
+		{
+			themes.map((theme, i) => (
+				<button type="button" class="plate-themes-key" data-theme={theme} aria-pressed={i === 0 ? 'true' : 'false'}>
+					<span class={`plate-themes-swatch plate-themes-swatch-${theme}`} aria-hidden="true" />
+					{names[theme]}
+				</button>
+			))
+		}
+	</div>
+	<code class="plate-themes-code" data-plate-themes-code>data-plate-theme="night"</code>
+</div>
+
+<style>
+	.plate-themes {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px 20px;
+		margin-top: 20px;
+	}
+
+	.plate-themes-keys {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.plate-themes-key {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		min-height: 44px;
+		padding: 0 14px;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius-sm);
+		font-family: var(--font-mono);
+		font-size: 12px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--mute);
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.plate-themes-key[aria-pressed='true'] {
+		color: var(--paper);
+		border-color: var(--teal);
+	}
+
+	.plate-themes-key:focus-visible {
+		outline: 2px solid var(--teal);
+		outline-offset: 2px;
+	}
+
+	.plate-themes-swatch {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		border: 1px solid var(--line-strong);
+	}
+
+	.plate-themes-swatch-night {
+		background: linear-gradient(135deg, #0c1013 50%, #2bd4bd 50%);
+	}
+
+	.plate-themes-swatch-blueprint {
+		background: linear-gradient(135deg, #f8fafc 50%, #1d57b8 50%);
+	}
+
+	.plate-themes-swatch-signal {
+		background: linear-gradient(135deg, #0c1013 50%, #ffb020 50%);
+	}
+
+	.plate-themes-code {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		color: var(--faint);
+	}
+</style>
+
+<script>
+	for (const root of document.querySelectorAll<HTMLElement>('[data-plate-themes]')) {
+		const scope = root.closest<HTMLElement>('[data-plate-theme-root]');
+		const code = root.querySelector('[data-plate-themes-code]');
+		if (!scope) continue;
+		root.addEventListener('click', (event) => {
+			const key = (event.target as Element).closest<HTMLButtonElement>('[data-theme]');
+			if (!key) return;
+			const theme = key.dataset.theme!;
+			if (theme === 'night') scope.removeAttribute('data-plate-theme');
+			else scope.dataset.plateTheme = theme;
+			for (const other of root.querySelectorAll('[data-theme]')) {
+				other.setAttribute('aria-pressed', String(other === key));
+			}
+			if (code) code.textContent = `data-plate-theme="${theme}"`;
+		});
+	}
+</script>

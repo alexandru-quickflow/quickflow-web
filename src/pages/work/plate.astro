@@ -1,6 +1,7 @@
 ---
 import Site from '../../layouts/Site.astro';
 import PlatePlayer from '../../components/PlatePlayer.astro';
+import PlateThemes from '../../components/PlateThemes.astro';
 import { paths } from '../../i18n/routes';
 
 const title = 'Plate, a video player skin for Video.js | Quick Flow';
@@ -14,6 +15,7 @@ const features = [
 	'Everything works from the keyboard, and you can always see where the focus is.',
 	'Labels use the same Video.js translations a screen reader announces. The skin\'s own words are translated into six languages.',
 	'It follows reduced motion, higher contrast and forced colors, and it works right to left.',
+	'Three themes come with it, and every colour, font and corner is a CSS property, so it can take on another brand.',
 ];
 ---
 
@@ -32,8 +34,9 @@ const features = [
 		</p>
 	</section>
 
-	<section class="bleed mt-16 md:mt-20" aria-label="Showreel">
+	<section class="bleed mt-16 md:mt-20" aria-label="Showreel" data-plate-theme-root>
 		<PlatePlayer lang="en" />
+		<PlateThemes lang="en" />
 		<p class="prose-body mt-6 max-w-[56ch] text-[0.95rem]">
 			Press play. Each project in the reel is a chapter, and the chapter index takes you straight to
 			it.
@@ -53,8 +56,8 @@ const features = [
 		<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
 			<h2 id="built" class="display-md md:col-span-4">How it is built</h2>
 			<p class="prose-body md:col-span-7 md:col-start-6">
-				I started from the Scaffold skin with the Video.js CLI. It's HTML and CSS, with two small custom
-				elements for the index and the chapter marks. The colours, fonts and corner radii are the ones
+				I started from the Scaffold skin with the Video.js CLI. It's HTML and CSS, with three small custom
+				elements: the index, the chapter marks and the More panel on phones. The colours, fonts and corner radii are the ones
 				this site uses. The player only loads when you press play, so it doesn't weigh down the page.
 			</p>
 		</div>
