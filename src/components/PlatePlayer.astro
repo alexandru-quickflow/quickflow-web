@@ -1,0 +1,137 @@
+---
+// The Plate player, loaded on demand.
+//
+// The page arrives with a drawing of the player and one button, and no script beyond the few
+// lines below. Pressing Play fetches the player (Video.js, the Mux media element and the skin,
+// about 280 KB gzipped) and its stylesheet from /plate/, mounts it in place of the drawing and
+// starts the video. Every other page on the site stays at its own JavaScript weight. See CR-49.
+//
+// The source is set here, once, for both languages.
+interface Props {
+	lang: 'en' | 'ro';
+}
+
+const { lang } = Astro.props;
+
+// TODO before publishing: the showreel's Mux playback ID and its chapters file. Until then the
+// player runs the NASA demo stream that ships with the Video.js skin workbench.
+const SHOWREEL = {
+	src: 'https://stream.mux.com/83EzHOvVzVN01AsrD01BCpiH02Pj3S8mfzBOu101w2nHC5s.m3u8',
+	poster: 'https://image.mux.com/83EzHOvVzVN01AsrD01BCpiH02Pj3S8mfzBOu101w2nHC5s/thumbnail.webp?time=69',
+	chapters: '/plate/demo-chapters.vtt',
+	title: 'Showreel',
+};
+
+const copy = {
+	en: { play: 'Play', plate: 'Plate', status: 'Status · Ready', noscript: 'The player needs JavaScript to run.' },
+	ro: { play: 'Redă', plate: 'Planșa', status: 'Stare · Pregătit', noscript: 'Playerul are nevoie de JavaScript ca să ruleze.' },
+}[lang];
+---
+
+<figure
+	class="plate-facade m-0"
+	data-plate
+	data-src={SHOWREEL.src}
+	data-poster={SHOWREEL.poster}
+	data-chapters={SHOWREEL.chapters}
+	data-title={SHOWREEL.title}
+>
+	<div class="plate-facade-head" aria-hidden="true">
+		<span>{copy.plate} 01 · {SHOWREEL.title}</span>
+		<span>{copy.status}</span>
+	</div>
+	<div class="plate-facade-stage">
+		<button type="button" class="btn btn-primary plate-facade-play" data-plate-play>{copy.play}</button>
+	</div>
+	<div class="plate-facade-ruler" aria-hidden="true"></div>
+	<noscript><p class="prose-body mt-4 text-[0.95rem]">{copy.noscript}</p></noscript>
+</figure>
+
+<style>
+	/* The drawing of the player: the same plate the skin draws, without the video. */
+	.plate-facade {
+		display: grid;
+		gap: 16px;
+		padding: clamp(12px, 2.4vw, 24px);
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		background: var(--surface);
+	}
+
+	.plate-facade-head {
+		display: flex;
+		justify-content: space-between;
+		gap: 12px;
+		padding-bottom: 12px;
+		border-bottom: 1px solid var(--line);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--faint);
+	}
+
+	.plate-facade-stage {
+		position: relative;
+		display: grid;
+		place-items: center;
+		aspect-ratio: 16 / 9;
+		border-radius: var(--radius-sm);
+		background:
+			linear-gradient(var(--line-strong), var(--line-strong)) 50% 0 / 1px 8px no-repeat,
+			linear-gradient(var(--line-strong), var(--line-strong)) 50% 100% / 1px 8px no-repeat,
+			#000;
+	}
+
+	.plate-facade-ruler {
+		height: 18px;
+		background:
+			repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px 10%) 0 0 / calc(100% + 1px) 12px no-repeat,
+			repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 7px) 0 5px / 100% 7px no-repeat;
+	}
+
+	.plate-facade[data-loading] .plate-facade-play {
+		opacity: 0.6;
+		pointer-events: none;
+	}
+</style>
+
+<script>
+	// Load the player only when asked. A plain module, no framework: see CR-49.
+	const BASE = '/plate/';
+
+	function loadStyles(): Promise<void> {
+		if (document.querySelector('link[data-plate-css]')) return Promise.resolve();
+		return new Promise((resolve) => {
+			const link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = `${BASE}plate-embed.css`;
+			link.dataset.plateCss = '';
+			link.onload = () => resolve();
+			link.onerror = () => resolve();
+			document.head.append(link);
+		});
+	}
+
+	for (const facade of document.querySelectorAll<HTMLElement>('[data-plate]')) {
+		const button = facade.querySelector<HTMLButtonElement>('[data-plate-play]');
+		button?.addEventListener('click', async () => {
+			facade.toggleAttribute('data-loading', true);
+			const [, embed] = await Promise.all([
+				loadStyles(),
+				import(/* @vite-ignore */ `${BASE}plate-embed.js`),
+			]);
+			const host = document.createElement('div');
+			facade.replaceWith(host);
+			const player: HTMLElement = embed.mountPlate(host, {
+				src: facade.dataset.src,
+				poster: facade.dataset.poster,
+				chapters: facade.dataset.chapters,
+				title: facade.dataset.title,
+				autoplay: true,
+			});
+			// Keep the keyboard where it was: on the play control, now inside the real player.
+			requestAnimationFrame(() => player.querySelector<HTMLElement>('.pl-btn-play')?.focus({ preventScroll: true }));
+		});
+	}
+</script>

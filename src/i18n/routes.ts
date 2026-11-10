@@ -33,7 +33,8 @@ export type PageId =
 	| 'thanks'
 	| 'escrow'
 	| 'moldova'
-	| 'kyc';
+	| 'kyc'
+	| 'plate';
 
 /** A page can be missing from a language. Not every subject is worth a page in
  *  both: the Moldova page answers a question asked in Romanian, by people whose
@@ -95,6 +96,9 @@ export const paths: Record<PageId, Partial<Record<Locale, string>>> = {
 		en: '/stripe-connect-kyc-onboarding/',
 		ro: '/ro/stripe-connect-kyc-onboarding/',
 	},
+	// A portfolio piece, not a service: the Plate video player skin, playing the showreel.
+	// Under the portfolio in both languages, and outside the header like the audit.
+	plate: { en: '/work/plate/', ro: '/ro/portofoliu/plate/' },
 };
 
 /** The path to a page in a language, or undefined when the page does not exist
