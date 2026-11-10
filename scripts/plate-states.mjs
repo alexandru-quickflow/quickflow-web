@@ -129,6 +129,8 @@ const STATES = {
 		player({ width: 760, phone: true, at: 44 }).then(async (p) => {
 			await p.page.locator('.pl-btn-more').click();
 			await p.page.waitForTimeout(400);
+			await p.page.locator('.pl-more [data-page=speed]').click();
+			await p.page.waitForTimeout(400);
 			return p;
 		}),
 	blueprint: () => player({ theme: 'blueprint', at: 21 }),
