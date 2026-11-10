@@ -69,6 +69,8 @@ const sections = [
 			`Cloudflare, which hosts the site and runs the form function. Cloudflare Turnstile checks whether the submission comes from a person, and to do that it processes the IP address and technical signals about the browser. A rule at the edge also counts submissions per IP address and blocks more than ${RATE_LIMIT.posts} in ${RATE_LIMIT.seconds} seconds, which is what keeps the form from being a free mailer.`,
 			'Resend, which delivers the email. It leaves from the European region of Resend, in Ireland.',
 			'Cloudflare and Resend are American companies, so the data can be processed outside the European Economic Area. Both do that under the standard contractual clauses approved by the European Commission.',
+			// CR-49. To be checked by a lawyer before publishing: the transfer basis for Mux, a DPA, and cookies.
+			"Mux, which streams the showreel on the home page and on the Plate page. Nothing goes to Mux until you press Play. Then your browser fetches the video from Mux's servers, which see your IP address and the technical details any server sees when it sends a file. The player sends Mux no viewing statistics. Mux is an American company.",
 			...(analytics
 				? ['Cloudflare Web Analytics, which counts page views. It stores no cookie and builds no profile.']
 				: []),

@@ -3,6 +3,7 @@ import Site from '../../layouts/Site.astro';
 import Shot from '../../components/Shot.astro';
 import PaymentFlow from '../../components/PaymentFlow.astro';
 import ServiceMark from '../../components/ServiceMark.astro';
+import PlatePlayer from '../../components/PlatePlayer.astro';
 import { proof, weightSnippet, VERIFIED_ON, SELF_JS, VERIFIED_ON_ISO } from '../../content/proof';
 import {
 	BUBBLE_SINCE,
@@ -250,6 +251,25 @@ const schema = {
 		</div>
 
 		<p class="stamp mt-12">Pagina asta trimite {SELF_JS} de JavaScript</p>
+	</section>
+
+	<!-- 1b. The showreel, in the Plate player. A drawing of the player until Play is pressed, so
+	     the stamp above stays true when the page loads: the player's script arrives on the click.
+	     See CR-49. -->
+	<section class="bleed mt-16 md:mt-20" aria-labelledby="showreel">
+		<div class="hair flex flex-wrap items-baseline justify-between gap-4 pt-5">
+			<h2 id="showreel" class="spec">Showreel</h2>
+			<p class="spec">Plate, un skin Video.js făcut de mine</p>
+		</div>
+		<div class="mt-8">
+			<PlatePlayer lang="ro" />
+		</div>
+		<div class="mt-6 flex flex-wrap items-baseline justify-between gap-4">
+			<p class="prose-body max-w-[56ch] text-[0.95rem]">
+				Fiecare proiect din reel e un capitol. Indexul din dreapta te duce direct la el.
+			</p>
+			<a href={paths.plate.ro} class="link text-sm">Cum e făcut playerul</a>
+		</div>
 	</section>
 
 	<!-- 2. Proof. The content inventory says this site has one asset in

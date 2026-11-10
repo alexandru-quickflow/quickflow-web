@@ -70,6 +70,8 @@ const sections = [
 			`Cloudflare, care găzduiește site-ul și rulează funcția formularului. Cloudflare Turnstile verifică dacă trimiterea vine de la un om, iar pentru asta procesează adresa IP și semnale tehnice despre browser. O regulă la margine numără și trimiterile pe adresă IP și blochează mai mult de ${RATE_LIMIT.posts} în ${RATE_LIMIT.seconds} secunde, ceea ce împiedică formularul să fie un expeditor gratuit pentru oricine.`,
 			'Resend, care livrează emailul. Pleacă din regiunea europeană a Resend, Irlanda.',
 			'Cloudflare și Resend sunt companii americane, deci datele pot fi prelucrate și în afara Spațiului Economic European. Amândouă fac asta pe baza clauzelor contractuale standard aprobate de Comisia Europeană.',
+			// CR-49. De verificat de un jurist înainte de publicare: temeiul transferului pentru Mux, acordul de prelucrare și cookie-urile.
+			'Mux, care transmite showreel-ul de pe prima pagină și de pe pagina Plate. Nu ajunge nimic la Mux până nu apeși Play. Atunci browserul tău cere video-ul de la serverele Mux, care văd adresa IP și detaliile tehnice pe care le vede orice server când trimite un fișier. Playerul nu trimite la Mux statistici de vizionare. Mux este o companie americană.',
 			...(analytics
 				? ['Cloudflare Web Analytics, care numără afișările de pagină. Nu pune niciun cookie și nu construiește niciun profil.']
 				: []),
