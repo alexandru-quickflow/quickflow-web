@@ -15,12 +15,13 @@ interface Props {
 
 const { lang } = Astro.props;
 
-// TODO before publishing: the showreel's Mux playback ID and its chapters file. Until then the
-// player runs the NASA demo stream that ships with the Video.js skin workbench.
+// The Quick Flow showreel on Mux (public playback ID). The poster is the frame the preview
+// opens on, so the morph lands on the same picture.
+const MUX_ID = 'aXI42UOoIwGj6KnF016x8K7QO5l6P01KqH4SHOiIGLMGA';
 const SHOWREEL = {
-	src: 'https://stream.mux.com/83EzHOvVzVN01AsrD01BCpiH02Pj3S8mfzBOu101w2nHC5s.m3u8',
-	poster: 'https://image.mux.com/83EzHOvVzVN01AsrD01BCpiH02Pj3S8mfzBOu101w2nHC5s/thumbnail.webp?time=69',
-	chapters: '/plate/demo-chapters.vtt',
+	src: `https://stream.mux.com/${MUX_ID}.m3u8`,
+	poster: `https://image.mux.com/${MUX_ID}/thumbnail.webp?time=9&width=1280`,
+	chapters: '/plate/showreel-chapters.vtt',
 	title: 'Showreel',
 };
 
