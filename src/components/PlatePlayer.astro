@@ -35,6 +35,7 @@ const PREVIEW = {
 const copy = {
 	en: {
 		play: 'Play',
+		playName: 'Play showreel',
 		plate: 'Plate',
 		status: 'Status · Ready',
 		pause: 'Pause preview',
@@ -44,6 +45,7 @@ const copy = {
 	},
 	ro: {
 		play: 'Redă',
+		playName: 'Redă showreel-ul',
 		plate: 'Planșa',
 		status: 'Stare · Pregătit',
 		pause: 'Oprește previzualizarea',
@@ -80,7 +82,7 @@ const copy = {
 			aria-hidden="true"
 			tabindex="-1"
 		></video>
-		<button type="button" class="btn btn-primary plate-facade-play" data-plate-play>{copy.play}</button>
+		<button type="button" class="btn btn-primary plate-facade-play" data-plate-play aria-label={copy.playName}>{copy.play}</button>
 		<button
 			type="button"
 			class="plate-facade-toggle"
@@ -282,13 +284,16 @@ const copy = {
 
 	function loadStyles(): Promise<void> {
 		if (document.querySelector('link[data-plate-css]')) return Promise.resolve();
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			const link = document.createElement('link');
 			link.rel = 'stylesheet';
 			link.href = `${BASE}plate-embed.css`;
 			link.dataset.plateCss = '';
 			link.onload = () => resolve();
-			link.onerror = () => resolve();
+			link.onerror = () => {
+				link.remove();
+				reject(new Error('plate-embed.css failed'));
+			};
 			document.head.append(link);
 		});
 	}
@@ -317,10 +322,10 @@ const copy = {
 		'.pl-btn-play': 'plate-play',
 	};
 
-	function setupPreview(facade: HTMLElement) {
+	function setupPreview(facade: HTMLElement): () => void {
 		const video = facade.querySelector<HTMLVideoElement>('.plate-facade-preview');
 		const toggle = facade.querySelector<HTMLButtonElement>('[data-plate-toggle]');
-		if (!video || !toggle || saveData) return;
+		if (!video || !toggle || saveData) return () => undefined;
 
 		let userPaused = reduceMotion.matches;
 		let loaded = false;
@@ -362,17 +367,19 @@ const copy = {
 			sync();
 		});
 
-		new IntersectionObserver(
+		const observer = new IntersectionObserver(
 			([entry]) => {
 				visible = entry.isIntersecting;
 				sync();
 			},
 			{ rootMargin: '200px 0px' },
-		).observe(facade);
+		);
+		observer.observe(facade);
+		return () => observer.disconnect();
 	}
 
 	for (const facade of document.querySelectorAll<HTMLElement>('[data-plate]')) {
-		setupPreview(facade);
+		const stopPreview = setupPreview(facade);
 
 		const button = facade.querySelector<HTMLButtonElement>('[data-plate-play]');
 		if (!button) continue;
@@ -384,6 +391,9 @@ const copy = {
 				async (result) => {
 					// A first mount costs several times a later one (styles, element setup, fonts), so
 					// do it once off screen, without a source: nothing reaches Mux before the click.
+					// Not on touch screens, where the warm-up starts with the press itself and the dry
+					// run would only stand between the tap and play() (and Safari's gesture window).
+					if (matchMedia('(pointer: coarse)').matches) return result;
 					const dry = document.createElement('div');
 					dry.setAttribute('aria-hidden', 'true');
 					dry.inert = true;
@@ -437,6 +447,7 @@ const copy = {
 			const swap = () => {
 				if (swapped) return;
 				swapped = true;
+				stopPreview();
 				facade.replaceWith(host);
 				// No source yet: it is set once the morph is running, not while it is being set up.
 				player = embed.mountPlate(host, {
