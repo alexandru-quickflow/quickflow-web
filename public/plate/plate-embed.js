@@ -28278,32 +28278,38 @@ for (let [e, t] of Object.entries({
 	de: {
 		plate: "Tafel",
 		status: "Status",
-		index: "Index"
+		index: "Index",
+		exit: "Beenden"
 	},
 	fr: {
 		plate: "Planche",
 		status: "État",
-		index: "Index"
+		index: "Index",
+		exit: "Quitter"
 	},
 	es: {
 		plate: "Lámina",
 		status: "Estado",
-		index: "Índice"
+		index: "Índice",
+		exit: "Salir"
 	},
 	ro: {
 		plate: "Planșa",
 		status: "Stare",
-		index: "Index"
+		index: "Index",
+		exit: "Ieși"
 	},
 	ru: {
 		plate: "Лист",
 		status: "Статус",
-		index: "Указатель"
+		index: "Указатель",
+		exit: "Выйти"
 	},
 	ar: {
 		plate: "لوحة",
 		status: "الحالة",
-		index: "الفهرس"
+		index: "الفهرس",
+		exit: "خروج"
 	}
 })) di(e, { pl: t });
 di("de", {
@@ -28313,6 +28319,12 @@ di("de", {
 		unmute: "Ton an"
 	}
 });
+for (let [e, t] of Object.entries({
+	en: "Speed, {rate}",
+	de: "Tempo, {rate}",
+	ro: "Viteză, {rate}",
+	ar: "السرعة، {rate}"
+})) di(e, { playback: { rate: t } });
 // node_modules/@videojs/html/dist/default/player/popup-group-context.js
 var zC = i(Symbol.for("@videojs/popup-group"));
 // node_modules/@videojs/core/dist/default/core/ui/utils/resolve-label.js
@@ -31702,43 +31714,54 @@ var gD = class extends F {
 	#e = new N(this, f, ra);
 	#t = new N(this, f, ia);
 	#n = "";
-	#r = null;
+	#r = -2;
 	#i = null;
+	#a = null;
 	connectedCallback() {
-		super.connectedCallback(), this.#i?.abort(), this.#i = new AbortController();
-		let { signal: e } = this.#i;
-		this.addEventListener("click", this.#o, { signal: e });
-		for (let t of ["keydown", "keyup"]) this.addEventListener(t, (e) => {
-			(e.key === " " || e.key === "Enter") && e.stopPropagation();
-		}, { signal: e });
+		super.connectedCallback(), this.#a?.abort(), this.#a = new AbortController();
+		let { signal: e } = this.#a;
+		this.addEventListener("click", this.#s, { signal: e });
 	}
 	disconnectedCallback() {
-		super.disconnectedCallback(), this.#i?.abort(), this.#i = null;
+		super.disconnectedCallback(), this.#a?.abort(), this.#a = null;
 	}
 	update(e) {
 		super.update(e);
 		let t = this.#e.value?.chaptersCues ?? [];
 		if (this.hidden = t.length < 2, this.hidden) return;
 		let n = t.map((e) => `${e.startTime}|${e.text}`).join("\n");
-		n !== this.#n && (this.#n = n, this.#a(t));
+		n !== this.#n && (this.#n = n, this.#r = -2, this.#o(t));
 		let r = hD(t, this.#t.value?.currentTime ?? 0);
-		this.#r?.querySelectorAll(".pl-chapter").forEach((e, t) => {
+		if (r === this.#r) return;
+		this.#r = r;
+		let i = this.#i?.querySelectorAll(".pl-chapter") ?? [];
+		i.forEach((e, t) => {
 			let n = t === r;
-			e.toggleAttribute("data-active", n), n ? e.setAttribute("aria-current", "true") : e.removeAttribute("aria-current");
+			e.toggleAttribute("data-active", n), n ? e.setAttribute("aria-current", "step") : e.removeAttribute("aria-current");
 		});
+		let a = i[r], o = this.#i;
+		if (a && o && o.scrollWidth > o.clientWidth) {
+			let e = !matchMedia("(prefers-reduced-motion: reduce)").matches, t = a.offsetLeft - o.offsetLeft, n = t + a.offsetWidth;
+			(t < o.scrollLeft || n > o.scrollLeft + o.clientWidth) && o.scrollTo({
+				left: Math.max(0, t - 16),
+				behavior: e ? "smooth" : "auto"
+			});
+		}
 	}
-	#a(e) {
+	#o(e) {
 		let t = document.createElement("ol");
-		t.className = "pl-chapter-list", e.forEach((e, n) => {
+		t.className = "pl-chapter-list";
+		let n = this.parentElement?.querySelector(".pl-index-label");
+		n && (n.id ||= `pl-index-${Math.random().toString(36).slice(2, 8)}`, t.setAttribute("aria-labelledby", n.id), this.closest("nav")?.setAttribute("aria-labelledby", n.id)), e.forEach((e, n) => {
 			let r = document.createElement("li"), i = document.createElement("button");
 			i.type = "button", i.className = "pl-chapter", i.dataset.start = String(e.startTime);
 			let a = document.createElement("span");
 			a.className = "pl-chapter-num", a.setAttribute("aria-hidden", "true"), a.textContent = mD(n + 1);
 			let o = document.createElement("span");
 			o.className = "pl-chapter-title", o.textContent = e.text, i.append(a, o), r.append(i), t.append(r);
-		}), this.#r?.remove(), this.#r = t, this.append(t);
+		}), this.#i?.remove(), this.#i = t, this.append(t);
 	}
-	#o = (e) => {
+	#s = (e) => {
 		let t = e.target.closest(".pl-chapter");
 		if (!t || !this.contains(t)) return;
 		let n = Number(t.dataset.start);
@@ -31748,17 +31771,18 @@ var gD = class extends F {
 	#e = new N(this, f, ra);
 	#t = new N(this, f, ia);
 	#n = "";
+	#r = -2;
 	update(e) {
 		super.update(e);
-		let t = this.#e.value?.chaptersCues ?? [], n = this.#t.value?.duration ?? 0, r = `${n}|${t.map((e) => e.startTime).join(",")}`;
-		r === this.#n ? this.#r(t) : (this.#n = r, this.replaceChildren(), t.length < 2 || !(n > 0) || (t.forEach((e, t) => {
-			let r = document.createElement("span");
-			r.className = "pl-ruler-mark", r.style.setProperty("--pl-at", `${Math.min(100, e.startTime / n * 100)}%`), r.textContent = mD(t + 1), this.append(r);
-		}), this.#r(t)));
+		let t = this.#e.value?.chaptersCues ?? [], n = this.#t.value?.duration ?? 0, r = Number.isFinite(n) ? n : 0, i = `${r}|${t.map((e) => e.startTime).join(",")}`;
+		i === this.#n ? this.#i(t) : (this.#n = i, this.#r = -2, this.replaceChildren(), t.length < 2 || !(r > 0) || (t.forEach((e, t) => {
+			let n = document.createElement("span");
+			n.className = "pl-ruler-mark", n.style.setProperty("--pl-at", `${Math.min(100, e.startTime / r * 100)}%`), n.textContent = mD(t + 1), this.append(n);
+		}), this.#i(t)));
 	}
-	#r(e) {
+	#i(e) {
 		let t = hD(e, this.#t.value?.currentTime ?? 0);
-		[...this.children].forEach((e, n) => e.toggleAttribute("data-active", n === t));
+		t !== this.#r && (this.#r = t, [...this.children].forEach((e, n) => e.toggleAttribute("data-active", n === t)));
 	}
 };
 // src/video/core.ts
@@ -31768,7 +31792,7 @@ customElements.get("pl-chapters") || customElements.define("pl-chapters", gD), c
 	restart: pD
 });
 // src/video/skin.html?raw
-var vD = "<media-container class=\"media-skin media-container media-video pl\" data-theme=\"scaffold\" data-preset=\"video\">\n<div class=\"pl-plate\">\n<div class=\"pl-head\" aria-hidden=\"true\">\n<span class=\"pl-tag\"><media-text token=\"pl.plate\">Plate</media-text> 01 <span class=\"pl-dot\">&middot;</span> <media-title class=\"pl-media-title\"></media-title></span>\n<span class=\"pl-status\"><media-text token=\"pl.status\">Status</media-text> <span class=\"pl-status-word\"></span></span>\n</div>\n<div class=\"pl-body\">\n<div class=\"pl-stage\">\n<!-- Add a compatible media component here. -->\n<media-poster class=\"media-poster pl-poster\">\n<img alt=\"\" decoding=\"async\" class=\"media-poster-image\">\n</media-poster>\n<span class=\"pl-mark pl-mark-tl\" aria-hidden=\"true\"></span>\n<span class=\"pl-mark pl-mark-tr\" aria-hidden=\"true\"></span>\n<span class=\"pl-mark pl-mark-bl\" aria-hidden=\"true\"></span>\n<span class=\"pl-mark pl-mark-br\" aria-hidden=\"true\"></span>\n<media-buffering-indicator class=\"pl-buffering\">\n<span class=\"pl-spinner\" aria-hidden=\"true\"></span>\n</media-buffering-indicator>\n<div aria-hidden=\"true\" class=\"pl-indicators\">\n<media-volume-indicator class=\"pl-indicator pl-volume-indicator\">\n<media-volume-indicator-fill class=\"pl-volume-indicator-fill\">\n<span class=\"pl-indicator-label\">Vol</span>\n<media-volume-indicator-value class=\"pl-indicator-value\">\n</media-volume-indicator-value>\n</media-volume-indicator-fill>\n</media-volume-indicator>\n<media-seek-indicator class=\"pl-indicator pl-seek-indicator\">\n<media-seek-indicator-value class=\"pl-indicator-value\">\n</media-seek-indicator-value>\n</media-seek-indicator>\n<media-status-indicator actions=\"toggleSubtitles,toggleFullscreen,togglePictureInPicture\" class=\"pl-indicator pl-status-indicator\">\n<media-status-indicator-value class=\"pl-indicator-value\">\n</media-status-indicator-value>\n</media-status-indicator>\n</div>\n</div>\n<div class=\"pl-index\">\n<media-text class=\"pl-label pl-index-label\" token=\"pl.index\" aria-hidden=\"true\">Index</media-text>\n<pl-chapters class=\"pl-chapters\"></pl-chapters>\n</div>\n</div>\n<div class=\"pl-ruler\">\n<media-time-slider class=\"pl-time-slider\" thumb-alignment=\"edge\">\n<pl-ruler-marks class=\"pl-ruler-marks\" aria-hidden=\"true\"></pl-ruler-marks>\n<media-time-slider-chapters class=\"pl-time-slider-chapters\">\n<template>\n<div class=\"pl-time-slider-chapter\">\n<media-slider-track class=\"pl-time-slider-track\">\n<media-slider-buffer class=\"pl-time-slider-buffer\">\n</media-slider-buffer>\n<media-slider-fill class=\"pl-time-slider-fill\">\n</media-slider-fill>\n</media-slider-track>\n</div>\n</template>\n</media-time-slider-chapters>\n<media-slider-thumb class=\"pl-time-slider-thumb\">\n</media-slider-thumb>\n<media-slider-preview class=\"pl-time-slider-preview\">\n<media-slider-thumbnail class=\"pl-slider-thumbnail\">\n<img alt=\"\" aria-hidden=\"true\" decoding=\"async\" class=\"pl-slider-thumbnail-image\">\n</media-slider-thumbnail>\n<div class=\"pl-time-slider-preview-label\">\n<media-slider-value class=\"pl-time-slider-value\" type=\"pointer\">\n</media-slider-value>\n<media-time-slider-chapter-title class=\"pl-time-slider-chapter-title\">\n</media-time-slider-chapter-title>\n</div>\n</media-slider-preview>\n</media-time-slider>\n</div>\n<div class=\"pl-foot\">\n<div class=\"pl-time\">\n<media-time class=\"pl-time-current\" type=\"current\" toggle>\n</media-time>\n<span class=\"pl-time-sep\" aria-hidden=\"true\">/</span>\n<media-time class=\"pl-time-duration\" type=\"duration\">\n</media-time>\n</div>\n<div class=\"pl-controls\">\n<media-play-button class=\"pl-btn pl-btn-play\">\n<span class=\"pl-btn-glyph\" aria-hidden=\"true\">\n<media-icon family=\"pl\" name=\"play\" class=\"pl-icon pl-play-play\"></media-icon>\n<media-icon family=\"pl\" name=\"pause\" class=\"pl-icon pl-play-pause\"></media-icon>\n<media-icon family=\"pl\" name=\"restart\" class=\"pl-icon pl-play-restart\"></media-icon>\n</span>\n<span class=\"pl-btn-text\" aria-hidden=\"true\">\n<media-text class=\"pl-play-play\" token=\"buttons.play\">Play</media-text>\n<media-text class=\"pl-play-pause\" token=\"buttons.pause\">Pause</media-text>\n<media-text class=\"pl-play-restart\" token=\"buttons.replay\">Replay</media-text>\n</span>\n</media-play-button>\n<media-seek-button seconds=\"-10\" class=\"pl-btn pl-btn-seek\">\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><bdi dir=\"ltr\">&minus;10</bdi></span>\n</media-seek-button>\n<media-seek-button seconds=\"10\" class=\"pl-btn pl-btn-seek\">\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><bdi dir=\"ltr\">+10</bdi></span>\n</media-seek-button>\n<span class=\"pl-sep\" aria-hidden=\"true\"></span>\n<div class=\"pl-volume\">\n<media-mute-button class=\"pl-btn pl-btn-mute\">\n<span class=\"pl-btn-text\" aria-hidden=\"true\">\n<media-text class=\"pl-mute-on\" token=\"buttons.mute\">Mute</media-text>\n<media-text class=\"pl-mute-off\" token=\"buttons.unmute\">Unmute</media-text>\n</span>\n</media-mute-button>\n<media-volume-slider class=\"pl-volume-slider\">\n<media-slider-track class=\"pl-volume-track\">\n<media-slider-fill class=\"pl-volume-fill\">\n</media-slider-fill>\n</media-slider-track>\n<media-slider-thumb class=\"pl-volume-thumb\">\n</media-slider-thumb>\n</media-volume-slider>\n</div>\n<media-playback-rate-button class=\"pl-btn pl-btn-speed\">\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><media-text token=\"menu.speed\">Speed</media-text></span>\n</media-playback-rate-button>\n<media-captions-button class=\"pl-btn pl-btn-cc\">\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><media-text token=\"menu.captions\">Captions</media-text></span>\n</media-captions-button>\n<media-fullscreen-button class=\"pl-btn pl-btn-full\">\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><media-text token=\"status.fullscreen\">Fullscreen</media-text></span>\n</media-fullscreen-button>\n</div>\n</div>\n</div>\n<media-error-dialog>\n<media-dialog-backdrop class=\"pl-dialog-backdrop\">\n</media-dialog-backdrop>\n<media-dialog-popup class=\"pl-dialog\">\n<span class=\"pl-label pl-dialog-code\" aria-hidden=\"true\">Error</span>\n<media-dialog-title class=\"pl-dialog-title\">\n</media-dialog-title>\n<media-dialog-description class=\"pl-dialog-description\">\n</media-dialog-description>\n<media-dialog-close class=\"pl-btn pl-dialog-close\" autofocus>\n</media-dialog-close>\n</media-dialog-popup>\n</media-error-dialog>\n<media-hotkey keys=\"Space\" action=\"togglePaused\">\n</media-hotkey>\n<media-hotkey keys=\"k\" action=\"togglePaused\">\n</media-hotkey>\n<media-hotkey keys=\"m\" action=\"toggleMuted\">\n</media-hotkey>\n<media-hotkey keys=\"ArrowRight\" action=\"seekStep\">\n</media-hotkey>\n<media-hotkey keys=\"ArrowLeft\" action=\"seekStep\">\n</media-hotkey>\n<media-hotkey keys=\"l\" action=\"seekStep\">\n</media-hotkey>\n<media-hotkey keys=\"j\" action=\"seekStep\">\n</media-hotkey>\n<media-hotkey keys=\"ArrowUp\" action=\"volumeStep\">\n</media-hotkey>\n<media-hotkey keys=\"ArrowDown\" action=\"volumeStep\">\n</media-hotkey>\n<media-hotkey keys=\"0-9\" action=\"seekToPercent\">\n</media-hotkey>\n<media-hotkey keys=\"Home\" action=\"seekToPercent\" value=\"0\">\n</media-hotkey>\n<media-hotkey keys=\"End\" action=\"seekToPercent\" value=\"100\">\n</media-hotkey>\n<media-hotkey keys=\">\" action=\"speedUp\">\n</media-hotkey>\n<media-hotkey keys=\"<\" action=\"speedDown\">\n</media-hotkey>\n<media-hotkey keys=\"f\" action=\"toggleFullscreen\">\n</media-hotkey>\n<media-hotkey keys=\"c\" action=\"toggleSubtitles\">\n</media-hotkey>\n<media-gesture type=\"tap\" action=\"togglePaused\" pointer=\"mouse\" region=\"center\">\n</media-gesture>\n<media-gesture type=\"tap\" action=\"togglePaused\" pointer=\"touch\" region=\"center\">\n</media-gesture>\n<media-gesture type=\"doubletap\" action=\"seekStep\" region=\"left\">\n</media-gesture>\n<media-gesture type=\"doubletap\" action=\"toggleFullscreen\" region=\"center\">\n</media-gesture>\n<media-gesture type=\"doubletap\" action=\"seekStep\" region=\"right\">\n</media-gesture>\n<media-status-announcer class=\"pl-status-announcer\">\n</media-status-announcer>\n</media-container>\n", yD = "<!-- Add a compatible media component here. -->", bD = (e) => e.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+var vD = "<media-container class=\"media-skin media-container media-video pl\" data-theme=\"scaffold\" data-preset=\"video\">\r\n<div class=\"pl-plate\">\r\n<div class=\"pl-head\">\r\n<span class=\"pl-tag\"><span aria-hidden=\"true\"><media-text token=\"pl.plate\">Plate</media-text> 01 <span class=\"pl-dot\">&middot;</span> </span><media-title class=\"pl-media-title\"></media-title></span>\r\n<span class=\"pl-status\" aria-hidden=\"true\"><media-text token=\"pl.status\">Status</media-text> <span class=\"pl-status-word\"></span></span>\r\n</div>\r\n<div class=\"pl-body\">\r\n<div class=\"pl-stage\">\r\n<!-- Add a compatible media component here. -->\r\n<media-poster class=\"media-poster pl-poster\">\r\n<img alt=\"\" decoding=\"async\" class=\"media-poster-image\">\r\n</media-poster>\r\n<span class=\"pl-mark pl-mark-tl\" aria-hidden=\"true\"></span>\r\n<span class=\"pl-mark pl-mark-tr\" aria-hidden=\"true\"></span>\r\n<span class=\"pl-mark pl-mark-bl\" aria-hidden=\"true\"></span>\r\n<span class=\"pl-mark pl-mark-br\" aria-hidden=\"true\"></span>\r\n<media-buffering-indicator class=\"pl-buffering\">\r\n<span class=\"pl-spinner\" aria-hidden=\"true\"></span>\r\n</media-buffering-indicator>\r\n<div aria-hidden=\"true\" class=\"pl-indicators\">\r\n<media-volume-indicator class=\"pl-indicator pl-volume-indicator\">\r\n<media-volume-indicator-fill class=\"pl-volume-indicator-fill\">\r\n<span class=\"pl-indicator-label\">Vol</span>\r\n<media-volume-indicator-value class=\"pl-indicator-value\">\r\n</media-volume-indicator-value>\r\n</media-volume-indicator-fill>\r\n</media-volume-indicator>\r\n<media-seek-indicator class=\"pl-indicator pl-seek-indicator\">\r\n<media-seek-indicator-value class=\"pl-indicator-value\">\r\n</media-seek-indicator-value>\r\n</media-seek-indicator>\r\n<media-status-indicator actions=\"toggleSubtitles,toggleFullscreen,togglePictureInPicture\" class=\"pl-indicator pl-status-indicator\">\r\n<media-status-indicator-value class=\"pl-indicator-value\">\r\n</media-status-indicator-value>\r\n</media-status-indicator>\r\n</div>\r\n</div>\r\n<nav class=\"pl-index\">\r\n<media-text class=\"pl-label pl-index-label\" token=\"pl.index\">Index</media-text>\r\n<pl-chapters class=\"pl-chapters\"></pl-chapters>\r\n</nav>\r\n</div>\r\n<div class=\"pl-ruler\">\r\n<media-time-slider class=\"pl-time-slider\" thumb-alignment=\"edge\">\r\n<pl-ruler-marks class=\"pl-ruler-marks\" aria-hidden=\"true\"></pl-ruler-marks>\r\n<media-time-slider-chapters class=\"pl-time-slider-chapters\">\r\n<template>\r\n<div class=\"pl-time-slider-chapter\">\r\n<media-slider-track class=\"pl-time-slider-track\">\r\n<media-slider-buffer class=\"pl-time-slider-buffer\">\r\n</media-slider-buffer>\r\n<media-slider-fill class=\"pl-time-slider-fill\">\r\n</media-slider-fill>\r\n</media-slider-track>\r\n</div>\r\n</template>\r\n</media-time-slider-chapters>\r\n<media-slider-thumb class=\"pl-time-slider-thumb\">\r\n</media-slider-thumb>\r\n<media-slider-preview class=\"pl-time-slider-preview\">\r\n<media-slider-thumbnail class=\"pl-slider-thumbnail\">\r\n<img alt=\"\" aria-hidden=\"true\" decoding=\"async\" class=\"pl-slider-thumbnail-image\">\r\n</media-slider-thumbnail>\r\n<div class=\"pl-time-slider-preview-label\">\r\n<media-slider-value class=\"pl-time-slider-value\" type=\"pointer\">\r\n</media-slider-value>\r\n<media-time-slider-chapter-title class=\"pl-time-slider-chapter-title\">\r\n</media-time-slider-chapter-title>\r\n</div>\r\n</media-slider-preview>\r\n</media-time-slider>\r\n</div>\r\n<div class=\"pl-foot\">\r\n<div class=\"pl-time\">\r\n<media-time class=\"pl-time-current\" type=\"current\" toggle>\r\n</media-time>\r\n<span class=\"pl-time-sep\" aria-hidden=\"true\">/</span>\r\n<media-time class=\"pl-time-duration\" type=\"duration\">\r\n</media-time>\r\n</div>\r\n<div class=\"pl-controls\">\r\n<media-play-button class=\"pl-btn pl-btn-play\">\r\n<span class=\"pl-btn-glyph\" aria-hidden=\"true\">\r\n<media-icon family=\"pl\" name=\"play\" class=\"pl-icon pl-play-play\"></media-icon>\r\n<media-icon family=\"pl\" name=\"pause\" class=\"pl-icon pl-play-pause\"></media-icon>\r\n<media-icon family=\"pl\" name=\"restart\" class=\"pl-icon pl-play-restart\"></media-icon>\r\n</span>\r\n<span class=\"pl-btn-text\" aria-hidden=\"true\">\r\n<media-text class=\"pl-play-play\" token=\"buttons.play\">Play</media-text>\r\n<media-text class=\"pl-play-pause\" token=\"buttons.pause\">Pause</media-text>\r\n<media-text class=\"pl-play-restart\" token=\"buttons.replay\">Replay</media-text>\r\n</span>\r\n</media-play-button>\r\n<media-seek-button seconds=\"-10\" class=\"pl-btn pl-btn-seek\">\r\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><bdi dir=\"ltr\">&minus;10</bdi></span>\r\n</media-seek-button>\r\n<media-seek-button seconds=\"10\" class=\"pl-btn pl-btn-seek\">\r\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><bdi dir=\"ltr\">+10</bdi></span>\r\n</media-seek-button>\r\n<span class=\"pl-sep\" aria-hidden=\"true\"></span>\r\n<div class=\"pl-volume\">\r\n<media-mute-button class=\"pl-btn pl-btn-mute\">\r\n<span class=\"pl-btn-text\" aria-hidden=\"true\">\r\n<media-text class=\"pl-mute-on\" token=\"buttons.mute\">Mute</media-text>\r\n<media-text class=\"pl-mute-off\" token=\"buttons.unmute\">Unmute</media-text>\r\n</span>\r\n</media-mute-button>\r\n<media-volume-slider class=\"pl-volume-slider\">\r\n<media-slider-track class=\"pl-volume-track\">\r\n<media-slider-fill class=\"pl-volume-fill\">\r\n</media-slider-fill>\r\n</media-slider-track>\r\n<media-slider-thumb class=\"pl-volume-thumb\">\r\n</media-slider-thumb>\r\n</media-volume-slider>\r\n</div>\r\n<media-playback-rate-button class=\"pl-btn pl-btn-speed\">\r\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><media-text token=\"menu.speed\">Speed</media-text></span>\r\n</media-playback-rate-button>\r\n<media-captions-button class=\"pl-btn pl-btn-cc\">\r\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><media-text token=\"menu.captions\">Captions</media-text></span>\r\n</media-captions-button>\r\n<media-fullscreen-button class=\"pl-btn pl-btn-full\">\r\n<span class=\"pl-btn-text\" aria-hidden=\"true\"><media-text class=\"pl-full-enter\" token=\"status.fullscreen\">Fullscreen</media-text><media-text class=\"pl-full-exit\" token=\"pl.exit\">Exit</media-text></span>\r\n</media-fullscreen-button>\r\n</div>\r\n</div>\r\n</div>\r\n<media-error-dialog>\r\n<media-dialog-backdrop class=\"pl-dialog-backdrop\">\r\n</media-dialog-backdrop>\r\n<media-dialog-popup class=\"pl-dialog\">\r\n<span class=\"pl-label pl-dialog-code\" aria-hidden=\"true\">Error</span>\r\n<media-dialog-title class=\"pl-dialog-title\">\r\n</media-dialog-title>\r\n<media-dialog-description class=\"pl-dialog-description\">\r\n</media-dialog-description>\r\n<media-dialog-close class=\"pl-btn pl-dialog-close\" autofocus>\r\n</media-dialog-close>\r\n</media-dialog-popup>\r\n</media-error-dialog>\r\n<media-hotkey keys=\"Space\" action=\"togglePaused\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"k\" action=\"togglePaused\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"m\" action=\"toggleMuted\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"ArrowRight\" action=\"seekStep\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"ArrowLeft\" action=\"seekStep\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"l\" action=\"seekStep\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"j\" action=\"seekStep\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"ArrowUp\" action=\"volumeStep\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"ArrowDown\" action=\"volumeStep\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"0-9\" action=\"seekToPercent\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"Home\" action=\"seekToPercent\" value=\"0\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"End\" action=\"seekToPercent\" value=\"100\">\r\n</media-hotkey>\r\n<media-hotkey keys=\">\" action=\"speedUp\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"<\" action=\"speedDown\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"f\" action=\"toggleFullscreen\">\r\n</media-hotkey>\r\n<media-hotkey keys=\"c\" action=\"toggleSubtitles\">\r\n</media-hotkey>\r\n<media-gesture type=\"tap\" action=\"togglePaused\" pointer=\"mouse\" region=\"center\">\r\n</media-gesture>\r\n<media-gesture type=\"tap\" action=\"togglePaused\" pointer=\"touch\" region=\"center\">\r\n</media-gesture>\r\n<media-gesture type=\"doubletap\" action=\"seekStep\" region=\"left\">\r\n</media-gesture>\r\n<media-gesture type=\"doubletap\" action=\"toggleFullscreen\" region=\"center\">\r\n</media-gesture>\r\n<media-gesture type=\"doubletap\" action=\"seekStep\" region=\"right\">\r\n</media-gesture>\r\n<media-status-announcer class=\"pl-status-announcer\">\r\n</media-status-announcer>\r\n</media-container>\r\n", yD = "<!-- Add a compatible media component here. -->", bD = (e) => e.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 function xD(e, t) {
 	let n = document.createElement("video-player");
 	t.poster && n.setAttribute("poster", t.poster), t.title && n.setAttribute("content-title", t.title);

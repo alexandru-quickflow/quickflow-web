@@ -39,6 +39,7 @@ const copy = {
 		pause: 'Pause preview',
 		resume: 'Play preview',
 		noscript: 'The player needs JavaScript to run.',
+		failed: "The player didn't load. Press Play to try again.",
 	},
 	ro: {
 		play: 'Redă',
@@ -47,6 +48,7 @@ const copy = {
 		pause: 'Oprește previzualizarea',
 		resume: 'Pornește previzualizarea',
 		noscript: 'Playerul are nevoie de JavaScript ca să ruleze.',
+		failed: 'Playerul nu s-a încărcat. Apasă Redă ca să încerci din nou.',
 	},
 }[lang];
 ---
@@ -88,6 +90,7 @@ const copy = {
 		>{copy.pause}</button>
 	</div>
 	<div class="plate-facade-ruler" aria-hidden="true"></div>
+	<p class="plate-facade-error prose-body text-[0.95rem]" role="status" data-failed={copy.failed}></p>
 	<noscript><p class="prose-body mt-4 text-[0.95rem]">{copy.noscript}</p></noscript>
 </figure>
 
@@ -147,6 +150,7 @@ const copy = {
 
 	.plate-facade-toggle {
 		position: absolute;
+		min-height: 44px;
 		inset-block-start: 10px;
 		inset-inline-end: 10px;
 		padding: 6px 10px;
@@ -164,6 +168,10 @@ const copy = {
 	.plate-facade-toggle:focus-visible {
 		outline: 2px solid var(--teal);
 		outline-offset: 2px;
+	}
+
+	.plate-facade-error:empty {
+		display: none;
 	}
 
 	.plate-facade-ruler {
@@ -327,10 +335,15 @@ const copy = {
 			} else {
 				video.pause();
 			}
-			toggle.textContent = userPaused ? toggle.dataset.resume! : toggle.dataset.pause!;
-			toggle.setAttribute('aria-pressed', String(userPaused));
+			label();
 		};
 
+		// The label says what the button will do; it changes with the state, so no aria-pressed.
+		const label = () => {
+			toggle.textContent = userPaused ? toggle.dataset.resume! : toggle.dataset.pause!;
+		};
+
+		label();
 		toggle.hidden = false;
 		toggle.addEventListener('click', () => {
 			userPaused = !userPaused;
@@ -370,14 +383,31 @@ const copy = {
 					dry.remove();
 					return result;
 				},
-			));
+			).catch((error) => {
+				// Let the next press try again instead of keeping the failure.
+				loading = null;
+				throw error;
+			}));
 		for (const type of ['pointerenter', 'focus', 'touchstart']) {
 			button.addEventListener(type, () => void warm(), { once: true, passive: true });
 		}
 
+		const error = facade.querySelector<HTMLElement>('.plate-facade-error');
+
 		button.addEventListener('click', async () => {
+			// One press only: a second one (keyboard repeat, double click) would mount a second player.
+			if (facade.hasAttribute('data-loading')) return;
 			facade.toggleAttribute('data-loading', true);
-			const [, embed] = await warm();
+			if (error) error.textContent = '';
+
+			let embed: any;
+			try {
+				[, embed] = await warm();
+			} catch {
+				facade.removeAttribute('data-loading');
+				if (error) error.textContent = error.dataset.failed ?? '';
+				return;
+			}
 
 			// The preview stops before the snapshot, and the video only starts once the morph is
 			// over: streaming setup and autoplay would otherwise compete with the animation.
@@ -413,14 +443,21 @@ const copy = {
 				await customElements.whenDefined('mux-video');
 				const media = player.querySelector('mux-video') as (HTMLElement & { play?: () => Promise<void> }) | null;
 				if (!media) return;
-				// A play() sent with a fresh source is cut off by its load, so wait for the metadata.
+				// Play right away, while the press still counts as a user gesture. If the new source's
+				// load cuts that call off, try once more when the metadata is in. If the browser refuses
+				// sound without a fresh gesture, focus is already on Play and the plate reads Ready.
 				const ready = new Promise((r) => {
 					media.addEventListener('loadedmetadata', r, { once: true });
 					setTimeout(r, 4000);
 				});
 				media.setAttribute('src', facade.dataset.src ?? '');
-				await ready;
-				void media.play?.().catch(() => undefined);
+				try {
+					await media.play?.();
+				} catch (e) {
+					if ((e as DOMException)?.name !== 'AbortError') return;
+					await ready;
+					await media.play?.().catch(() => undefined);
+				}
 			};
 
 			if (!morph) {
@@ -441,10 +478,11 @@ const copy = {
 				if (player) name(player, PLAYER_PARTS, false);
 				void start();
 			}, 800);
-			void transition.finished.finally(() => {
+			const done = () => {
 				if (player) name(player, PLAYER_PARTS, false);
 				void start();
-			});
+			};
+			transition.finished.then(done, done);
 		});
 	}
 </script>
