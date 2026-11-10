@@ -1,7 +1,8 @@
 ---
-// Three of Plate's themes, switched under the player on the Plate pages. The choice goes on the
-// wrapper as data-plate-theme, which the skin reads from any ancestor, so it applies before and
-// after the player mounts. The line of code underneath is what a site would write.
+// The options under the player on the Plate pages: a theme, an accent colour, a phone width and
+// a language. Each one is set on the wrapper the way a site would set it on the player (the skin
+// reads themes, properties and lang from any ancestor), so it applies before and after the
+// player mounts. The line of code underneath is what a site would write for the same result.
 interface Props {
 	lang: 'en' | 'ro';
 }
@@ -9,45 +10,121 @@ interface Props {
 const { lang } = Astro.props;
 
 const copy = {
-	en: { label: 'Theme' },
-	ro: { label: 'Temă' },
+	en: {
+		theme: 'Theme',
+		accent: 'Accent',
+		accentName: 'Accent colour',
+		reset: 'Reset',
+		width: 'Width',
+		desktop: 'Desktop',
+		phone: 'Phone',
+		language: 'Language',
+		code: 'The same, in code',
+	},
+	ro: {
+		theme: 'Temă',
+		accent: 'Accent',
+		accentName: 'Culoarea de accent',
+		reset: 'Resetează',
+		width: 'Lățime',
+		desktop: 'Desktop',
+		phone: 'Telefon',
+		language: 'Limbă',
+		code: 'Același lucru, în cod',
+	},
 }[lang];
 
 const themes = ['night', 'blueprint', 'signal'] as const;
 const names = { night: 'Night', blueprint: 'Blueprint', signal: 'Signal' };
+// Each language in its own name, as a language menu shows them.
+const languages = [
+	['en', 'English'],
+	['de', 'Deutsch'],
+	['fr', 'Français'],
+	['es', 'Español'],
+	['ro', 'Română'],
+	['ru', 'Русский'],
+	['ar', 'العربية'],
+] as const;
+const id = (part: string) => `plate-opt-${part}-${lang}`;
 ---
 
-<div class="plate-themes" data-plate-themes>
-	<p class="spec" id={`plate-themes-label-${lang}`}>{copy.label}</p>
-	<div class="plate-themes-keys" role="group" aria-labelledby={`plate-themes-label-${lang}`}>
-		{
-			themes.map((theme, i) => (
-				<button type="button" class="plate-themes-key" data-theme={theme} aria-pressed={i === 0 ? 'true' : 'false'}>
-					<span class={`plate-themes-swatch plate-themes-swatch-${theme}`} aria-hidden="true" />
-					{names[theme]}
-				</button>
-			))
-		}
+<div class="plate-options" data-plate-options data-page-lang={lang}>
+	<div class="plate-options-row">
+		<p class="spec" id={id('theme')}>{copy.theme}</p>
+		<div class="plate-options-keys" role="group" aria-labelledby={id('theme')}>
+			{
+				themes.map((theme, i) => (
+					<button type="button" class="plate-options-key" data-theme={theme} aria-pressed={i === 0 ? 'true' : 'false'}>
+						<span class={`plate-options-swatch plate-options-swatch-${theme}`} aria-hidden="true" />
+						{names[theme]}
+					</button>
+				))
+			}
+		</div>
 	</div>
-	<code class="plate-themes-code" data-plate-themes-code>data-plate-theme="night"</code>
+
+	<div class="plate-options-row">
+		<label class="spec" for={id('accent')}>{copy.accent}</label>
+		<div class="plate-options-keys">
+			<span class="plate-options-color">
+				<input type="color" id={id('accent')} value="#2bd4bd" data-accent aria-label={copy.accentName} />
+			</span>
+			<button type="button" class="plate-options-key" data-accent-reset hidden>{copy.reset}</button>
+		</div>
+	</div>
+
+	<div class="plate-options-row">
+		<p class="spec" id={id('width')}>{copy.width}</p>
+		<div class="plate-options-keys" role="group" aria-labelledby={id('width')}>
+			<button type="button" class="plate-options-key" data-width="desktop" aria-pressed="true">{copy.desktop}</button>
+			<button type="button" class="plate-options-key" data-width="phone" aria-pressed="false">{copy.phone}</button>
+		</div>
+	</div>
+
+	<div class="plate-options-row">
+		<label class="spec" for={id('language')}>{copy.language}</label>
+		<select class="plate-options-select" id={id('language')} data-language>
+			{languages.map(([code, name]) => <option value={code} lang={code} selected={code === lang}>{name}</option>)}
+		</select>
+	</div>
+
+	<div class="plate-options-code">
+		<p class="spec">{copy.code}</p>
+		<pre class="code mt-2"><code data-plate-options-code>&lt;video-player&gt;</code></pre>
+	</div>
 </div>
 
 <style>
-	.plate-themes {
+	.plate-options {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px 40px;
+		margin-top: 24px;
+		padding-top: 20px;
+		border-top: 1px solid var(--line);
+	}
+
+	.plate-options-row {
+		display: grid;
+		gap: 10px;
+		align-content: start;
+	}
+
+	.plate-options-code {
+		flex: 1 1 100%;
+		min-width: 0;
+	}
+
+	.plate-options-keys {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 12px 20px;
-		margin-top: 20px;
-	}
-
-	.plate-themes-keys {
-		display: flex;
-		flex-wrap: wrap;
 		gap: 6px;
 	}
 
-	.plate-themes-key {
+	.plate-options-key,
+	.plate-options-select {
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
@@ -64,39 +141,82 @@ const names = { night: 'Night', blueprint: 'Blueprint', signal: 'Signal' };
 		cursor: pointer;
 	}
 
-	.plate-themes-key[aria-pressed='true'] {
+	.plate-options-select {
+		min-width: 12rem;
+		text-transform: none;
+		letter-spacing: 0.02em;
+		color: var(--color-paper);
+		background: var(--surface);
+	}
+
+	.plate-options-key[aria-pressed='true'] {
 		color: var(--color-paper);
 		border-color: var(--color-teal);
 	}
 
-	.plate-themes-key:focus-visible {
+	.plate-options-key[hidden] {
+		display: none;
+	}
+
+	.plate-options-key:focus-visible,
+	.plate-options-select:focus-visible,
+	.plate-options-color:focus-within {
 		outline: 2px solid var(--color-teal);
 		outline-offset: 2px;
 	}
 
-	.plate-themes-swatch {
+	.plate-options-swatch {
 		width: 12px;
 		height: 12px;
 		border-radius: 50%;
 		border: 1px solid var(--line-strong);
 	}
 
-	.plate-themes-swatch-night {
+	.plate-options-swatch-night {
 		background: linear-gradient(135deg, #0c1013 50%, #2bd4bd 50%);
 	}
 
-	.plate-themes-swatch-blueprint {
+	.plate-options-swatch-blueprint {
 		background: linear-gradient(135deg, #f8fafc 50%, #1d57b8 50%);
 	}
 
-	.plate-themes-swatch-signal {
+	.plate-options-swatch-signal {
 		background: linear-gradient(135deg, #0c1013 50%, #ffb020 50%);
 	}
 
-	.plate-themes-code {
-		font-family: var(--font-mono);
-		font-size: 12px;
-		color: var(--faint);
+	/* The native colour well, drawn as one more key. */
+	.plate-options-color {
+		display: inline-grid;
+		width: 44px;
+		height: 44px;
+		padding: 6px;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius-sm);
+	}
+
+	.plate-options-color input {
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		border-radius: 4px;
+		background: none;
+		cursor: pointer;
+		outline: none;
+	}
+
+	.plate-options-color input::-webkit-color-swatch-wrapper {
+		padding: 0;
+	}
+
+	.plate-options-color input::-webkit-color-swatch {
+		border: 0;
+		border-radius: 4px;
+	}
+
+	.plate-options-color input::-moz-color-swatch {
+		border: 0;
+		border-radius: 4px;
 	}
 </style>
 
@@ -107,24 +227,112 @@ const names = { night: 'Night', blueprint: 'Blueprint', signal: 'Signal' };
 	[data-plate-switching] * {
 		transition: none !important;
 	}
+
+	/* Phone: the player at a phone's width, so the More panel and the chapter strip show. */
+	[data-plate-width='phone'] :is(.plate-facade, .plate-host) {
+		max-width: 390px;
+		margin-inline: auto;
+	}
+
+	/* A chosen accent reaches the drawing before Play too. */
+	[data-plate-accent] .plate-facade.plate-facade {
+		--color-teal: var(--plate-accent);
+		--color-mint: color-mix(in srgb, var(--plate-accent), white 20%);
+	}
+
+	[data-plate-accent] .plate-facade.plate-facade .btn-primary {
+		color: var(--plate-on-accent);
+		background-color: var(--plate-accent);
+	}
 </style>
 
 <script>
-	for (const root of document.querySelectorAll<HTMLElement>('[data-plate-themes]')) {
+	// Text on the accent: whichever of the two inks reads better on it (WCAG contrast).
+	const luminance = (hex: string) => {
+		const n = parseInt(hex.slice(1), 16);
+		const lin = (c: number) => {
+			const v = c / 255;
+			return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+		};
+		return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+	};
+	const onAccent = (hex: string) => {
+		const l = luminance(hex);
+		const dark = (l + 0.05) / (luminance('#04171a') + 0.05);
+		const light = 1.05 / (l + 0.05);
+		return dark >= light ? '#04171a' : '#ffffff';
+	};
+	const THEME_ACCENT: Record<string, string> = { night: '#2bd4bd', blueprint: '#1d57b8', signal: '#ffb020' };
+
+	for (const root of document.querySelectorAll<HTMLElement>('[data-plate-options]')) {
 		const scope = root.closest<HTMLElement>('[data-plate-theme-root]');
-		const code = root.querySelector('[data-plate-themes-code]');
-		if (!scope) continue;
-		root.addEventListener('click', (event) => {
-			const key = (event.target as Element).closest<HTMLButtonElement>('[data-theme]');
-			if (!key) return;
-			const theme = key.dataset.theme!;
+		const stage = scope?.querySelector<HTMLElement>('[data-plate-stage]');
+		if (!scope || !stage) continue;
+		const pageLang = root.dataset.pageLang ?? 'en';
+		const code = root.querySelector('[data-plate-options-code]');
+		const accent = root.querySelector<HTMLInputElement>('[data-accent]')!;
+		const reset = root.querySelector<HTMLButtonElement>('[data-accent-reset]')!;
+		const language = root.querySelector<HTMLSelectElement>('[data-language]')!;
+
+		const state = { theme: 'night', accent: '', width: 'desktop', lang: pageLang };
+
+		const render = () => {
+			// One frame without colour transitions, so nothing passes through an unreadable mix.
 			scope.setAttribute('data-plate-switching', '');
-			scope.dataset.plateTheme = theme;
-			requestAnimationFrame(() => requestAnimationFrame(() => scope.removeAttribute('data-plate-switching')));
-			for (const other of root.querySelectorAll('[data-theme]')) {
-				other.setAttribute('aria-pressed', String(other === key));
+			setTimeout(() => scope.removeAttribute('data-plate-switching'), 50);
+
+			scope.dataset.plateTheme = state.theme;
+			if (state.accent) {
+				scope.dataset.plateAccent = '';
+				scope.style.setProperty('--plate-accent', state.accent);
+				scope.style.setProperty('--plate-on-accent', onAccent(state.accent));
+			} else {
+				delete scope.dataset.plateAccent;
+				scope.style.removeProperty('--plate-accent');
+				scope.style.removeProperty('--plate-on-accent');
 			}
-			if (code) code.textContent = `data-plate-theme="${theme}"`;
+			scope.dataset.plateWidth = state.width;
+			stage.lang = state.lang;
+			stage.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+
+			reset.hidden = !state.accent;
+			if (!state.accent) accent.value = THEME_ACCENT[state.theme] ?? '#2bd4bd';
+			for (const key of root.querySelectorAll('[data-theme]')) {
+				key.setAttribute('aria-pressed', String((key as HTMLElement).dataset.theme === state.theme));
+			}
+			for (const key of root.querySelectorAll('[data-width]')) {
+				key.setAttribute('aria-pressed', String((key as HTMLElement).dataset.width === state.width));
+			}
+
+			const attrs = [`data-plate-theme="${state.theme}"`];
+			if (state.lang !== pageLang) attrs.push(`lang="${state.lang}"`);
+			if (state.lang === 'ar') attrs.push('dir="rtl"');
+			if (state.accent) {
+				attrs.push(`style="--plate-accent: ${state.accent}; --plate-on-accent: ${onAccent(state.accent)}"`);
+			}
+			if (code) code.textContent = `<video-player ${attrs.join(' ')}>`;
+		};
+
+		root.addEventListener('click', (event) => {
+			const target = event.target as Element;
+			const theme = target.closest<HTMLElement>('[data-theme]');
+			const width = target.closest<HTMLElement>('[data-width]');
+			if (theme) state.theme = theme.dataset.theme!;
+			else if (width) state.width = width.dataset.width!;
+			else if (target.closest('[data-accent-reset]')) {
+				state.accent = '';
+				accent.focus();
+			} else return;
+			render();
 		});
+		accent.addEventListener('input', () => {
+			state.accent = accent.value;
+			render();
+		});
+		language.addEventListener('change', () => {
+			state.lang = language.value;
+			render();
+		});
+		render();
 	}
 </script>

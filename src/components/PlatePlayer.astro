@@ -526,6 +526,7 @@ const copy = {
 			facade.querySelector<HTMLVideoElement>('.plate-facade-preview')?.pause();
 
 			const host = document.createElement('div');
+			host.className = 'plate-host';
 			let player: HTMLElement | null = null;
 			const morph = 'startViewTransition' in document && !reduceMotion.matches;
 

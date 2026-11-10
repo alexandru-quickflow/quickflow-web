@@ -22,5 +22,65 @@
 	"/work/jemshitmavlyanov.jpg": {
 		"h": 500,
 		"w": 800
+	},
+	"/work/plate/arabic.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/blueprint.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/brand.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/ended.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/error.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/focus.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/forced-colors.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/more.jpg": {
+		"h": 986,
+		"w": 780
+	},
+	"/work/plate/paused.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/phone.jpg": {
+		"h": 986,
+		"w": 780
+	},
+	"/work/plate/playing.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/quality.jpg": {
+		"h": 738,
+		"w": 1200
+	},
+	"/work/plate/scrub.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/signal.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/strip.jpg": {
+		"h": 1168,
+		"w": 1200
 	}
 }

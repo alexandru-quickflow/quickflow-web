@@ -1,0 +1,464 @@
+---
+// Everything on the Plate pages below the player: the keys, the drawing explained, every state
+// the player can be in, what was checked, how to use it and the specs. One copy per language,
+// so the English and Romanian pages cannot drift apart in structure.
+import Shot from './Shot.astro';
+
+interface Props {
+	lang: 'en' | 'ro';
+}
+
+const { lang } = Astro.props;
+
+const REPO = 'https://github.com/alexandru-quickflow/videojs-skin-plate';
+
+const mountSnippet = `const { mountPlate } = await import('/plate/plate-embed.js');
+
+mountPlate(document.querySelector('#reel'), {
+  src: 'https://stream.mux.com/PLAYBACK_ID.m3u8',
+  poster: 'https://image.mux.com/PLAYBACK_ID/thumbnail.webp',
+  chapters: '/chapters.vtt',
+  title: 'Showreel',
+  theme: 'blueprint',
+  autoplay: true,
+});`;
+
+const cssSnippet = `video-player {
+  --plate-accent: #ff6b00;
+  --plate-on-accent: #1a0b00;
+  --plate-playhead: #00b3ff;
+  --plate-font-serif: "Fraunces", serif;
+  --plate-radius: 12px;
+  --plate-number: "02";
+  --plate-word-playing: "On air";
+}`;
+
+const copy = {
+	en: {
+		keysTitle: 'Keyboard',
+		keys: [
+			['Space or K', 'play and pause'],
+			['Left and right arrows, J and L', 'seek'],
+			['Up and down arrows', 'volume'],
+			['M', 'mute'],
+			['0 to 9', 'jump to that tenth of the video'],
+			['Home and End', 'the start and the end'],
+			['< and >', 'slower and faster'],
+			['F', 'fullscreen'],
+			['C', 'captions'],
+		],
+		plateTitle: 'Why a plate',
+		plateBody:
+			"Every diagram on this site is drawn as a plate: a hairline frame, a numbered head, measurements in mono and a serif line that names the thing. A player is a diagram too, of a video's length, its chapters and where you are in it, so I drew it the same way and put the controls under the picture, where a plate keeps its legend.",
+		plateAlt:
+			'The Plate player playing the second chapter, with numbered marks on the head, a corner mark, the index, the ruler, the timecode and the keys.',
+		parts: [
+			['Head', "the plate's number, the title and a status word that says what the player is doing."],
+			['Corner marks', 'they frame the picture the way crop marks frame a print.'],
+			['Index', 'one line per chapter. The one playing is in the accent colour.'],
+			['Ruler', 'the timeline, with a numbered tick where each chapter starts and a playhead where you are.'],
+			['Timecode', 'the serif line, read like a caption.'],
+			['Keys', 'written as words, and the word on a key is also its accessible name.'],
+		],
+		statesTitle: 'Every state',
+		statesIntro: 'Each state the player can be in, captured from the player on this page.',
+		groups: [
+			{
+				name: 'Playing',
+				states: [
+					['playing', 'Playing, in the second chapter. The index and the ruler both mark it.'],
+					['paused', 'Paused. The status word in the head follows the player.'],
+					['scrub', "Pointing at the ruler: the frame from Mux's storyboard, the time and the chapter under it."],
+					['ended', 'The end of the reel. Play becomes Replay.'],
+					['error', "A stream that won't load: a plain sentence first, then the media's own message."],
+				],
+			},
+			{
+				name: 'Keys and menus',
+				states: [
+					['focus', 'Keyboard focus on Speed, after a change to 1.5×.'],
+					['quality', 'Quality: Auto and each rendition the stream has, on players 1120px and wider.'],
+				],
+			},
+			{
+				name: 'Smaller players',
+				states: [
+					['strip', 'Under 760px the index becomes a strip under the picture.'],
+					['phone', 'Under 600px: the timecode and four icon keys.'],
+					['more', 'More holds the seek, speed and captions keys.'],
+				],
+			},
+			{
+				name: 'Themes and preferences',
+				states: [
+					['blueprint', 'Blueprint.'],
+					['signal', 'Signal.'],
+					['brand', 'Night with one property changed: --plate-accent: #ff6b00.'],
+					['arabic', "Arabic, right to left. The Video.js labels and the skin's own words are translated."],
+					['forced-colors', 'Forced colors, the way Windows contrast themes draw it.'],
+				],
+			},
+		],
+		a11yTitle: 'Accessibility',
+		a11y: [
+			'What I checked: axe-core 4.10 found no violations on the player in all three themes, with the Quality menu open, with the More panel open on a phone-sized player, and in Arabic, right to left. Muted text measures at least 5.8:1 against the plate in every theme.',
+			'Each key is a Video.js button with its own name, and the word you see is part of that name. Every control shows where the focus is.',
+			'The skin follows reduced motion, higher contrast, reduced transparency and forced colors.',
+		],
+		useTitle: 'Use it',
+		useIntro: 'You can copy the skin or load the embed build.',
+		copyLabel: 'Copy the skin',
+		copyBody:
+			"the files in src/video go into any Video.js v10 project. That's the markup, the styles, three small custom elements and the strings.",
+		embedLabel: 'Load the embed build',
+		embedBody:
+			"one module and one stylesheet with Video.js, the Mux media element and the skin. It's about 270 KB gzipped, most of it the HLS player, so load it when someone presses play.",
+		lookLabel: 'Change the look',
+		lookBody: 'every colour, font and corner is a CSS property, and your properties win over any theme.',
+		layoutLabel: 'Layout switches',
+		layoutBody: 'put the index before the picture or hide it, keep only the tall ticks on the ruler, drop the head line.',
+		readme: 'Read the README on GitHub',
+		specsTitle: 'Specs',
+		specs: [
+			['Built on', 'Video.js 10.3, started from the Scaffold skin with the Video.js CLI'],
+			['Custom elements', "the chapter index, the ruler's chapter marks and the More panel"],
+			['Streaming', 'Mux, over HLS'],
+			['Languages', 'English, German, French, Spanish, Romanian, Russian and Arabic'],
+			['Fonts', 'Newsreader and JetBrains Mono (SIL Open Font License)'],
+			['Icons', 'Phosphor (MIT)'],
+			['License', 'Apache 2.0'],
+			['Made by', 'Alexandru Trofaniuc, Quick Flow'],
+		],
+	},
+	ro: {
+		keysTitle: 'Tastatură',
+		keys: [
+			['Space sau K', 'redare și pauză'],
+			['Săgețile stânga și dreapta, J și L', 'derulare'],
+			['Săgețile sus și jos', 'volum'],
+			['M', 'fără sunet'],
+			['0 până la 9', 'sari la acea zecime din video'],
+			['Home și End', 'începutul și sfârșitul'],
+			['< și >', 'mai încet și mai repede'],
+			['F', 'ecran complet'],
+			['C', 'subtitrări'],
+		],
+		plateTitle: 'De ce o planșă',
+		plateBody:
+			'Fiecare diagramă de pe site-ul ăsta e desenată ca o planșă: un cadru subțire, un antet numerotat, cote în mono și un rând serif care numește lucrul desenat. Și un player e o diagramă: a lungimii unui video, a capitolelor lui și a locului în care ești. Așa că l-am desenat la fel și am pus controalele sub imagine, unde o planșă își ține legenda.',
+		plateAlt:
+			'Playerul Plate rulând al doilea capitol, cu repere numerotate pe antet, un semn de colț, index, riglă, timecode și taste.',
+		parts: [
+			['Antet', 'numărul planșei, titlul și un cuvânt de stare care spune ce face playerul.'],
+			['Semne de colț', 'încadrează imaginea cum încadrează semnele de tăiere o pagină tipărită.'],
+			['Index', 'un rând pentru fiecare capitol. Cel care rulează e în culoarea de accent.'],
+			['Rigla', 'bara de timp, cu o cotă numerotată unde începe fiecare capitol și o linie care arată unde ești.'],
+			['Timecode', 'rândul serif, citit ca o legendă.'],
+			['Taste', 'scrise ca vorbe, iar vorba de pe tastă e și numele ei accesibil.'],
+		],
+		statesTitle: 'Toate stările',
+		statesIntro: 'Fiecare stare în care poate fi playerul, capturată din playerul de pe pagina asta.',
+		groups: [
+			{
+				name: 'Redare',
+				states: [
+					['playing', 'Rulează, în al doilea capitol. Îl marchează și indexul, și rigla.'],
+					['paused', 'Pauză. Cuvântul de stare din antet urmează playerul.'],
+					['scrub', 'Cu mouse-ul pe riglă: cadrul din storyboard-ul Mux, timpul și capitolul de sub el.'],
+					['ended', 'Sfârșitul showreel-ului. Play devine Replay.'],
+					['error', 'Un stream care nu se încarcă: întâi o propoziție simplă, apoi mesajul tehnic.'],
+				],
+			},
+			{
+				name: 'Taste și meniuri',
+				states: [
+					['focus', 'Focus de la tastatură pe Speed, după schimbarea la 1.5×.'],
+					['quality', 'Quality: Auto și fiecare rezoluție a stream-ului, pe playere de la 1120px.'],
+				],
+			},
+			{
+				name: 'Playere mai mici',
+				states: [
+					['strip', 'Sub 760px indexul devine o bandă sub imagine.'],
+					['phone', 'Sub 600px: timecode-ul și patru taste cu iconițe.'],
+					['more', 'More ține tastele de derulare, viteză și subtitrări.'],
+				],
+			},
+			{
+				name: 'Teme și preferințe',
+				states: [
+					['blueprint', 'Blueprint.'],
+					['signal', 'Signal.'],
+					['brand', 'Night cu o singură proprietate schimbată: --plate-accent: #ff6b00.'],
+					['arabic', 'Arabă, de la dreapta la stânga. Textele Video.js și cele ale skin-ului sunt traduse.'],
+					['forced-colors', 'Forced colors, cum îl desenează temele de contrast din Windows.'],
+				],
+			},
+		],
+		a11yTitle: 'Accesibilitate',
+		a11y: [
+			'Ce am verificat: axe-core 4.10 nu a găsit nicio problemă pe player în toate cele trei teme, cu meniul Quality deschis, cu panoul More deschis pe un player de mărimea unui telefon și în arabă, de la dreapta la stânga. Textul estompat are un contrast de cel puțin 5.8:1 față de planșă, în fiecare temă.',
+			'Fiecare tastă e un buton Video.js cu numele lui, iar cuvântul pe care îl vezi face parte din acel nume. Fiecare control arată unde e focusul.',
+			'Skin-ul respectă preferințele pentru mișcare redusă, contrast mărit, transparență redusă și forced colors.',
+		],
+		useTitle: 'Folosește-l',
+		useIntro: 'Poți copia skin-ul sau poți încărca build-ul de embed.',
+		copyLabel: 'Copiezi skin-ul',
+		copyBody:
+			'fișierele din src/video intră în orice proiect Video.js v10. Asta înseamnă markup-ul, stilurile, trei elemente custom mici și textele.',
+		embedLabel: 'Încarci build-ul de embed',
+		embedBody:
+			'un modul și un stylesheet cu Video.js, elementul media Mux și skin-ul. Are cam 270 KB gzip, cea mai mare parte e playerul HLS, așa că îl încarci când cineva apasă Play.',
+		lookLabel: 'Schimbi aspectul',
+		lookBody: 'fiecare culoare, font și colț e o proprietate CSS, iar proprietățile tale au prioritate față de orice temă.',
+		layoutLabel: 'Comutatoare de layout',
+		layoutBody: 'indexul înaintea imaginii sau ascuns, doar cotele mari pe riglă, fără antet.',
+		readme: 'Citește README-ul pe GitHub',
+		specsTitle: 'Specificații',
+		specs: [
+			['Construit pe', 'Video.js 10.3, pornit din skin-ul Scaffold cu Video.js CLI'],
+			['Elemente custom', 'indexul de capitole, cotele de capitol de pe riglă și panoul More'],
+			['Streaming', 'Mux, prin HLS'],
+			['Limbi', 'engleză, germană, franceză, spaniolă, română, rusă și arabă'],
+			['Fonturi', 'Newsreader și JetBrains Mono (SIL Open Font License)'],
+			['Iconițe', 'Phosphor (MIT)'],
+			['Licență', 'Apache 2.0'],
+			['Făcut de', 'Alexandru Trofaniuc, Quick Flow'],
+		],
+	},
+}[lang];
+
+// Where each numbered mark sits on the capture, in percent of its width and height.
+const pins = [
+	[20, 4.5],
+	[6, 14.5],
+	[84, 13],
+	[47, 77.5],
+	[23.5, 92.5],
+	[43.5, 92.5],
+];
+const phoneStates = new Set(['phone', 'more', 'strip']);
+const sectionId = (name: string) => `plate-${name}-${lang}`;
+---
+
+<section class="bleed mt-28" aria-labelledby={sectionId('keys')}>
+	<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+		<h2 id={sectionId('keys')} class="display-md md:col-span-4">{copy.keysTitle}</h2>
+		<dl class="plate-keys md:col-span-7 md:col-start-6">
+			{
+				copy.keys.map(([key, what]) => (
+					<div class="plate-keys-row">
+						<dt class="plate-keys-key">{key}</dt>
+						<dd class="prose-body">{what}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</div>
+</section>
+
+<section class="bleed mt-24" aria-labelledby={sectionId('plate')}>
+	<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+		<h2 id={sectionId('plate')} class="display-md md:col-span-4">{copy.plateTitle}</h2>
+		<p class="prose-body md:col-span-7 md:col-start-6">{copy.plateBody}</p>
+	</div>
+	<div class="plate-anatomy mt-12 grid gap-8 lg:grid-cols-12 lg:gap-12">
+		<figure class="plate-anatomy-figure lg:col-span-8">
+			<Shot src="/work/plate/playing.jpg" alt={copy.plateAlt} />
+			{
+				pins.map(([x, y], i) => (
+					<span class="plate-pin" style={`inset-inline-start:${x}%;top:${y}%`} aria-hidden="true">
+						{i + 1}
+					</span>
+				))
+			}
+		</figure>
+		<ol class="plate-parts lg:col-span-4">
+			{
+				copy.parts.map(([name, what], i) => (
+					<li class="plate-parts-item">
+						<span class="plate-pin plate-pin-static" aria-hidden="true">{i + 1}</span>
+						<p class="prose-body text-[0.95rem]">
+							<strong class="font-normal text-[var(--color-paper)]">{name}:</strong> {what}
+						</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<section class="bleed mt-24" aria-labelledby={sectionId('states')}>
+	<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+		<h2 id={sectionId('states')} class="display-md md:col-span-4">{copy.statesTitle}</h2>
+		<p class="prose-body md:col-span-7 md:col-start-6">{copy.statesIntro}</p>
+	</div>
+	{
+		copy.groups.map((group) => (
+			<div class="mt-12">
+				<h3 class="spec">{group.name}</h3>
+				<div class="plate-gallery mt-5">
+					{group.states.map(([name, caption]) => (
+						<figure class:list={['plate-state', phoneStates.has(name) && 'plate-state-tall']}>
+							<Shot src={`/work/plate/${name}.jpg`} alt="" class="plate-state-shot" />
+							<figcaption class="prose-body mt-3 text-[0.9rem]">{caption}</figcaption>
+						</figure>
+					))}
+				</div>
+			</div>
+		))
+	}
+</section>
+
+<section class="bleed mt-24" aria-labelledby={sectionId('a11y')}>
+	<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+		<h2 id={sectionId('a11y')} class="display-md md:col-span-4">{copy.a11yTitle}</h2>
+		<div class="grid gap-5 md:col-span-7 md:col-start-6">
+			{copy.a11y.map((p) => <p class="prose-body">{p}</p>)}
+		</div>
+	</div>
+</section>
+
+<section class="bleed mt-24" id={lang === 'en' ? 'use' : 'foloseste'} aria-labelledby={sectionId('use')}>
+	<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+		<h2 id={sectionId('use')} class="display-md md:col-span-4">{copy.useTitle}</h2>
+		<div class="grid min-w-0 gap-6 md:col-span-7 md:col-start-6">
+			<p class="prose-body">{copy.useIntro}</p>
+			<p class="prose-body"><strong class="font-normal text-[var(--color-paper)]">{copy.copyLabel}:</strong> {copy.copyBody}</p>
+			<div class="min-w-0">
+				<p class="prose-body"><strong class="font-normal text-[var(--color-paper)]">{copy.embedLabel}:</strong> {copy.embedBody}</p>
+				<pre class="code mt-3" tabindex="0"><code>{mountSnippet}</code></pre>
+			</div>
+			<div class="min-w-0">
+				<p class="prose-body"><strong class="font-normal text-[var(--color-paper)]">{copy.lookLabel}:</strong> {copy.lookBody}</p>
+				<pre class="code mt-3" tabindex="0"><code>{cssSnippet}</code></pre>
+			</div>
+			<p class="prose-body">
+				<strong class="font-normal text-[var(--color-paper)]">{copy.layoutLabel}:</strong> {copy.layoutBody}
+				<code>data-index="start|none"</code>, <code>data-ruler="sparse"</code>, <code>data-head="none"</code>.
+			</p>
+			<p><a href={`${REPO}#readme`} class="spec link">{copy.readme}</a></p>
+		</div>
+	</div>
+</section>
+
+<section class="bleed mt-24" aria-labelledby={sectionId('specs')}>
+	<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+		<h2 id={sectionId('specs')} class="display-md md:col-span-4">{copy.specsTitle}</h2>
+		<dl class="plate-specs md:col-span-7 md:col-start-6">
+			{
+				copy.specs.map(([name, value]) => (
+					<div class="plate-specs-row">
+						<dt class="spec pt-1">{name}</dt>
+						<dd class="text-[0.95rem]">{value}</dd>
+					</div>
+				))
+			}
+		</dl>
+	</div>
+</section>
+
+<style>
+	.plate-keys,
+	.plate-specs {
+		display: grid;
+	}
+
+	.plate-keys-row,
+	.plate-specs-row {
+		display: grid;
+		grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+		gap: 16px;
+		padding-block: 10px;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.plate-keys-key {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		letter-spacing: 0.06em;
+		color: var(--color-paper);
+		padding-top: 3px;
+	}
+
+	@media (max-width: 480px) {
+		.plate-keys-row,
+		.plate-specs-row {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 4px;
+		}
+	}
+
+	.plate-anatomy-figure {
+		position: relative;
+		align-self: start;
+		overflow: hidden;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+	}
+
+	.plate-anatomy-figure :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	/* A numbered mark, like the callouts on the site's other plates. */
+	.plate-pin {
+		position: absolute;
+		display: grid;
+		place-items: center;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: #04171a;
+		background: var(--color-teal);
+		box-shadow: 0 0 0 3px rgb(4 8 11 / 0.7);
+		translate: -50% -50%;
+	}
+
+	[dir='rtl'] .plate-pin {
+		translate: 50% -50%;
+	}
+
+	.plate-pin-static {
+		position: static;
+		flex: none;
+		translate: none;
+		box-shadow: none;
+	}
+
+	.plate-parts {
+		display: grid;
+		gap: 16px;
+		align-content: start;
+	}
+
+	.plate-parts-item {
+		display: flex;
+		gap: 12px;
+		align-items: baseline;
+	}
+
+	.plate-gallery {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+		gap: 28px 24px;
+		align-items: start;
+	}
+
+	.plate-state :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius-sm);
+	}
+
+	/* The phone-sized captures are tall: keep them at a phone's width, not stretched. */
+	.plate-state-tall :global(img) {
+		max-width: 300px;
+	}
+</style>
