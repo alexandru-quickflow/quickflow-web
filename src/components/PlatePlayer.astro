@@ -138,9 +138,19 @@ const copy = {
 		font-weight: 500;
 	}
 
+	/* The pause chip sits on the video, so it keeps a dark chip in every theme. */
+	[data-plate-theme='blueprint'] .plate-facade-toggle {
+		border-color: rgb(233 242 240 / 0.35);
+	}
+
+	[data-plate-theme='blueprint'] .plate-facade {
+		--color-hot: #c7342a;
+	}
+
 	[data-plate-theme='signal'] .plate-facade {
 		--color-teal: #ffb020;
 		--color-mint: #ffc659;
+		--color-hot: #4aa8ff;
 	}
 
 	[data-plate-theme='signal'] .plate-facade .btn-primary {
@@ -217,7 +227,7 @@ const copy = {
 
 	.plate-facade-play {
 		position: relative;
-		box-shadow: 0 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent);
+		box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-ink) 55%, transparent);
 	}
 
 	.plate-facade-toggle {
@@ -228,17 +238,17 @@ const copy = {
 		padding: 6px 10px;
 		border: 1px solid var(--line-strong);
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--ink) 80%, transparent);
+		background: color-mix(in srgb, var(--color-ink) 80%, transparent);
 		font-family: var(--font-mono);
 		font-size: 11px;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--paper);
+		color: var(--color-paper);
 		cursor: pointer;
 	}
 
 	.plate-facade-toggle:focus-visible {
-		outline: 2px solid var(--teal);
+		outline: 2px solid var(--color-teal);
 		outline-offset: 2px;
 	}
 
@@ -261,7 +271,7 @@ const copy = {
 		position: absolute;
 		inset-block: -4px 0;
 		inset-inline: 0;
-		background: linear-gradient(var(--hot), var(--hot)) 0 0 / 2px 100% no-repeat;
+		background: linear-gradient(var(--color-hot), var(--color-hot)) 0 0 / 2px 100% no-repeat;
 		opacity: 0;
 	}
 
@@ -533,13 +543,23 @@ const copy = {
 				}
 				facade.replaceWith(host);
 				// No source yet: it is set once the morph is running, not while it is being set up.
-				player = embed.mountPlate(host, {
-					src: '',
-					poster: facade.dataset.poster,
-					chapters: facade.dataset.chapters,
-					title: facade.dataset.title,
-					autoplay: false,
-				});
+				try {
+					player = embed.mountPlate(host, {
+						src: '',
+						poster: facade.dataset.poster,
+						chapters: facade.dataset.chapters,
+						title: facade.dataset.title,
+						autoplay: false,
+					});
+				} catch {
+					// Put the drawing back and say so: Play stays there to try again.
+					host.replaceWith(facade);
+					name(facade, FACADE_PARTS, false);
+					facade.removeAttribute('data-loading');
+					if (error) error.textContent = error.dataset.failed ?? '';
+					button.focus({ preventScroll: true });
+					return;
+				}
 				if (player && morph) name(player, PLAYER_PARTS, true);
 				// The pressed button is gone: put focus on the player's play key straight away, so
 				// it never falls back to the page during the morph.
@@ -566,9 +586,9 @@ const copy = {
 			// Then play, and keep the keyboard where it was: on the play control, now in the player.
 			let started = false;
 			const start = async () => {
+				document.documentElement.removeAttribute('data-plate-morph');
 				if (!player || started) return;
 				started = true;
-				document.documentElement.removeAttribute('data-plate-morph');
 				player.querySelector<HTMLElement>('.pl-btn-play')?.focus({ preventScroll: true });
 				await load();
 				const el = media();

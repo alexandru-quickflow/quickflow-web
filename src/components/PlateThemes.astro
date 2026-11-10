@@ -65,12 +65,12 @@ const names = { night: 'Night', blueprint: 'Blueprint', signal: 'Signal' };
 	}
 
 	.plate-themes-key[aria-pressed='true'] {
-		color: var(--paper);
-		border-color: var(--teal);
+		color: var(--color-paper);
+		border-color: var(--color-teal);
 	}
 
 	.plate-themes-key:focus-visible {
-		outline: 2px solid var(--teal);
+		outline: 2px solid var(--color-teal);
 		outline-offset: 2px;
 	}
 
@@ -100,6 +100,15 @@ const names = { night: 'Night', blueprint: 'Blueprint', signal: 'Signal' };
 	}
 </style>
 
+<style is:global>
+	/* Colours change at once when the theme does: a 250ms fade passes through
+	   mixes such as white on teal that nobody should have to read. */
+	[data-plate-switching],
+	[data-plate-switching] * {
+		transition: none !important;
+	}
+</style>
+
 <script>
 	for (const root of document.querySelectorAll<HTMLElement>('[data-plate-themes]')) {
 		const scope = root.closest<HTMLElement>('[data-plate-theme-root]');
@@ -109,8 +118,9 @@ const names = { night: 'Night', blueprint: 'Blueprint', signal: 'Signal' };
 			const key = (event.target as Element).closest<HTMLButtonElement>('[data-theme]');
 			if (!key) return;
 			const theme = key.dataset.theme!;
-			if (theme === 'night') scope.removeAttribute('data-plate-theme');
-			else scope.dataset.plateTheme = theme;
+			scope.setAttribute('data-plate-switching', '');
+			scope.dataset.plateTheme = theme;
+			requestAnimationFrame(() => requestAnimationFrame(() => scope.removeAttribute('data-plate-switching')));
 			for (const other of root.querySelectorAll('[data-theme]')) {
 				other.setAttribute('aria-pressed', String(other === key));
 			}
