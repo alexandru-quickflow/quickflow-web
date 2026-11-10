@@ -164,9 +164,11 @@ img,
 <media-slider-thumb class="pl-time-slider-thumb">\r
 </media-slider-thumb>\r
 <media-slider-preview class="pl-time-slider-preview">\r
+<span class="pl-detail-frame">\r
 <media-slider-thumbnail class="pl-slider-thumbnail">\r
 <img alt="" aria-hidden="true" decoding="async" class="pl-slider-thumbnail-image">\r
 </media-slider-thumbnail>\r
+</span>\r
 <div class="pl-time-slider-preview-label">\r
 <media-slider-value class="pl-time-slider-value" type="pointer">\r
 </media-slider-value>\r
