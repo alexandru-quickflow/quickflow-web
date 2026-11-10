@@ -4,7 +4,7 @@
 // The page arrives with a drawing of the player, a short muted preview of the reel and one
 // button, and no script beyond the few lines below. The preview only downloads when the plate
 // scrolls into view, and never plays for reduced motion or data saver. Pressing Play fetches the
-// player (Video.js, the Mux media element and the skin, about 280 KB gzipped) and its stylesheet
+// player (Video.js, the Mux media element and the skin, about 255 KB gzipped) and its stylesheet
 // from /plate/, then morphs the drawing into the real player with a view transition and starts
 // the video. Every other page on the site stays at its own JavaScript weight. See CR-49.
 //
@@ -37,7 +37,8 @@ const copy = {
 		play: 'Play',
 		playName: 'Play showreel',
 		plate: 'Plate',
-		status: 'Status · Ready',
+		status: 'Status',
+		ready: 'Ready',
 		pause: 'Pause preview',
 		resume: 'Play preview',
 		noscript: 'The player needs JavaScript to run.',
@@ -47,7 +48,8 @@ const copy = {
 		play: 'Redă',
 		playName: 'Redă showreel-ul',
 		plate: 'Planșa',
-		status: 'Stare · Pregătit',
+		status: 'Stare',
+		ready: 'Pregătit',
 		pause: 'Oprește previzualizarea',
 		resume: 'Pornește previzualizarea',
 		noscript: 'Playerul are nevoie de JavaScript ca să ruleze.',
@@ -66,7 +68,7 @@ const copy = {
 >
 	<div class="plate-facade-head" aria-hidden="true">
 		<span>{copy.plate} 01 · {SHOWREEL.title}</span>
-		<span>{copy.status}</span>
+		<span>{copy.status} <span class="plate-facade-status">{copy.ready}</span></span>
 	</div>
 	<div class="plate-facade-stage">
 		<video
@@ -119,6 +121,23 @@ const copy = {
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		color: var(--faint);
+	}
+
+	/* The status word as the player draws it: brighter grey, after a small dot. */
+	.plate-facade-status {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		margin-inline-start: 6px;
+		color: var(--mute);
+	}
+
+	.plate-facade-status::before {
+		content: '';
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: currentColor;
 	}
 
 	.plate-facade-stage {
@@ -386,8 +405,13 @@ const copy = {
 
 		// Start fetching as soon as a press looks likely, so the click itself has little to wait for.
 		let loading: Promise<[void, any]> | null = null;
+		let attempt = 0;
 		const warm = () =>
-			(loading ??= Promise.all([loadStyles(), import(/* @vite-ignore */ `${BASE}plate-embed.js`)]).then(
+			(loading ??= Promise.all([
+				loadStyles(),
+				// A failed import can stay in the module map; a retry asks for a fresh URL.
+				import(/* @vite-ignore */ `${BASE}plate-embed.js${attempt ? `?r=${attempt}` : ''}`),
+			]).then(
 				async (result) => {
 					// A first mount costs several times a later one (styles, element setup, fonts), so
 					// do it once off screen, without a source: nothing reaches Mux before the click.
@@ -408,6 +432,7 @@ const copy = {
 			).catch((error) => {
 				// Let the next press try again instead of keeping the failure.
 				loading = null;
+				attempt += 1;
 				throw error;
 			}));
 		for (const type of ['pointerenter', 'focus', 'touchstart']) {
@@ -448,6 +473,13 @@ const copy = {
 				if (swapped) return;
 				swapped = true;
 				stopPreview();
+				// Stop the preview's download too, so it does not compete with the stream.
+				const preview = facade.querySelector<HTMLVideoElement>('.plate-facade-preview');
+				if (preview) {
+					preview.removeAttribute('src');
+					preview.replaceChildren();
+					preview.load();
+				}
 				facade.replaceWith(host);
 				// No source yet: it is set once the morph is running, not while it is being set up.
 				player = embed.mountPlate(host, {
@@ -458,6 +490,9 @@ const copy = {
 					autoplay: false,
 				});
 				if (player && morph) name(player, PLAYER_PARTS, true);
+				// The pressed button is gone: put focus on the player's play key straight away, so
+				// it never falls back to the page during the morph.
+				player?.querySelector<HTMLElement>('.pl-btn-play')?.focus({ preventScroll: true });
 			};
 
 			type Media = HTMLElement & { play?: () => Promise<void>; readyState?: number };
