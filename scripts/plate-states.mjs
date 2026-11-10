@@ -93,7 +93,7 @@ const STATES = {
 	focus: () =>
 		player({ at: 30 }).then(async (p) => {
 			await p.page.evaluate(() => (document.querySelector('mux-video').playbackRate = 1.5));
-			await p.page.locator('.pl-controls > .pl-btn-speed').focus();
+			await p.page.locator('.pl-controls > .pl-btn-rate').focus();
 			await p.page.keyboard.press('Shift+Tab');
 			await p.page.keyboard.press('Tab');
 			return p;
