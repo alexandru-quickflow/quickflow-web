@@ -222,14 +222,12 @@ img,
 </media-mute-button>\r
 <media-tooltip side="top" class="pl-tooltip"><media-tooltip-label></media-tooltip-label><media-tooltip-shortcut class="pl-tooltip-key"></media-tooltip-shortcut></media-tooltip>\r
 <media-volume-slider class="pl-volume-slider">\r
-<span class="pl-volume-scale" aria-hidden="true"></span>\r
 <media-slider-track class="pl-volume-track">\r
 <media-slider-fill class="pl-volume-fill">\r
 </media-slider-fill>\r
 </media-slider-track>\r
 <media-slider-thumb class="pl-volume-thumb">\r
 </media-slider-thumb>\r
-<span class="pl-volume-readout" aria-hidden="true"><media-slider-value class="pl-volume-value"></media-slider-value></span>\r
 </media-volume-slider>\r
 </div>\r
 <span class="pl-sep" aria-hidden="true"></span>\r
