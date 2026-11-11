@@ -13,6 +13,7 @@
 	"ro-landing-page-si-site-de-prezentare",
 	"ro-multumesc",
 	"ro-portofoliu",
+	"ro-portofoliu-plate",
 	"ro-prototip-in-cinci-zile",
 	"ro-servicii-aplicatii-interne",
 	"ro-servicii-marketplace-plati",
@@ -31,5 +32,6 @@
 	"stripe-escrow-marketplace",
 	"terms",
 	"thank-you",
-	"work"
+	"work",
+	"work-plate"
 ]

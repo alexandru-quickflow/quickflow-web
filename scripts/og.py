@@ -64,6 +64,8 @@ SECTIONS = {
     'ro-landing-page-si-site-de-prezentare': 'Landing page și site',
     'terms': 'Terms',
     'ro-termeni': 'Termeni',
+    'work-plate': 'Plate',
+    'ro-portofoliu-plate': 'Plate',
 }
 
 INK = (4, 8, 11)
