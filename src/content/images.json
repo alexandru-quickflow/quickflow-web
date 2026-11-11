@@ -51,6 +51,10 @@
 		"h": 739,
 		"w": 1200
 	},
+	"/work/plate/fullscreen-idle.jpg": {
+		"h": 675,
+		"w": 1200
+	},
 	"/work/plate/fullscreen.jpg": {
 		"h": 675,
 		"w": 1200
@@ -59,8 +63,12 @@
 		"h": 675,
 		"w": 1200
 	},
+	"/work/plate/layout.jpg": {
+		"h": 739,
+		"w": 1200
+	},
 	"/work/plate/more.jpg": {
-		"h": 984,
+		"h": 1064,
 		"w": 780
 	},
 	"/work/plate/paused.jpg": {
@@ -68,7 +76,7 @@
 		"w": 1200
 	},
 	"/work/plate/phone.jpg": {
-		"h": 984,
+		"h": 1064,
 		"w": 780
 	},
 	"/work/plate/playing.jpg": {
@@ -80,6 +88,10 @@
 		"w": 1200
 	},
 	"/work/plate/scrub.jpg": {
+		"h": 739,
+		"w": 1200
+	},
+	"/work/plate/seek.jpg": {
 		"h": 739,
 		"w": 1200
 	},

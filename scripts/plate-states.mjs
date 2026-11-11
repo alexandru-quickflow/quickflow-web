@@ -60,13 +60,13 @@ async function player({ width = 1280, theme, accent, phone, lang, media = {}, at
 	return { page, context, host: page.locator('.plate-host') };
 }
 
-/** The player in real fullscreen on a 16:9 screen, paused with the controls showing. Shot whole page. */
-async function fullscreen({ at }) {
-	const p = await player({ width: 1600, at });
-	await p.page.setViewportSize({ width: 1600, height: 900 });
+/** The player in real fullscreen, paused with the controls showing. Shot whole page. */
+async function fullscreen({ at, width = 1600, height = 900 }) {
+	const p = await player({ width, at });
+	await p.page.setViewportSize({ width, height });
 	await p.page.locator('.pl-btn-full').click();
 	await p.page.waitForFunction(() => document.fullscreenElement);
-	await p.page.mouse.move(800, 450, { steps: 5 });
+	await p.page.mouse.move(width / 2, height / 3, { steps: 5 });
 	await p.page.waitForTimeout(900);
 	return { ...p, host: p.page };
 }
@@ -92,6 +92,14 @@ const STATES = {
 			return p;
 		}),
 	paused: () => player({ at: 40 }),
+	// An arrow key seeks ten seconds, and the picture says which way.
+	seek: () =>
+		player({ at: 30, media: { reducedMotion: 'no-preference' } }).then(async (p) => {
+			await p.page.locator('.pl-controls > .pl-btn-play').focus();
+			await p.page.keyboard.press('ArrowRight');
+			await p.page.waitForTimeout(150);
+			return p;
+		}),
 	// Pointer on the ruler: the storyboard frame, the time and the chapter under it.
 	scrub: () =>
 		player({ at: 12 }).then(async (p) => {
@@ -128,6 +136,24 @@ const STATES = {
 		fullscreen({ at: 28 }).then(async (p) => {
 			await p.page.locator('.pl-btn-index').click();
 			await p.page.waitForTimeout(700);
+			return p;
+		}),
+	// Playing, left alone: the keys fade and the picture has the screen.
+	'fullscreen-idle': () =>
+		fullscreen({ at: 33 }).then(async (p) => {
+			await p.page.evaluate(() => document.querySelector('mux-video').play());
+			await p.page.waitForTimeout(3500);
+			return p;
+		}),
+	// Two layout switches on the container: the index first, only the tall ticks on the ruler.
+	layout: () =>
+		player({ at: 24 }).then(async (p) => {
+			await p.page.evaluate(() => {
+				const c = document.querySelector('.media-skin.pl');
+				c.dataset.index = 'start';
+				c.dataset.ruler = 'sparse';
+			});
+			await p.page.waitForTimeout(600);
 			return p;
 		}),
 	quality: () =>

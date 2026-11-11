@@ -70,6 +70,7 @@ const copy = {
 					['playing', 'Playing, in the second chapter. The index and the ruler both mark it.'],
 					['paused', 'Paused. The status word in the head follows the player.'],
 					['scrub', "Pointing at the ruler: the frame from Mux's storyboard, the time and the chapter under it."],
+					['seek', 'An arrow key seeks ten seconds, and the picture says so.'],
 					['ended', 'The end of the reel. Play becomes Replay.'],
 					['error', "A stream that won't load: a plain sentence first, then the media's own message."],
 				],
@@ -86,6 +87,7 @@ const copy = {
 				name: 'Fullscreen',
 				states: [
 					['fullscreen', 'Fullscreen is the picture edge to edge. The head, ruler and keys sit on a shade and fade while the video plays and nobody moves.'],
+					['fullscreen-idle', 'While it plays and nobody touches it, the keys fade and the picture has the whole screen.'],
 					['index', 'The Index key opens the chapters as a panel over the side of the picture. Picking one closes it.'],
 				],
 			},
@@ -103,6 +105,7 @@ const copy = {
 					['blueprint', 'Blueprint.'],
 					['signal', 'Signal.'],
 					['brand', 'Night with one property changed: --plate-accent: #ff6b00.'],
+					['layout', 'Night with two layout switches: the index before the picture, and only the tall ticks on the ruler.'],
 					['arabic', "Arabic, right to left. The Video.js labels and the skin's own words are translated."],
 					['forced-colors', 'Forced colors, the way Windows contrast themes draw it.'],
 				],
@@ -188,6 +191,7 @@ const copy = {
 					['playing', 'Rulează, în al doilea capitol. Îl marchează și indexul, și rigla.'],
 					['paused', 'Pauză. Cuvântul de stare din antet urmează playerul.'],
 					['scrub', 'Cu mouse-ul pe riglă: cadrul din storyboard-ul Mux, timpul și capitolul de sub el.'],
+					['seek', 'O săgeată derulează zece secunde, iar imaginea o arată.'],
 					['ended', 'Sfârșitul showreel-ului. Play devine Replay.'],
 					['error', 'Un stream care nu se încarcă: întâi o propoziție simplă, apoi mesajul tehnic.'],
 				],
@@ -204,6 +208,7 @@ const copy = {
 				name: 'Ecran complet',
 				states: [
 					['fullscreen', 'În ecran complet imaginea umple tot ecranul. Antetul, rigla și tastele stau pe o umbră și dispar cât timp video-ul rulează și nu atingi nimic.'],
+					['fullscreen-idle', 'Cât rulează și nu atingi nimic, tastele dispar și imaginea ocupă tot ecranul.'],
 					['index', 'Tasta Index deschide capitolele într-un panou peste marginea imaginii. Când alegi unul, panoul se închide.'],
 				],
 			},
@@ -221,6 +226,7 @@ const copy = {
 					['blueprint', 'Blueprint.'],
 					['signal', 'Signal.'],
 					['brand', 'Night cu o singură proprietate schimbată: --plate-accent: #ff6b00.'],
+					['layout', 'Night cu două comutatoare de layout: indexul înaintea imaginii și doar cotele mari pe riglă.'],
 					['arabic', 'Arabă, de la dreapta la stânga. Textele Video.js și cele ale skin-ului sunt traduse.'],
 					['forced-colors', 'Forced colors, cum îl desenează temele de contrast din Windows.'],
 				],
@@ -277,9 +283,9 @@ const pins = [
 	[20, 4.5],
 	[6, 14.5],
 	[84, 13],
-	[47, 77.5],
-	[13.5, 88.3],
-	[60, 92.5],
+	[18, 80.6],
+	[11, 86.2],
+	[47.5, 93],
 ];
 const phoneStates = new Set(['phone', 'more', 'strip']);
 const sectionId = (name: string) => `plate-${name}-${lang}`;
@@ -398,7 +404,8 @@ const sectionId = (name: string) => `plate-${name}-${lang}`;
 			</div>
 			<p class="prose-body">
 				<strong class="font-normal text-[var(--color-paper)]">{copy.layoutLabel}:</strong> {copy.layoutBody}
-				<code>data-index="start|none"</code>, <code>data-ruler="sparse"</code>, <code>data-head="none"</code>.
+				{' '}<code class="whitespace-nowrap">data-index="start|none"</code>, <code class="whitespace-nowrap">data-ruler="sparse"</code>,{' '}
+				<code class="whitespace-nowrap">data-head="none"</code>.
 			</p>
 			<p><a href={`${REPO}#readme`} class="spec link">{copy.readme}</a></p>
 		</div>
@@ -454,6 +461,8 @@ const sectionId = (name: string) => `plate-${name}-${lang}`;
 
 	.plate-anatomy-figure {
 		position: relative;
+		/* The marks scale with the capture, so on a phone they don't cover what they point at. */
+		container-type: inline-size;
 		align-self: start;
 		overflow: hidden;
 		border: 1px solid var(--line-strong);
@@ -471,11 +480,11 @@ const sectionId = (name: string) => `plate-${name}-${lang}`;
 		position: absolute;
 		display: grid;
 		place-items: center;
-		width: 22px;
-		height: 22px;
+		width: clamp(14px, 2.8cqi, 22px);
+		height: clamp(14px, 2.8cqi, 22px);
 		border-radius: 50%;
 		font-family: var(--font-mono);
-		font-size: 11px;
+		font-size: clamp(8px, 1.4cqi, 11px);
 		color: #04171a;
 		background: var(--color-teal);
 		box-shadow: 0 0 0 3px rgb(4 8 11 / 0.7);
@@ -488,6 +497,9 @@ const sectionId = (name: string) => `plate-${name}-${lang}`;
 
 	.plate-pin-static {
 		position: static;
+		width: 22px;
+		height: 22px;
+		font-size: 11px;
 		flex: none;
 		translate: none;
 		box-shadow: none;
@@ -523,5 +535,11 @@ const sectionId = (name: string) => `plate-${name}-${lang}`;
 	/* The phone-sized captures are tall: keep them at a phone's width, not stretched. */
 	.plate-state-tall :global(img) {
 		max-width: 300px;
+		margin-inline: auto;
+	}
+
+	.plate-state-tall figcaption {
+		max-width: 300px;
+		margin-inline: auto;
 	}
 </style>
