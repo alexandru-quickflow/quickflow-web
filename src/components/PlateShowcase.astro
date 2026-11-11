@@ -79,6 +79,14 @@ const copy = {
 				states: [
 					['focus', 'Keyboard focus on Speed, after a change to 1.5×.'],
 					['quality', 'Quality: Auto and each rendition the stream has, on players 1120px and wider.'],
+					['volume', 'Pointer on Mute: the volume slider opens beside it and folds away when the pointer leaves.'],
+				],
+			},
+			{
+				name: 'Fullscreen',
+				states: [
+					['fullscreen', 'Fullscreen is the picture edge to edge. The head, ruler and keys sit on a shade and fade while the video plays and nobody moves.'],
+					['index', 'The Index key opens the chapters as a panel over the side of the picture. Picking one closes it.'],
 				],
 			},
 			{
@@ -105,6 +113,19 @@ const copy = {
 			'What I checked: axe-core 4.10 found no violations on the player in all three themes, with the Quality menu open, with the More panel open on a phone-sized player, and in Arabic, right to left. Muted text measures at least 5.7:1 against the plate in every theme.',
 			'Each key is a Video.js button with its own name. Where a key shows a word or a number, its name starts with it; a key that shows only a glyph gives its name and shortcut in a tooltip. Every control shows where the focus is.',
 			'The skin follows reduced motion, higher contrast, reduced transparency and forced colors.',
+		],
+		vjsTitle: 'Video.js and Plate',
+		vjsIntro: 'Plate uses a Video.js component wherever v10 has one. Its own code is three small custom elements and the CSS.',
+		vjs: [
+			['Keys', 'Video.js buttons for play, mute, seek, fullscreen, picture-in-picture, AirPlay and Cast'],
+			['Ruler', 'the Video.js time slider and its storyboard preview. Plate draws the ticks and numbers the chapters (pl-ruler-marks).'],
+			['Volume', 'the Video.js volume slider'],
+			['Menus', 'Video.js menus for Speed, Quality, Captions and Audio, and More with a page for each. Plate gives the pages their ids (pl-overflow).'],
+			['Index', 'Plate (pl-chapters), reading the chapter cues from the Video.js store. Each frame is a Video.js thumbnail.'],
+			['Tooltips, hotkeys, gestures', 'Video.js'],
+			['Error dialog, announcer', "Video.js. The plain sentence before the media's message is Plate's."],
+			['Words', "Video.js translations, plus Plate's own words in seven languages"],
+			['Look', 'Plate: the CSS, three themes and the --plate-* properties'],
 		],
 		useTitle: 'Use it',
 		useIntro: 'You can copy the skin or load the embed build.',
@@ -176,6 +197,14 @@ const copy = {
 				states: [
 					['focus', 'Focus de la tastatură pe Speed, după schimbarea la 1.5×.'],
 					['quality', 'Quality: Auto și fiecare rezoluție a stream-ului, pe playere de la 1120px.'],
+					['volume', 'Cu mouse-ul pe Mute: sliderul de volum se deschide lângă tastă și se strânge când pleci de pe ea.'],
+				],
+			},
+			{
+				name: 'Ecran complet',
+				states: [
+					['fullscreen', 'În ecran complet imaginea umple tot ecranul. Antetul, rigla și tastele stau pe o umbră și dispar cât timp video-ul rulează și nu atingi nimic.'],
+					['index', 'Tasta Index deschide capitolele într-un panou peste marginea imaginii. Când alegi unul, panoul se închide.'],
 				],
 			},
 			{
@@ -202,6 +231,19 @@ const copy = {
 			'Ce am verificat: axe-core 4.10 nu a găsit nicio problemă pe player în toate cele trei teme, cu meniul Quality deschis, cu panoul More deschis pe un player de mărimea unui telefon și în arabă, de la dreapta la stânga. Textul estompat are un contrast de cel puțin 5.7:1 față de planșă, în fiecare temă.',
 			'Fiecare tastă e un buton Video.js cu numele lui. Unde tasta arată un cuvânt sau un număr, numele ei începe cu el; o tastă care arată doar o iconiță își spune numele și scurtătura într-un tooltip. Fiecare control arată unde e focusul.',
 			'Skin-ul respectă preferințele pentru mișcare redusă, contrast mărit, transparență redusă și forced colors.',
+		],
+		vjsTitle: 'Video.js și Plate',
+		vjsIntro: 'Plate folosește o componentă Video.js oriunde v10 are una. Codul lui propriu e format din trei elemente custom mici și CSS-ul.',
+		vjs: [
+			['Taste', 'butoane Video.js pentru redare, sunet, derulare, ecran complet, picture-in-picture, AirPlay și Cast'],
+			['Rigla', 'sliderul de timp Video.js și previzualizarea din storyboard. Plate desenează cotele și numerotează capitolele (pl-ruler-marks).'],
+			['Volum', 'sliderul de volum Video.js'],
+			['Meniuri', 'meniuri Video.js pentru Speed, Quality, Captions și Audio, plus More cu câte o pagină pentru fiecare. Plate dă paginilor id-urile (pl-overflow).'],
+			['Index', 'Plate (pl-chapters), care citește capitolele din store-ul Video.js. Fiecare cadru e un thumbnail Video.js.'],
+			['Tooltips, scurtături, gesturi', 'Video.js'],
+			['Dialogul de eroare, anunțurile', 'Video.js. Propoziția simplă dinaintea mesajului tehnic e a lui Plate.'],
+			['Texte', 'traducerile Video.js, plus textele proprii ale lui Plate în șapte limbi'],
+			['Aspect', 'Plate: CSS-ul, trei teme și proprietățile --plate-*'],
 		],
 		useTitle: 'Folosește-l',
 		useIntro: 'Poți copia skin-ul sau poți încărca build-ul de embed.',
@@ -317,6 +359,25 @@ const sectionId = (name: string) => `plate-${name}-${lang}`;
 		<h2 id={sectionId('a11y')} class="display-md md:col-span-4">{copy.a11yTitle}</h2>
 		<div class="grid gap-5 md:col-span-7 md:col-start-6">
 			{copy.a11y.map((p) => <p class="prose-body">{p}</p>)}
+		</div>
+	</div>
+</section>
+
+<section class="bleed mt-24" aria-labelledby={sectionId('vjs')}>
+	<div class="hair grid gap-8 pt-8 md:grid-cols-12 md:gap-12">
+		<h2 id={sectionId('vjs')} class="display-md md:col-span-4">{copy.vjsTitle}</h2>
+		<div class="grid min-w-0 gap-6 md:col-span-7 md:col-start-6">
+			<p class="prose-body">{copy.vjsIntro}</p>
+			<dl class="plate-specs">
+				{
+					copy.vjs.map(([name, value]) => (
+						<div class="plate-specs-row">
+							<dt class="spec pt-1">{name}</dt>
+							<dd class="text-[0.95rem]">{value}</dd>
+						</div>
+					))
+				}
+			</dl>
 		</div>
 	</div>
 </section>

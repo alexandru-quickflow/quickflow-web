@@ -51,6 +51,14 @@
 		"h": 739,
 		"w": 1200
 	},
+	"/work/plate/fullscreen.jpg": {
+		"h": 675,
+		"w": 1200
+	},
+	"/work/plate/index.jpg": {
+		"h": 675,
+		"w": 1200
+	},
 	"/work/plate/more.jpg": {
 		"h": 984,
 		"w": 780
@@ -81,6 +89,10 @@
 	},
 	"/work/plate/strip.jpg": {
 		"h": 1235,
+		"w": 1200
+	},
+	"/work/plate/volume.jpg": {
+		"h": 739,
 		"w": 1200
 	}
 }

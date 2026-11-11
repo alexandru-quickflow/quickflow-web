@@ -60,6 +60,17 @@ async function player({ width = 1280, theme, accent, phone, lang, media = {}, at
 	return { page, context, host: page.locator('.plate-host') };
 }
 
+/** The player in real fullscreen on a 16:9 screen, paused with the controls showing. Shot whole page. */
+async function fullscreen({ at }) {
+	const p = await player({ width: 1600, at });
+	await p.page.setViewportSize({ width: 1600, height: 900 });
+	await p.page.locator('.pl-btn-full').click();
+	await p.page.waitForFunction(() => document.fullscreenElement);
+	await p.page.mouse.move(800, 450, { steps: 5 });
+	await p.page.waitForTimeout(900);
+	return { ...p, host: p.page };
+}
+
 async function shot(name, setup) {
 	const { page, context, host } = await setup();
 	await page.waitForTimeout(400);
@@ -96,6 +107,27 @@ const STATES = {
 			await p.page.locator('.pl-controls > .pl-btn-rate').focus();
 			await p.page.keyboard.press('Shift+Tab');
 			await p.page.keyboard.press('Tab');
+			return p;
+		}),
+	// Pointer on Mute: the volume slider opens to its right.
+	volume: () =>
+		player({ at: 33 }).then(async (p) => {
+			const box = await p.page.locator('.pl-btn-mute').boundingBox();
+			await p.page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 5 });
+			await p.page.waitForTimeout(600);
+			// Then onto the slider itself, so Mute's tooltip doesn't cover the ruler.
+			const slider = await p.page.locator('.pl-volume media-volume-slider').boundingBox();
+			await p.page.mouse.move(slider.x + slider.width * 0.6, slider.y + slider.height / 2, { steps: 5 });
+			await p.page.waitForTimeout(600);
+			return p;
+		}),
+	// Fullscreen, edge to edge, with the controls showing over the picture.
+	fullscreen: () => fullscreen({ at: 28 }),
+	// Fullscreen with the Index key's panel open over the side of the picture.
+	index: () =>
+		fullscreen({ at: 28 }).then(async (p) => {
+			await p.page.locator('.pl-btn-index').click();
+			await p.page.waitForTimeout(700);
 			return p;
 		}),
 	quality: () =>
